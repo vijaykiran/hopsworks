@@ -25,7 +25,6 @@ angular.module('hopsWorksApp')
                 self.working = true;
                 self.key.status = false;
                 UserService.addSshKey(self.key).then(
-                //UserService.addSshKey(self.key.name, self.key.publicKey).then(
                     function (success) {
                         growl.success("Your ssh key has been successfully added.", {
                             title: 'Success',
@@ -35,8 +34,6 @@ angular.module('hopsWorksApp')
                         $scope.keys.push(self.key);
                         $scope.sshKeysForm.$setPristine();
                         $scope.keys[$scope.keys.length - 1].status = false;
-                        //var name = self.key.name;
-                        //$scope.status[idx(self.key)] = false;
                         self.working = false;
                     },
                     function (error) {

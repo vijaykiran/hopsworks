@@ -57,10 +57,6 @@ angular.module('hopsWorksApp')
             self.removeMember = function (member) {
               self.projectMembers.splice(self.projectMembers.indexOf(member), 1);
             };
-
-            self.createExampleProject = function () {
-                
-               }
                    
             self.createProject = function () {
               self.working = true;

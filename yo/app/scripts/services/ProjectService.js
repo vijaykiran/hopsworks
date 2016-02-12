@@ -10,6 +10,10 @@ angular.module('hopsWorksApp')
                 method: "POST",
                 headers: {'Content-Type': 'application/json; charset=UTF-8'}
               },
+              "example": {
+                method: "POST",
+                headers: {'Content-Type': 'application/json; charset=UTF-8'}
+              },
               "delete": {
                 method: 'DELETE'
               },
@@ -38,6 +42,7 @@ angular.module('hopsWorksApp')
                 url: '/api/project/getDatasetInfo/:inodeId',
                 'method': 'GET'                  
               }
+              
             }
             );
           }]);

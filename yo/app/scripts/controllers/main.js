@@ -140,13 +140,13 @@ angular.module('hopsWorksApp')
                 
                 self.startTour = function(){
                     self.currentStep = 0;
-                }
+                };
                 self.stopTour = function(){
                     self.currentStep = -1;
-                }
+                };
                 self.IncrementCurrentStep = function(){
                     self.currentStep = self.currentStep + 1;
-                }
+                };
                 
                 self.hitEnter = function (evt) {
                     if (angular.equals(evt.keyCode, 13)) {

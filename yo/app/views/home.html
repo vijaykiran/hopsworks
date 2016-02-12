@@ -19,8 +19,8 @@
                                    run a job.
                                 </p>
                             </div>
-                            <button type="button" class="btn btn-default btn-large" id="gettingStartedButton" ng-click="mainCtrl.IncrementCurrentStep()" style="font-family: Lobster;">HopsWorks Tour</button>
-                            
+                            <button type="button" class="btn btn-default btn-large" ng-show="mainCtrl.currentStep === -1" ng-click="mainCtrl.startTour()" style="font-family: Lobster;">HopsWorks Tour</button>
+                            <button type="button" class="btn btn-danger btn-large" ng-show="mainCtrl.currentStep >= 0" ng-click="mainCtrl.stopTour()" style="font-family: Lobster;">Cancel Tour</button>
                         </div>
                         <div
                             ng-repeat="historyObject in homeCtrl.histories| startFrom:(homeCtrl.currentPage - 1) * homeCtrl.pageSize | limitTo:homeCtrl.pageSize">

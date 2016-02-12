@@ -90,7 +90,7 @@
                      style="width: 83px;">
                     <button type="button"
                             class="btn btn-default dropdown-toggle"
-                            data-toggle="dropdown">
+                            data-toggle="dropdown" id="filterByButton">
                         <span id="search_concept">Filter by</span>
                         <span class="caret"></span>
                     </button>
@@ -174,7 +174,7 @@
         <virtual-step 
             class="ng-scope" 
             tourtip="Search for Projects and Datasets" 
-            tourtup-step="0" 
+            tourtip-step="0" 
             tourtip-element="#srch-term" 
             tourtip-placement="bottom" 
             tourtip-container-element=".navbar-form"
@@ -196,7 +196,7 @@
         <virtual-step 
             class="ng-scope" 
             tourtip="Account Settings and logout" 
-            tourtup-step="2" 
+            tourtip-step="2" 
             tourtip-element="#dropdownAccountSettingsLogout" 
             tourtip-placement="bottom" 
             tourtip-container-element=".navbar-form"
@@ -207,7 +207,7 @@
         <virtual-step 
             class="ng-scope" 
             tourtip="Create a new Project!" 
-            tourtup-step="3" 
+            tourtip-step="3" 
             tourtip-element="#buttonCreateProject" 
             tourtip-placement="right" 
             tourtip-container-element=".container"
@@ -215,7 +215,17 @@
             tourtip-offset-horizontal="-20"
             onProceed="mainCtrl.IncrementCurrentStep()"
             ></virtual-step>
-
+        <virtual-step
+            class="ng-scope"
+            tourtip="Filter your projects"
+            tourtip-step="4"
+            tourtip-element="#filterByButton"
+            tourtip-placement="left"
+            tourtip-container-element=".container"
+            tourtip-offset-vertical="+25"
+            tourtip-offset-horizontal="+20"
+            onProceed="mainCtrl.IncrementCurrentStep()"
+            ></virtual-step>    
     </tour>
 </div>
 

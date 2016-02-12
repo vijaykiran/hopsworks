@@ -11,25 +11,29 @@
                 <div class="widget-body">
                     <div class="timeline clearfix">
                         <div class="mid-line"></div>
-                            <div class="row-centered" id="gettingStaredSection">
-                                <div class="col-sm-6" id="tourColumn">
-                                        <div id="startTourText" style="width: 50%; margin: 0 auto;">
-                                            <p style="text-align: center;">
-                                                Take a tour through the HopsWorks website, learn how to navigate and use the different services.
-                                            </p>
-                                        </div>
-                                        <button type="button" class="btn btn-default btn-large" ng-show="mainCtrl.currentStep === - 1" ng-click="mainCtrl.startTour()" style="font-family: Lobster;">HopsWorks Tour</button>
-                                        <button type="button" class="btn btn-danger btn-large" ng-show="mainCtrl.currentStep >= 0" ng-click="mainCtrl.stopTour()" style="font-family: Lobster;">Cancel Tour</button>
-                                    </div>
-                                <div class="col-sm-6" id="ExampleProjectColumn">
-                                        <div id="createExampleProjectText" style="width: 50%; margin: 0 auto;">
-                                            <p style="text-align: center;">
-                                                Create a example project and use it to get going, run a job and import a dataset.
-                                            </p>
-                                        </div>
-                                        <button type="button" class="btn btn-default btn-large" ng-click="mainCtrl.createExampleProject()" style="font-family: Lobster;">Create an Example Project</button>
-                                    </div>
+                        <div class="row-centered" id="gettingStaredSection">
+                            <div class="col-sm-6" id="tourColumn">
+                                <div id="startTourText" class="row-centered">
+                                    <p style="text-align: center;">
+                                        Take a tour through the HopsWorks website, learn how to navigate and use the different services.
+                                    </p>
+                                </div>
+                                <div class="row-centered">
+                                    <button type="button" class="btn btn-default btn-large" ng-show="mainCtrl.currentStep === - 1" ng-click="mainCtrl.startTour()">HopsWorks Tour</button>
+                                    <button type="button" class="btn btn-danger btn-large" ng-show="mainCtrl.currentStep >= 0" ng-click="mainCtrl.stopTour()">Cancel Tour</button>
+                                </div>
                             </div>
+                            <div class="col-sm-6" id="ExampleProjectColumn">
+                                <div id="createExampleProjectText" class="row-centered">
+                                    <p style="text-align: center;">
+                                        Create a example project and use it to get going, run a job and import a dataset.
+                                    </p>
+                                </div>
+                                <div class="row-centered">
+                                    <button type="button" class="btn btn-default btn-large" ng-click="projectCtrl.createExampleProject()">Create an Example Project</button>
+                                </div>
+                            </div>
+                        </div>
                         <div
                             ng-repeat="historyObject in homeCtrl.histories| startFrom:(homeCtrl.currentPage - 1) * homeCtrl.pageSize | limitTo:homeCtrl.pageSize">
 
@@ -179,35 +183,24 @@
             tourtip-placement="bottom" 
             tourtip-container-element=".navbar-form"
             onProceed="mainCtrl.IncrementCurrentStep()"
-            tourtip-offset-vertical="-15"
+            tourtip-offset-vertical="-10"
             tourtip-offset-horizontal="+15"
             ></virtual-step>
-        <virtual-step 
+        <virtual-step
             class="ng-scope" 
-            tourtip="Read your messages" 
-            tourtup-step="1" 
-            tourtip-element="#readMessagesToggle" 
-            tourtip-placement="bottom" 
-            tourtip-container-element=".navbar-form"
-            tourtip-offset-horizontal="-15"
-            tourtip-offset-vertical="9"
-            onProceed="mainCtrl.IncrementCurrentStep()"
-            ></virtual-step>
-        <virtual-step 
-            class="ng-scope" 
-            tourtip="Account Settings and logout" 
-            tourtip-step="2" 
+            tourtip="Account, Messages and Logout" 
+            tourtip-step="1" 
             tourtip-element="#dropdownAccountSettingsLogout" 
             tourtip-placement="bottom" 
             tourtip-container-element=".navbar-form"
-            tourtip-offset-vertical="-15"
-            tourtip-offset-horizontal="+20"
+            tourtip-offset-vertical="-10"
+            tourtip-offset-horizontal="-5"
             onProceed="mainCtrl.IncrementCurrentStep()"
             ></virtual-step> 
         <virtual-step 
             class="ng-scope" 
             tourtip="Create a new Project!" 
-            tourtip-step="3" 
+            tourtip-step="2" 
             tourtip-element="#buttonCreateProject" 
             tourtip-placement="right" 
             tourtip-container-element=".container"
@@ -218,7 +211,7 @@
         <virtual-step
             class="ng-scope"
             tourtip="Filter your projects"
-            tourtip-step="4"
+            tourtip-step="3"
             tourtip-element="#filterByButton"
             tourtip-placement="left"
             tourtip-container-element=".container"

@@ -58,7 +58,10 @@ angular.module('hopsWorksApp')
               self.projectMembers.splice(self.projectMembers.indexOf(member), 1);
             };
 
-
+            self.createExampleProject = function () {
+                
+               }
+                   
             self.createProject = function () {
               self.working = true;
               $scope.newProject = {

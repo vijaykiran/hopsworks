@@ -138,7 +138,6 @@ angular.module('hopsWorksApp')
                 self.currentPage = 1;
                 self.pageSize = 5;
                 
-                
                 self.startTour = function(){
                     self.currentStep = 0;
                 }

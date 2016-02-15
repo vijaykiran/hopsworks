@@ -201,8 +201,7 @@ public class ProjectService {
     // Update the description if it have been chenged
     if (project.getDescription() == null || !project.getDescription().equals(
             projectDTO.getDescription())) {
-      projectController.updateProject(project, projectDTO,
-              userEmail);
+      projectController.updateProject(project, projectDTO, userEmail);
       
       json.setSuccessMessage(ResponseMessages.PROJECT_DESCRIPTION_CHANGED);
       updated = true;
@@ -420,8 +419,7 @@ public class ProjectService {
               ResponseMessages.PROJECT_NAME_EXIST);
     }
     //add members of the project   
-    failedMembers = projectController.addMembers(project, owner, projectDTO.
-            getProjectTeam());
+    failedMembers = projectController.addMembers(project, owner, projectDTO.getProjectTeam());
     //add the services for the project
     projectController.addServices(project, projectServices, owner);
 

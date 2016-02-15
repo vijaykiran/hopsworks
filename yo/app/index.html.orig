@@ -131,7 +131,11 @@
     <script src="scripts/controllers/detachTemplateCtrl.js"></script>
     <script src="scripts/controllers/charonCtrl.js"></script>
     <script src="scripts/controllers/localFsCtrl.js"></script>
+<<<<<<< HEAD
+    <script src="scripts/controllers/ExampleProject.js"></script>
+=======
     <script src="scripts/controllers/inputModalCtrl.js"></script>
+>>>>>>> f01385d8e663cc718864bf0ec9f5e854a0a1e1a4
 
     <!-- Services -->
     <script src="scripts/services/AuthInterceptorService.js"></script>

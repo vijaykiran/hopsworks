@@ -7,8 +7,8 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('ExampleProjectCtrl', ['$scope', 'ProjectService', 'growl',
-            function ($scope, ProjectService, growl) {
+        .controller('ExampleProjectCtrl', ['ProjectService', 'growl',
+            function (ProjectService, growl) {
 
                 var self = this;
 

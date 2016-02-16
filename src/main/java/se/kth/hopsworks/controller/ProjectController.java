@@ -391,7 +391,7 @@ public class ProjectController {
     String projectPath = File.separator + rootDir + File.separator + project;
 
     //Create first the projectPath
-    projectDirCreated = fileOps.mkDir(projectPath);
+    projectDirCreated = fileOps.mkDir(projectPath); //fails here
 
     //Set default space quota in GB_IN_BYTES
     ProjectController.this.setHdfsSpaceQuota(new Path(projectPath), Long.parseLong(settings

@@ -286,10 +286,9 @@ public class ProjectService {
         JsonResponse json = new JsonResponse();
     ProjectDTO projectDTO = new ProjectDTO();
     projectDTO.setCreated(new Date());
-    projectDTO.setProjectName("test");
     String owner = sc.getUserPrincipal().getName();
-    projectDTO.setProjectName(owner);
-        
+    projectDTO.setProjectName("test");  
+    
         Project project;
     try {
       //save the project

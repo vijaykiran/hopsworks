@@ -283,13 +283,17 @@ public class ProjectService {
   public Response starterProject(
           @Context SecurityContext sc,
           @Context HttpServletRequest req) throws AppException {
-        JsonResponse json = new JsonResponse();
     ProjectDTO projectDTO = new ProjectDTO();
-    projectDTO.setCreated(new Date());
+    JsonResponse json = new JsonResponse();
+    Project project = null;
+   projectDTO.setProjectName("test");
+
     String owner = sc.getUserPrincipal().getName();
-    projectDTO.setProjectName("test");  
+    List<ProjectServiceEnum> projectServices = new ArrayList<>();
+
+    projectServices.add(ProjectServiceEnum.JOBS);
     
-        Project project;
+    
     try {
       //save the project
       project = projectController.createProject(projectDTO, owner);
@@ -310,8 +314,13 @@ public class ProjectService {
       try {
         hdfsUsersBean.addProjectFolderOwner(project);
         projectController.createProjectLogResources(owner, project);
-        
-        
+        projectController.addExampleJarToExampleProject(owner, project);
+        // if (projectServices.contains(ProjectServiceEnum.BIOBANKING)) {
+        //   projectController.createProjectConsentFolder(owner, project);
+        // }
+        // if (projectServices.contains(ProjectServiceEnum.CHARON)) {
+        //   projectController.createProjectCharonFolder(project);
+        // }
       } catch (ProjectInternalFoldersFailedException ee) {
         try {
           projectController.removeByID(project.getId(), owner, true);
@@ -334,11 +343,14 @@ public class ProjectService {
     } else {
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
               ResponseMessages.PROJECT_NAME_EXIST);
-    }    
-    
-    
-    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.CREATED).
-            entity(json).build();    
+    }
+    //add the services for the project
+    projectController.addServices(project, projectServices, owner);
+
+    json.setStatus("201");// Created 
+    json.setSuccessMessage(ResponseMessages.PROJECT_CREATED);
+
+    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.CREATED).entity(json).build(); 
   }  
   
   @POST

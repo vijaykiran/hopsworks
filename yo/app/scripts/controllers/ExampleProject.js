@@ -16,6 +16,7 @@ angular.module('hopsWorksApp')
                     ProjectService.example().$promise.then(
                             function (success) {
                                 growl.success(success.successMessage, {title: 'Success', ttl: 2000});
+                                
                                 if (success.errorMsg) {
                                     growl.warning(success.errorMsg, {title: 'Error', ttl: 10000});
                                 }

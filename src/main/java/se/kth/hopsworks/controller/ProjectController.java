@@ -14,6 +14,8 @@ import javax.ejb.*;
 import javax.ws.rs.core.Response;
 
 import io.hops.bbc.ProjectPaymentAction;
+import io.hops.hdfs.HdfsLeDescriptors;
+import io.hops.hdfs.HdfsLeDescriptorsFacade;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -89,6 +91,8 @@ public class ProjectController {
   private DistributedFsService dfs;
   @EJB
   private Settings settings;
+  @EJB
+  private HdfsLeDescriptorsFacade hdfsLeDescriptorFacade;
 
   /**
    * Creates a new project(project), the related DIR, the different services in the project, and the master of the
@@ -821,4 +825,24 @@ public class ProjectController {
         projectname)), diskspaceQuotaInBytes);
   }
 
+    public void addExampleJarToExampleProject(String username, Project project) {
+      
+      Users user = userBean.getUserByEmail(username);
+      try {  
+          datasetController.createDataset(user, project, "TestJob", "jar file to calculate pi", -1, false, true);
+      } catch (IOException ex) {
+          Logger.getLogger(ProjectController.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      try {
+          
+          HdfsLeDescriptors hdfsLeDescriptors = hdfsLeDescriptorFacade.findEndpoint();
+          File file = new File(settings.getSparkDir() + "/lib/" + "spark-examples-1.5.2-hadoop2.4.0.jar");
+          fileOps.copyToHDFSFromLocal(false,file.getAbsolutePath(), "hdfs://"+hdfsLeDescriptors.getHostname()+"/Projects/test/TestJob/");
+          
+      } catch (IOException ex) {
+          Logger.getLogger(ProjectController.class.getName()).log(Level.SEVERE, null, ex);
+      }
+        
+    }
+    
 }

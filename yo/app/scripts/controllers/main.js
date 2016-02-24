@@ -4,66 +4,72 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams',
-            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
+        .controller('MainCtrl', ['$interval','$cookies', '$location','$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService','ProjectService','growl','MessageService','$routeParams',
+          function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
 
-                var self = this;
-                self.email = $cookies['email'];
-                self.emailHash = md5.createHash(self.email || '');
-                var elasticService = ElasticService();
+            var self = this;
+            self.email = $cookies['email'];
+            self.emailHash = md5.createHash(self.email || '');
+            var elasticService = ElasticService();
 
-                if (!angular.isUndefined($routeParams.datasetName)) {
-                    self.searchType = "datasetCentric";
-                } else if (!angular.isUndefined($routeParams.projectID)) {
-                    self.searchType = "projectCentric";
-                } else {
-                    self.searchType = "global";
-                }
+            if(!angular.isUndefined($routeParams.datasetName)){
+              self.searchType = "datasetCentric";
+            }
+            else if(!angular.isUndefined($routeParams.projectID)){
+              self.searchType = "projectCentric";
+            }
+            else {
+              self.searchType = "global";
+            }
 
-                self.logout = function () {
-                    AuthService.logout(self.user).then(
-                            function (success) {
-                                $location.url('/login');
-                                delete $cookies.email;
-                                localStorage.removeItem("SESSIONID");
-                                sessionStorage.removeItem("SESSIONID");
-                            }, function (error) {
-                        self.errorMessage = error.data.msg;
-                    });
-                };
-                
-                self.profileModal = function () {
-                    ModalService.profile('md');
-                };
+            self.getEmailHash = function(email) {
+              return md5.createHash(email || '');
+            };
+            
+            self.logout = function () {
+              AuthService.logout(self.user).then(
+                      function (success) {
+                        $location.url('/login');
+                        delete $cookies.email;
+                        localStorage.removeItem("SESSIONID");
+                        sessionStorage.removeItem("SESSIONID");
+                      }, function (error) {
+                self.errorMessage = error.data.msg;
+              });
+            };
 
-                self.sshKeysModal = function () {
-                    ModalService.sshKeys('lg');
-                };
+            self.profileModal = function () {
+              ModalService.profile('md');
+            };
 
-                self.getHostname = function () {
-                    return $location.host();
-                };
+            self.sshKeysModal = function () {
+              ModalService.sshKeys('lg');
+            };
 
-                self.getUser = function () {
-                    return self.email.substring(0, self.email.indexOf("@"));
-                };
+            self.getHostname = function () {
+              return $location.host();
+            };
 
-                self.view = function (name, id, dataType) {
+            self.getUser = function () {
+              return self.email.substring(0, self.email.indexOf("@"));
+            };
 
-                    if (dataType === 'project') {
-                        ProjectService.getProjectInfo({projectName: name}).$promise.then(
-                                function (success) {
+            self.view = function (name, id, dataType) {
 
-                                    ModalService.viewSearchResult('md', success, dataType)
-                                            .then(function (success) {
-                                                growl.success(success.data.successMessage, {title: 'Success', ttl: 1000});
-                                            }, function (error) {
+              if (dataType === 'project') {
+                ProjectService.getProjectInfo({projectName: name}).$promise.then(
+                        function (success) {
 
-                                            });
-                                }, function (error) {
-                            growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
-                        });
-                    } else if (dataType === 'dataset') {
+                          ModalService.viewSearchResult('md', success, dataType)
+                                  .then(function (success) {
+                                    growl.success(success.data.successMessage, {title: 'Success', ttl: 1000});
+                                  }, function (error) {
+
+                                  });
+                        }, function (error) {
+                  growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
+                });
+              }else if (dataType === 'dataset') {
                         //fetch the dataset
                         ProjectService.getDatasetInfo({inodeId: id}).$promise.then(
                                 function (response) {
@@ -84,19 +90,19 @@ angular.module('hopsWorksApp')
                                             }, function (error) {
                                         console.log('Error: ' + error);
                                     });
-
-                                }, function (error) {
-                            growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
-                        });
-                    }
-                };
-
-                var getUnreadCount = function () {
-                    MessageService.getUnreadCount().then(
-                            function (success) {
-                                self.unreadMessages = success.data.data.value;
-                            }, function (error) {
-
+                        }, function (error) {
+                  growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
+                });
+              }
+            };
+            
+            var getUnreadCount = function () {
+                MessageService.getUnreadCount().then(
+                    function (success) {
+                      if (success.data !== undefined && success.data.data !== undefined && success.data.data.value != undefined) {
+                        self.unreadMessages = success.data.data.value;
+                      }
+                    }, function (error) {
                     });
                 };
                 var getMessages = function () {//

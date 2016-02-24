@@ -6,7 +6,7 @@ angular.module('hopsWorksApp')
 
             var self = this;
             self.projects = [];
-
+            
             // Load all projects
             var loadProjects = function () {
               ProjectService.query().$promise.then(
@@ -149,6 +149,23 @@ angular.module('hopsWorksApp')
                 growl.info("Closed project without saving.", {title: 'Info', ttl: 5000});
               });
             };
+            self.createExampleProject = function () {
+                ProjectService.example().$promise.then(
+                    function (success) {
+                        growl.success(success.successMessage, {title: 'Success', ttl: 2000});
+                        loadProjects();
+                        if (success.errorMsg) {
+                            growl.warning(success.errorMsg, {title: 'Error', ttl: 10000});
+                        }
+                                
+                    },
+                    function (error) {
+
+                    }
+
+                );
+            };
+            
             self.deleteProject = function (projectId) {
               deleteProject(projectId, false);
               loadProjects();

@@ -287,10 +287,11 @@ public class ProjectService {
     JsonResponse json = new JsonResponse();
     Project project = null;
    projectDTO.setProjectName("test");
+   projectDTO.setDescription("An Example project.");
 
     String owner = sc.getUserPrincipal().getName();
     List<ProjectServiceEnum> projectServices = new ArrayList<>();
-
+    List<ProjectTeam> projectMembers = new ArrayList<>();
     projectServices.add(ProjectServiceEnum.JOBS);
     
     
@@ -344,6 +345,8 @@ public class ProjectService {
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
               ResponseMessages.PROJECT_NAME_EXIST);
     }
+    
+    projectController.addMembers(project, owner, projectMembers);
     //add the services for the project
     projectController.addServices(project, projectServices, owner);
 

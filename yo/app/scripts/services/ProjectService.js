@@ -11,16 +11,16 @@ angular.module('hopsWorksApp')
                 headers: {'Content-Type': 'application/json; charset=UTF-8'}
               },
               "example": {
-                 url: '/api/project/starterProject',
                 'method': 'POST',
-                headers: {'Content-Type': 'application/json; charset=UTF-8'}
+                 url: '/api/project/starterProject'
               },
               "delete": {
-                method: 'DELETE'
+                url: '/api/project/:id/delete',  
+                method: 'POST'
               },
               "remove": {
                 url: '/api/project/:id/remove',
-                method: 'DELETE'
+                method: 'POST'
               },
               "update": {
                 method: "PUT",

@@ -449,8 +449,8 @@ public class ProjectService {
             entity(json).build();
   }
 
-  @DELETE
-  @Path("{id}")
+  @POST
+  @Path("{id}/delete")
   @Produces(MediaType.APPLICATION_JSON)
   @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
   public Response removeProjectAndFiles(
@@ -487,7 +487,7 @@ public class ProjectService {
 
   }
 
-  @DELETE
+  @POST
   @Path("{id}/remove")
   @Produces(MediaType.APPLICATION_JSON)
   @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})

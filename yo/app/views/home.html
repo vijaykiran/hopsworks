@@ -29,8 +29,8 @@
                                         Create a example project and use it to get going, run a job and import a dataset.
                                     </p>
                                 </div>
-                                <div class="row-centered" ng-controller="HomeCtrl as homeCtrl">
-                                    <button type="button" class="btn btn-default btn-large" ng-click="homeCtrl.createExampleProject()">Create an Example Project</button>
+                                <div class="row-centered">
+                                <button type="button" class="btn btn-default btn-large" ng-click="homeCtrl.createExampleProject()">Create an Example Project</button>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
                             <a class="pointer"
                                role="menuitem"
                                tabindex="2"
-                               ng-click="homeCtrl.deleteProject(project.project.id)">
+                               ng-click="homeCtrl.deleteOnlyProject(project.project.id)">
                                 <span><i class="fa fa-trash"></i>
                                     Remove and keep DataSets</span>
                             </a>
@@ -162,7 +162,7 @@
                             <a class="pointer"
                                role="menuitem"
                                tabindex="3"
-                               ng-click="homeCtrl.wipeProject(project.project.id)">
+                               ng-click="homeCtrl.deleteProjectAndDatasets(project.project.id)">
                                 <span><i class="fa fa-trash"></i>
                                     Remove and delete DataSets </span>
                             </a>

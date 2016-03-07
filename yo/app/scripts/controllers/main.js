@@ -4,77 +4,70 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('MainCtrl', ['$interval','$cookies', '$location','$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService','ProjectService','growl','MessageService','$routeParams',
-          function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
+        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams',
+            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
 
-            var self = this;
-            self.email = $cookies['email'];
-            self.emailHash = md5.createHash(self.email || '');
-            var elasticService = ElasticService();
+                var self = this;
+                self.email = $cookies['email'];
+                self.emailHash = md5.createHash(self.email || '');
+                var elasticService = ElasticService();
 
-            if(!angular.isUndefined($routeParams.datasetName)){
-              self.searchType = "datasetCentric";
-            }
-            else if(!angular.isUndefined($routeParams.projectID)){
-              self.searchType = "projectCentric";
-            }
-            else {
-              self.searchType = "global";
-            }
+                if (!angular.isUndefined($routeParams.datasetName)) {
+                    self.searchType = "datasetCentric";
+                } else if (!angular.isUndefined($routeParams.projectID)) {
+                    self.searchType = "projectCentric";
+                } else {
+                    self.searchType = "global";
+                }
 
-            self.getEmailHash = function(email) {
-              return md5.createHash(email || '');
-            };
-            
-            self.logout = function () {
-              AuthService.logout(self.user).then(
-                      function (success) {
-                        $location.url('/login');
-                        delete $cookies.email;
-                        localStorage.removeItem("SESSIONID");
-                        sessionStorage.removeItem("SESSIONID");
-                      }, function (error) {
-                self.errorMessage = error.data.msg;
-              });
-            };
+                self.logout = function () {
+                    AuthService.logout(self.user).then(
+                            function (success) {
+                                $location.url('/login');
+                                delete $cookies.email;
+                                localStorage.removeItem("SESSIONID");
+                                sessionStorage.removeItem("SESSIONID");
+                            }, function (error) {
+                        self.errorMessage = error.data.msg;
+                    });
+                };
 
-            self.profileModal = function () {
-              ModalService.profile('md');
-            };
+                self.profileModal = function () {
+                    ModalService.profile('md');
+                };
 
-            self.sshKeysModal = function () {
-              ModalService.sshKeys('lg');
-            };
+                self.sshKeysModal = function () {
+                    ModalService.sshKeys('lg');
+                };
 
-            self.getHostname = function () {
-              return $location.host();
-            };
+                self.getHostname = function () {
+                    return $location.host();
+                };
 
-            self.getUser = function () {
-              return self.email.substring(0, self.email.indexOf("@"));
-            };
+                self.getUser = function () {
+                    return self.email.substring(0, self.email.indexOf("@"));
+                };
 
-            self.view = function (name, id, dataType) {
+                self.view = function (name, id, dataType) {
 
-              if (dataType === 'project') {
-                ProjectService.getProjectInfo({projectName: name}).$promise.then(
-                        function (success) {
+                    if (dataType === 'project') {
+                        ProjectService.getProjectInfo({projectName: name}).$promise.then(
+                                function (success) {
 
-                          ModalService.viewSearchResult('md', success, dataType)
-                                  .then(function (success) {
-                                    growl.success(success.data.successMessage, {title: 'Success', ttl: 1000});
-                                  }, function (error) {
+                                    ModalService.viewSearchResult('md', success, dataType)
+                                            .then(function (success) {
+                                                growl.success(success.data.successMessage, {title: 'Success', ttl: 1000});
+                                            }, function (error) {
 
-                                  });
-                        }, function (error) {
-                  growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
-                });
-              }else if (dataType === 'dataset') {
+                                            });
+                                }, function (error) {
+                            growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
+                        });
+                    } else if (dataType === 'dataset') {
                         //fetch the dataset
                         ProjectService.getDatasetInfo({inodeId: id}).$promise.then(
                                 function (response) {
                                     var projects;
-
                                     //fetch the projects to pass them in the modal. Fixes empty projects array on ui-select initialization
                                     ProjectService.query().$promise.then(
                                             function (success) {
@@ -90,19 +83,18 @@ angular.module('hopsWorksApp')
                                             }, function (error) {
                                         console.log('Error: ' + error);
                                     });
-                        }, function (error) {
-                  growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
-                });
-              }
-            };
-            
-            var getUnreadCount = function () {
-                MessageService.getUnreadCount().then(
-                    function (success) {
-                      if (success.data !== undefined && success.data.data !== undefined && success.data.data.value != undefined) {
-                        self.unreadMessages = success.data.data.value;
-                      }
-                    }, function (error) {
+
+                                }, function (error) {
+                            growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
+                        });
+                    }
+                };
+
+                var getUnreadCount = function () {
+                    MessageService.getUnreadCount().then(
+                            function (success) {
+                                self.unreadMessages = success.data.data.value;
+                            }, function (error) {
                     });
                 };
                 var getMessages = function () {//
@@ -135,7 +127,6 @@ angular.module('hopsWorksApp')
                 };
 
                 self.searchTerm = "";
-                self.currentStep = - 1;
                 self.globalClusterBoundary = false;
                 self.searchReturned = "";
                 self.searchResult = [];
@@ -153,7 +144,6 @@ angular.module('hopsWorksApp')
                 self.IncrementCurrentStep = function(){
                     self.currentStep = self.currentStep + 1;
                 };
-                
                 self.hitEnter = function (evt) {
                     if (angular.equals(evt.keyCode, 13)) {
                         self.search();
@@ -187,17 +177,17 @@ angular.module('hopsWorksApp')
                                     //console.log("RECEIVED RESPONSE " + JSON.stringify(response));
                                     if (searchHits.length > 0) {
                                         if (self.globalClusterBoundary) {
-                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b> in global clusters";
+                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
                                         } else {
-                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b> in local cluster";
+                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
                                         }
                                         self.searchResult = searchHits;
                                     } else {
                                         self.searchResult = [];
                                         if (self.globalClusterBoundary) {
-                                            self.searchReturned = "No result found for <b>" + self.searchTerm + "</b> in global cluster";
+                                            self.searchReturned = "No result found for <b>" + self.searchTerm + "</b>";
                                         } else {
-                                            self.searchReturned = "No result found for <b>" + self.searchTerm + "</b> in local cluster";
+                                            self.searchReturned = "No result found for <b>" + self.searchTerm + "</b>";
                                         }
                                     }
                                     self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);

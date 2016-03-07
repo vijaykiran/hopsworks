@@ -128,6 +128,7 @@ angular.module('hopsWorksApp')
 
                 self.searchTerm = "";
                 self.globalClusterBoundary = false;
+                self.currentStep = -1;
                 self.searchReturned = "";
                 self.searchResult = [];
                 self.resultPages = 0;

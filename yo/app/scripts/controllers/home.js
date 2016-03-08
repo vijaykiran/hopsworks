@@ -1,14 +1,15 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q',
-            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q) {
+        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService',
+            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q,TourService) {
 
                 var self = this;
 
                 self.histories = [];
                 self.projects = [];
                 self.currentPage = 1;
+                self.creating = false;
                 // Load all projects
 
                 var loadProjects = function (success) {
@@ -143,16 +144,23 @@ angular.module('hopsWorksApp')
                     });
                 };
                 self.createExampleProject = function () {
+                    self.creating = true;
                     ProjectService.example().$promise.then(
                             function (success) {
+                                self.creating = false;
                                 growl.success(success.successMessage, {title: 'Success', ttl: 2000});
                                 updateUIAfterChange();
+                                TourService.setCurrentStep(4);
                                 if (success.errorMsg) {
+                                    TourService.setCurrentStep(-1);
+                                    self.creating = false;
                                     growl.warning(success.errorMsg, {title: 'Error', ttl: 10000});
                                 }
 
                             },
                             function (error) {
+                                TourService.setCurrentStep(-1);
+                                self.creating = false;
                                 growl.info("problem", {title: 'Info', ttl: 5000});
                             }
 

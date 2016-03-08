@@ -19,8 +19,8 @@
                                     </p>
                                 </div>
                                 <div class="row-centered">
-                                    <button type="button" class="btn btn-default btn-large" ng-show="mainCtrl.currentStep === - 1" ng-click="mainCtrl.startTour()">HopsWorks Tour</button>
-                                    <button type="button" class="btn btn-danger btn-large" ng-show="mainCtrl.currentStep >= 0" ng-click="mainCtrl.stopTour()">Cancel Tour</button>
+                                    <button type="button" class="btn btn-default btn-large btn-block" ng-if="mainCtrl.tourService.getCurrentStep() < 0" ng-click="mainCtrl.tourService.startTour()">HopsWorks Tour</button>
+                                    <button type="button" class="btn btn-danger btn-large btn-block" ng-if="mainCtrl.tourService.getCurrentStep() >= 0" ng-click="mainCtrl.tourService.stopTour()">Cancel Tour</button>
                                 </div>
                             </div>
                             <div class="col-sm-6" id="ExampleProjectColumn">
@@ -30,7 +30,10 @@
                                     </p>
                                 </div>
                                 <div class="row-centered">
-                                <button type="button" class="btn btn-default btn-large" ng-click="homeCtrl.createExampleProject()">Create an Example Project</button>
+                                    <button type="button" class="btn btn-default btn-large btn-block" ng-click="homeCtrl.createExampleProject()">
+                                        <span ng-if="homeCtrl.creating === false">Create Example Project</span>
+                                        <span ng-if="homeCtrl.creating === true"><i style="margin-top: 2px" class="fa fa-spinner fa-spin"></i></span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -123,7 +126,8 @@
                     href="#/project/{{project.project.id}}"
                     class="list-group-item"
                     context-menu
-                    data-target="menu-{{$index}}">
+                    data-target="menu-{{$index}}"
+                    id="{{project.project.name}}">
                     <div ng-if="project.teamRole == 'Data scientist'">
                         <i style="width: 20px; margin-right: 10px; font-size: 20px;" class="fa fa-lock fa-2 pull-left"></i>
                     </div>
@@ -174,7 +178,7 @@
             <pager total-items="homeCtrl.totalItemsProjects" ng-model="homeCtrl.currentPageProjects"></pager>
         </div>
     </div>
-    <tour class="ng-scope" step="mainCtrl.currentStep" post-tour="mainCtrl.stopTour()">
+    <tour class="ng-scope" step="mainCtrl.tourService.getCurrentStep()" post-tour="mainCtrl.tourService.stopTour()">
         <virtual-step 
             class="ng-scope" 
             tourtip="Search for Projects and Datasets" 
@@ -182,7 +186,7 @@
             tourtip-element="#srch-term" 
             tourtip-placement="bottom" 
             tourtip-container-element=".navbar-form"
-            onProceed="mainCtrl.IncrementCurrentStep()"
+            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
             tourtip-offset-vertical="-10"
             tourtip-offset-horizontal="+15"
             ></virtual-step>
@@ -195,7 +199,7 @@
             tourtip-container-element=".navbar-form"
             tourtip-offset-vertical="-10"
             tourtip-offset-horizontal="-5"
-            onProceed="mainCtrl.IncrementCurrentStep()"
+            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
             ></virtual-step> 
         <virtual-step 
             class="ng-scope" 
@@ -206,7 +210,7 @@
             tourtip-container-element=".container"
             tourtip-offset-vertical="+30"
             tourtip-offset-horizontal="-20"
-            onProceed="mainCtrl.IncrementCurrentStep()"
+            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
             ></virtual-step>
         <virtual-step
             class="ng-scope"
@@ -217,8 +221,17 @@
             tourtip-container-element=".container"
             tourtip-offset-vertical="+25"
             tourtip-offset-horizontal="+20"
-            onProceed="mainCtrl.IncrementCurrentStep()"
-            ></virtual-step>    
+            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
+            ></virtual-step> 
+            <virtual-step
+            class="ng-scope"
+            tourtip="Enter the project either by clicking next or on the project"
+            tourtip-step="4"
+            tourtip-element="#ExampleProject"
+            tourtip-placement="left"
+            tourtip-container-element=".container"
+            onProceed="mainCtrl.tourService.enterExampleProject()"
+            ></virtual-step>
     </tour>
 </div>
 

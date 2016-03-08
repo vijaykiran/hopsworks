@@ -287,10 +287,10 @@ public class ProjectService {
     ProjectDTO projectDTO = new ProjectDTO();
     JsonResponse json = new JsonResponse();
     Project project = null;
-   projectDTO.setProjectName("test");
    projectDTO.setDescription("An Example project.");
 
     String owner = sc.getUserPrincipal().getName();
+    projectDTO.setProjectName("ExampleProject");
     List<ProjectServiceEnum> projectServices = new ArrayList<>();
     List<ProjectTeam> projectMembers = new ArrayList<>();
     projectServices.add(ProjectServiceEnum.JOBS);

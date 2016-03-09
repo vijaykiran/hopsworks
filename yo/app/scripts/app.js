@@ -129,7 +129,7 @@ angular.module('hopsWorksApp', [
             .when('/yubikey', {
               templateUrl: 'views/yubikey.html',
             })
-            .when('/project/:projectID', {
+            .when('/project/:projectID/:exampleproject', {
               templateUrl: 'views/project.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {

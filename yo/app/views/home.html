@@ -108,7 +108,7 @@
             <div ng-repeat="project in homeCtrl.projects| filter: searchProject:false | startFrom:(homeCtrl.currentPageProjects - 1) * homeCtrl.pageSizeProjects | limitTo:homeCtrl.pageSizeProjects">
                 <a
                     ng-class="{disabled: project.project.archived}"
-                    href="#/project/{{project.project.id}}"
+                    href="#/project/{{project.project.id}}/{{homeCtrl.tourService.isExampleProject(project.project.id)}}"
                     class="list-group-item"
                     context-menu
                     data-target="menu-{{$index}}"

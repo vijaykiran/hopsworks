@@ -6,34 +6,37 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .factory('TourService', [
+        .factory('TourService', ['$timeout','$location',
     
-                function () {
+                function ($timeout,$location) {
                     
                     var tourService = this;
                     
                 tourService.currentStep = -1;
+                tourService.alive = 15;
+                tourService.exampleProject = null;
                 
-                tourService.setCurrentStep = function(val){
-                    this.currentStep = val;
-                };
-                tourService.getCurrentStep = function(){
-                    return this.currentStep;
-                };
-                tourService.startTour = function () {
-                    this.currentStep = 0;
-                };
-                tourService.stopTour = function () {
+                tourService.StopTour = function () {
                     this.currentStep = -1;
-                };
-                tourService.IncrementCurrentStep = function () {
-                    if (this.currentStep === 3) {
-                        this.currentStep = -1;
-                    }
-                    this.currentStep = this.currentStep + 1;
+                    this.alive = 15;
                 };
                 
-                tourService.enterExampleProject = function(){
+                tourService.EnterExampleProject = function(){
+                    $location.path('/project/' + this.exampleProject.id);
+                };
+                
+                tourService.KillTourSoon = function(){
+                    $timeout(function(){
+                        tourService.alive--;
+                    },1000).then(function(){
+                        if(tourService.alive === 0){
+                            tourService.StopTour();
+                        }
+                        else
+                        {
+                            tourService.KillTourSoon();
+                        }
+                    });
                 };
                 return tourService;
     }

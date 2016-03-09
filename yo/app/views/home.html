@@ -12,29 +12,14 @@
                     <div class="timeline clearfix">
                         <div class="mid-line"></div>
                         <div class="row-centered" id="gettingStaredSection">
-                            <div class="col-sm-6" id="tourColumn">
-                                <div id="startTourText" class="row-centered">
-                                    <p style="text-align: center;">
-                                        Take a tour through the HopsWorks website, learn how to navigate and use the different services.
-                                    </p>
-                                </div>
-                                <div class="row-centered">
-                                    <button type="button" class="btn btn-default btn-large btn-block" ng-if="mainCtrl.tourService.getCurrentStep() < 0" ng-click="mainCtrl.tourService.startTour()">HopsWorks Tour</button>
-                                    <button type="button" class="btn btn-danger btn-large btn-block" ng-if="mainCtrl.tourService.getCurrentStep() >= 0" ng-click="mainCtrl.tourService.stopTour()">Cancel Tour</button>
-                                </div>
+                            <div class="col-sm-6"><p style="text-align: center;">
+                                    Create a example project and use it to see how you can run jobs and import datasets.
+                                </p>
                             </div>
-                            <div class="col-sm-6" id="ExampleProjectColumn">
-                                <div id="createExampleProjectText" class="row-centered">
-                                    <p style="text-align: center;">
-                                        Create a example project and use it to get going, run a job and import a dataset.
-                                    </p>
-                                </div>
-                                <div class="row-centered">
-                                    <button type="button" class="btn btn-default btn-large btn-block" ng-click="homeCtrl.createExampleProject()">
-                                        <span ng-if="homeCtrl.creating === false">Create Example Project</span>
-                                        <span ng-if="homeCtrl.creating === true"><i style="margin-top: 2px" class="fa fa-spinner fa-spin"></i></span>
-                                    </button>
-                                </div>
+                            <div class="col-sm-6"><button type="button" class="btn btn-default btn-large btn-block" ng-click="homeCtrl.createExampleProject()">
+                                    <span ng-if="homeCtrl.creating === false">Create Example Project and Run a job !</span>
+                                    <span ng-if="homeCtrl.creating === true"><i style="margin-top: 2px" class="fa fa-spinner fa-spin"></i></span>
+                                </button>
                             </div>
                         </div>
                         <div
@@ -178,59 +163,20 @@
             <pager total-items="homeCtrl.totalItemsProjects" ng-model="homeCtrl.currentPageProjects"></pager>
         </div>
     </div>
-    <tour class="ng-scope" step="mainCtrl.tourService.getCurrentStep()" post-tour="mainCtrl.tourService.stopTour()">
-        <virtual-step 
-            class="ng-scope" 
-            tourtip="Search for Projects and Datasets" 
-            tourtip-step="0" 
-            tourtip-element="#srch-term" 
-            tourtip-placement="bottom" 
-            tourtip-container-element=".navbar-form"
-            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
-            tourtip-offset-vertical="-10"
-            tourtip-offset-horizontal="+15"
-            ></virtual-step>
-        <virtual-step
-            class="ng-scope" 
-            tourtip="Account, Messages and Logout" 
-            tourtip-step="1" 
-            tourtip-element="#navbarProfile" 
-            tourtip-placement="bottom" 
-            tourtip-container-element=".navbar-form"
-            tourtip-offset-vertical="-10"
-            tourtip-offset-horizontal="-5"
-            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
-            ></virtual-step> 
-        <virtual-step 
-            class="ng-scope" 
-            tourtip="Create a new Project!" 
-            tourtip-step="2" 
-            tourtip-element="#buttonCreateProject" 
-            tourtip-placement="right" 
-            tourtip-container-element=".container"
-            tourtip-offset-vertical="+30"
-            tourtip-offset-horizontal="-20"
-            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
-            ></virtual-step>
+    <tour class="ng-scope" step="homeCtrl.tourService.currentStep" post-tour="homeCtrl.tourService.StopTour()">
         <virtual-step
             class="ng-scope"
-            tourtip="Filter your projects"
-            tourtip-step="3"
-            tourtip-element="#filterByButton"
-            tourtip-placement="left"
-            tourtip-container-element=".container"
-            tourtip-offset-vertical="+25"
-            tourtip-offset-horizontal="+20"
-            onProceed="mainCtrl.tourService.IncrementCurrentStep()"
-            ></virtual-step> 
-            <virtual-step
-            class="ng-scope"
-            tourtip="Enter the project either by clicking next or on the project"
-            tourtip-step="4"
+            tourtip="Enter the project by clicking on the button or the project itself. 
+            WINDOW WILL DIE IN {{homeCtrl.tourService.alive}}"
+            tourtip-step="0"
             tourtip-element="#ExampleProject"
             tourtip-placement="left"
             tourtip-container-element=".container"
-            onProceed="mainCtrl.tourService.enterExampleProject()"
+            tourtip-next-label="Enter project"
+            on-proceed="homeCtrl.tourService.EnterExampleProject()"
+            on-show="homeCtrl.tourService.KillTourSoon()"
+            tourtip-offset-vertical="20"
+            tourtip-offset-horizontal="15"
             ></virtual-step>
     </tour>
 </div>

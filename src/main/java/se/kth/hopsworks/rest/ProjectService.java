@@ -351,10 +351,7 @@ public class ProjectService {
     //add the services for the project
     projectController.addServices(project, projectServices, owner);
 
-    json.setStatus("201");// Created 
-    json.setSuccessMessage(ResponseMessages.PROJECT_CREATED);
-
-    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.CREATED).entity(json).build(); 
+    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.CREATED).entity(project).build(); 
   }  
   
   @POST

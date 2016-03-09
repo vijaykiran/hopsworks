@@ -7,6 +7,7 @@ angular.module('hopsWorksApp')
                 var self = this;
 
                 self.histories = [];
+                self.tourService = TourService;
                 self.projects = [];
                 self.currentPage = 1;
                 self.creating = false;
@@ -107,12 +108,16 @@ angular.module('hopsWorksApp')
 
                 };
 
-                var updateUIAfterChange = function () {
+                var updateUIAfterChange = function (exampleProject,data) {
 
                     ActivityService.getByUser().then(function (result1) {
                         ProjectService.query().$promise.then(function (result2) {
                             loadActivity(result1);
                             loadProjects(result2);
+                            if(exampleProject){
+                                self.tourService.currentStep = 0;
+                                self.tourService.exampleProject = data;
+                            }
                         });
                     });
 
@@ -132,13 +137,13 @@ angular.module('hopsWorksApp')
                 };
 
 
-                updateUIAfterChange();
+                updateUIAfterChange(false,null);
 
                 // Create a new project
                 self.newProject = function () {
                     ModalService.createProject('lg').then(
                             function (success) {
-                                updateUIAfterChange();
+                                updateUIAfterChange(false,null);
                             }, function (error) {
                         growl.info("Closed project without saving.", {title: 'Info', ttl: 5000});
                     });
@@ -148,18 +153,15 @@ angular.module('hopsWorksApp')
                     ProjectService.example().$promise.then(
                             function (success) {
                                 self.creating = false;
-                                growl.success(success.successMessage, {title: 'Success', ttl: 2000});
-                                updateUIAfterChange();
-                                TourService.setCurrentStep(4);
+                                growl.success("Created Example Project", {title: 'Success', ttl: 2000});
+                                updateUIAfterChange(true, success);
                                 if (success.errorMsg) {
-                                    TourService.setCurrentStep(-1);
                                     self.creating = false;
-                                    growl.warning(success.errorMsg, {title: 'Error', ttl: 10000});
+                                    growl.warning("some problem", {title: 'Error', ttl: 10000});
                                 }
 
                             },
                             function (error) {
-                                TourService.setCurrentStep(-1);
                                 self.creating = false;
                                 growl.info("problem", {title: 'Info', ttl: 5000});
                             }
@@ -171,7 +173,7 @@ angular.module('hopsWorksApp')
                     ProjectService.remove({id: projectId}).$promise.then(
                             function (success) {
                                 growl.success(success.successMessage, {title: 'Success', ttl: 15000});
-                                updateUIAfterChange();
+                                updateUIAfterChange(false,null);
                             },
                             function (error) {
                                 growl.error(error.data.errorMsg, {title: 'Error', ttl: 15000});
@@ -183,7 +185,7 @@ angular.module('hopsWorksApp')
                     ProjectService.delete({id: projectId}).$promise.then(
                             function (success) {
                                 growl.success(success.successMessage, {title: 'Success', ttl: 15000});
-                                updateUIAfterChange();
+                                updateUIAfterChange(false,null);
                             },
                             function (error) {
                                 growl.error(error.data.errorMsg, {title: 'Error', ttl: 15000});

@@ -4,8 +4,8 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams','TourService',
-            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams,TourService) {
+        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams',
+            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
 
                 var self = this;
                 self.email = $cookies['email'];
@@ -136,7 +136,6 @@ angular.module('hopsWorksApp')
                 self.resultItems = 0;
                 self.currentPage = 1;
                 self.pageSize = 5;
-                self.tourService = TourService;
                 self.hitEnter = function (evt) {
                     if (angular.equals(evt.keyCode, 13)) {
                         self.search();

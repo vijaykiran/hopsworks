@@ -5,6 +5,7 @@ angular.module('hopsWorksApp')
           function ($modalInstance, $scope, ProjectService, UserService, growl) {
 
             var self = this;
+            
             self.working = false;
             self.card = {};
             self.cards = [];

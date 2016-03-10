@@ -11,6 +11,7 @@ angular.module('hopsWorksApp')
       ModalService, ActivityService, $cookies, DataSetService, EndpointService, UserService) {
 
         var self = this;
+        self.exampleProject = $routeParams.exampleproject;
         self.working = false;
         self.currentProject = [];
         self.activities = [];

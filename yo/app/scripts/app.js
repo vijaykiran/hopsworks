@@ -129,7 +129,7 @@ angular.module('hopsWorksApp', [
             .when('/yubikey', {
               templateUrl: 'views/yubikey.html',
             })
-            .when('/project/:projectID/:exampleproject', {
+            .when('/project/:projectID/:exampleproject/:exampleproject', {
               templateUrl: 'views/project.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -150,7 +150,7 @@ angular.module('hopsWorksApp', [
               }
             })
 
-            .when('/project/:projectID/datasets', {
+            .when('/project/:projectID/:exampleproject/datasets', {
               templateUrl: 'views/datasets.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -171,7 +171,7 @@ angular.module('hopsWorksApp', [
               }
             })
 
-            .when('/project/:projectID/datasets/:datasetName', {
+            .when('/project/:projectID/:exampleproject/datasets/:datasetName', {
               templateUrl: 'views/datasetsBrowser.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -191,7 +191,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/cuneiform', {
+            .when('/project/:projectID/:exampleproject/cuneiform', {
               templateUrl: 'views/cuneiform.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -211,7 +211,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/spark', {
+            .when('/project/:projectID/:exampleproject/spark', {
               templateUrl: 'views/spark.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -231,7 +231,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/adam', {
+            .when('/project/:projectID/:exampleproject/adam', {
               templateUrl: 'views/adam.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -251,7 +251,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/jobs', {
+            .when('/project/:projectID/:exampleproject/jobs', {
               templateUrl: 'views/jobs.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -271,7 +271,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/ssh', {
+            .when('/project/:projectID/:exampleproject/ssh', {
               templateUrl: 'views/ssh.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -291,7 +291,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/newjob', {
+            .when('/project/:projectID/:exampleproject/newjob', {
               templateUrl: 'views/newJob.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -311,7 +311,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/biobanking', {
+            .when('/project/:projectID/:exampleproject/biobanking', {
               templateUrl: 'views/biobanking.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -331,7 +331,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/charon', {
+            .when('/project/:projectID/:exampleproject/charon', {
               templateUrl: 'views/charon.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -351,7 +351,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/metadata', {
+            .when('/project/:projectID/:exampleproject/metadata', {
               templateUrl: 'views/metadata.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {
@@ -371,7 +371,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/zeppelin', {
+            .when('/project/:projectID/:exampleproject/zeppelin', {
               templateUrl: 'views/zeppelinDashboard.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {

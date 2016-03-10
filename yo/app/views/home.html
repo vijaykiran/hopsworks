@@ -108,7 +108,7 @@
             <div ng-repeat="project in homeCtrl.projects| filter: searchProject:false | startFrom:(homeCtrl.currentPageProjects - 1) * homeCtrl.pageSizeProjects | limitTo:homeCtrl.pageSizeProjects">
                 <a
                     ng-class="{disabled: project.project.archived}"
-                    href="#/project/{{project.project.id}}/{{homeCtrl.tourService.isExampleProject(project.project.id)}}"
+                    href="#/project/{{project.project.id}}"
                     class="list-group-item"
                     context-menu
                     data-target="menu-{{$index}}"
@@ -166,13 +166,13 @@
     <tour class="ng-scope" step="homeCtrl.tourService.currentStep" post-tour="homeCtrl.tourService.StopTour()">
         <virtual-step
             class="ng-scope"
-            tourtip="Enter the project by clicking on the button or the project itself. 
-            WINDOW WILL DIE IN {{homeCtrl.tourService.alive}}"
+            tourtip="Enter the project by clicking Next or the project itself. 
+            [{{homeCtrl.tourService.alive}}]"
             tourtip-step="0"
             tourtip-element="#ExampleProject"
             tourtip-placement="left"
             tourtip-container-element=".container"
-            tourtip-next-label="Enter project"
+            tourtip-next-label="Next"
             on-proceed="homeCtrl.tourService.EnterExampleProject()"
             on-show="homeCtrl.tourService.KillTourSoon()"
             tourtip-offset-vertical="20"

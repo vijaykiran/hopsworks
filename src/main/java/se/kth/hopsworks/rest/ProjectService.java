@@ -40,6 +40,7 @@ import se.kth.hopsworks.controller.ProjectController;
 import se.kth.hopsworks.controller.ProjectDTO;
 import se.kth.hopsworks.controller.QuotasDTO;
 import se.kth.hopsworks.controller.ResponseMessages;
+import se.kth.hopsworks.controller.UsersController;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.filters.AllowedRoles;
@@ -81,6 +82,8 @@ public class ProjectService {
 
   @EJB
   private ActivityFacade activityController;
+  @EJB
+  private UsersController usersController;
 
   private final static Logger logger = Logger.getLogger(ProjectService.class.
           getName());
@@ -290,7 +293,8 @@ public class ProjectService {
    projectDTO.setDescription("An Example project.");
 
     String owner = sc.getUserPrincipal().getName();
-    projectDTO.setProjectName("ExampleProject");
+    String username = usersController.generateUsername(owner);
+    projectDTO.setProjectName("HopsDemo-" + username);
     List<ProjectServiceEnum> projectServices = new ArrayList<>();
     List<ProjectTeam> projectMembers = new ArrayList<>();
     projectServices.add(ProjectServiceEnum.JOBS);

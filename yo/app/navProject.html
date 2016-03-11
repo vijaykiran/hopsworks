@@ -17,7 +17,7 @@
       </li>
       
       <li ng-click="projectCtrl.goToJobs()" ng-show="projectCtrl.showJobs()">
-        <a>
+        <a id="jobsLink">
           Jobs <span class="sub_icon fa fa-cogs fa-lg pull-right"></span>
         </a>
       </li>
@@ -67,4 +67,19 @@
     </ul>
 
   </nav>
+    <tour class="ng-scope" step="projectCtrl.tourService.currentStep" post-tour="projectCtrl.tourService.StopTour()">
+        <virtual-step
+            class="ng-scope"
+            tourtip="Click Next or on the Job item to begin creating your first job !"
+            tourtip-step="1"
+            tourtip-element="#jobsLink"
+            tourtip-placement="right"
+            tourtip-next-label="Next"
+            on-proceed="projectCtrl.tourService.EnterJob()"
+            on-show="projectCtrl.tourService.KillTourSoon()"
+            tourtip-margin="0"
+            tourtip-offset-vertical="-25"
+            tourtip-offset-horizontal="-11"
+            ></virtual-step>
+    </tour>
 </aside>

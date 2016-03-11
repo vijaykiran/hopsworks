@@ -112,11 +112,11 @@
                     class="list-group-item"
                     context-menu
                     data-target="menu-{{$index}}"
-                    id="{{project.project.name}}">
-                    <div ng-if="project.teamRole == 'Data scientist'">
+                    id="{{project.project.name.substr(0,8) === 'HopsDemo'}}">
+                    <div ng-if="project.teamRole === 'Data scientist'">
                         <i style="width: 20px; margin-right: 10px; font-size: 20px;" class="fa fa-lock fa-2 pull-left"></i>
                     </div>
-                    <div ng-if="project.teamRole == 'Data owner'">
+                    <div ng-if="project.teamRole === 'Data owner'">
                         <i style="width: 20px; margin-right: 10px; font-size: 20px;" class="fa fa-unlock fa-2 pull-left"></i>
                     </div>
                     <div ng-if="project.project.archived">
@@ -166,17 +166,16 @@
     <tour class="ng-scope" step="homeCtrl.tourService.currentStep" post-tour="homeCtrl.tourService.StopTour()">
         <virtual-step
             class="ng-scope"
-            tourtip="Enter the project by clicking Next or the project itself. 
-            [{{homeCtrl.tourService.alive}}]"
+            tourtip="Begin the tour by clicking next, or when {{homeCtrl.tourService.alive}} seconds passed, click on the {{homeCtrl.tourService.name}} project"
             tourtip-step="0"
-            tourtip-element="#ExampleProject"
+            tourtip-element="#true.list-group-item"
             tourtip-placement="left"
-            tourtip-container-element=".container"
             tourtip-next-label="Next"
             on-proceed="homeCtrl.tourService.EnterExampleProject()"
             on-show="homeCtrl.tourService.KillTourSoon()"
-            tourtip-offset-vertical="20"
-            tourtip-offset-horizontal="15"
+            tourtip-margin="0"
+            tourtip-offset-vertical="-16"
+            tourtip-offset-horizontal="10"
             ></virtual-step>
     </tour>
 </div>

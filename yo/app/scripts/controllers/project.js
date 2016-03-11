@@ -6,9 +6,9 @@
 angular.module('hopsWorksApp')
     .controller('ProjectCtrl', ['$scope', '$rootScope','$modalStack', '$location', '$routeParams', 'UtilsService',
       'growl', 'ProjectService', 'ModalService', 'ActivityService', '$cookies', 'DataSetService', 'EndpointService',
-      'UserService',
+      'UserService','TourService',
       function ($scope, $rootScope,$modalStack, $location, $routeParams, UtilsService, growl, ProjectService, 
-      ModalService, ActivityService, $cookies, DataSetService, EndpointService, UserService) {
+      ModalService, ActivityService, $cookies, DataSetService, EndpointService, UserService,TourService) {
 
         var self = this;
         self.working = false;
@@ -18,6 +18,8 @@ angular.module('hopsWorksApp')
         self.card = {};
         self.cards = [];
         self.projectMembers = [];
+        self.exampleProject = false;
+        self.tourService = TourService;
 
         self.role = "";
         
@@ -59,6 +61,10 @@ angular.module('hopsWorksApp')
                 self.currentProject = success;
                 self.projectFile.id = self.currentProject.inodeid;
                 self.projectFile.name = self.currentProject.projectName;
+                if(angular.equals(self.projectFile.name.substr(0,8),'HopsDemo')){
+                    self.exampleProject = true;
+                    self.tourService.currentStep = 1;
+                }
                 self.projectFile.parentId = self.currentProject.projectTeam[0].project.inode.inodePK.parentId;
                 self.projectFile.path = "/Projects/"+self.currentProject.projectName;
                 self.projectFile.description = self.currentProject.description;

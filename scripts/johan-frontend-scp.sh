@@ -6,6 +6,7 @@ export SERVER=bbc1.sics.se
 export key=private_key
 
 scp root@bbc1.sics.se:/home/hopsworks/johan/hopsworks-chef/.vagrant/machines/default/virtualbox/private_key .
+chmod 400 /home/jsvhqr/NetBeansProjects/hopsworks/scripts/private_key
 
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -i $key -p $PORT vagrant@${SERVER} "cd /srv/glassfish/domain1 && sudo chown -R glassfish:vagrant docroot && sudo chmod -R 775 *"
 

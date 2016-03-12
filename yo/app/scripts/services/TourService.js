@@ -24,6 +24,7 @@ angular.module('hopsWorksApp')
                 
                 tourService.EnterExampleProject = function(){
                     $location.path('/project/' + this.tourserviceID.id);
+                    this.StopTour();
                 };
                 
                 tourService.KillTourSoon = function(){

@@ -63,7 +63,7 @@ angular.module('hopsWorksApp')
                 self.projectFile.name = self.currentProject.projectName;
                 if(angular.equals(self.projectFile.name.substr(0,8),'HopsDemo')){
                     self.exampleProject = true;
-                    self.tourService.currentStep = 0;
+                    self.tourService.currentStep_TourTwo = 0;
                 }
                 self.projectFile.parentId = self.currentProject.projectTeam[0].project.inode.inodePK.parentId;
                 self.projectFile.path = "/Projects/"+self.currentProject.projectName;

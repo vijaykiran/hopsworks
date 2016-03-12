@@ -115,7 +115,7 @@ angular.module('hopsWorksApp')
                             loadActivity(result1);
                             loadProjects(result2);
                             if (exampleProject) {
-                                self.tourService.currentStep = 0;
+                                self.tourService.currentStep_TourOne = 0;
                                 var x =1;
                             }
                         });

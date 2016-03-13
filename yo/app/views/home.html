@@ -163,16 +163,15 @@
             <pager total-items="homeCtrl.totalItemsProjects" ng-model="homeCtrl.currentPageProjects"></pager>
         </div>
     </div>
-    <tour class="ng-scope" step="homeCtrl.tourService.currentStep_TourOne" post-tour="homeCtrl.tourService.StopTourOne()">
+    <tour class="ng-scope" step="homeCtrl.tourService.currentStep_TourOne" post-tour="closeTour()">
         <virtual-step
             class="ng-scope"
-            tourtip="Begin the tour by clicking next, or when {{homeCtrl.tourService.alive_TourOne}} seconds passed, click on the {{homeCtrl.tourService.name}} project"
+            tourtip="Begin the tour by clicking <Next>, OR when {{homeCtrl.tourService.alive_TourOne}} seconds passed, click on the {{homeCtrl.tourService.tourServiceProject.name}} project"
             tourtip-step="0"
             tourtip-element="#true.list-group-item"
             tourtip-placement="left"
             tourtip-next-label="Next"
             on-proceed="homeCtrl.tourService.EnterExampleProject()"
-            on-show="homeCtrl.tourService.KillTourOneSoon()"
             tourtip-margin="0"
             tourtip-offset-vertical="-18"
             tourtip-offset-horizontal="12"

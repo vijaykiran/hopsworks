@@ -116,7 +116,7 @@ angular.module('hopsWorksApp')
                             loadProjects(result2);
                             if (exampleProject) {
                                 self.tourService.currentStep_TourOne = 0;
-                                var x =1;
+                                self.tourService.KillTourOneSoon();
                             }
                         });
                     });
@@ -154,7 +154,7 @@ angular.module('hopsWorksApp')
                             function (success) {
                                 self.creating = false;
                                 growl.success("Created Example Project", {title: 'Success', ttl: 2000});
-                                self.tourService.tourserviceID = success;
+                                self.tourService.tourServiceProject = success;
                                 updateUIAfterChange(true);
                                 if (success.errorMsg) {
                                     self.creating = false;

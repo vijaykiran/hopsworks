@@ -67,18 +67,17 @@
     </ul>
 
   </nav>
-    <tour ng-if="projectCtrl.exampleProject === true" class="ng-scope" step="projectCtrl.tourService.currentStep_TourTwo" post-tour="projectCtrl.tourService.StopTourTwo()">
+    <tour ng-if="projectCtrl.exampleProject === true" class="ng-scope" step="projectCtrl.tourService.currentStep_TourTwo" post-tour="closeTour()">
         <virtual-step
             class="ng-scope"
-            tourtip="Click Next OR when {{projectCtrl.tourService.alive_TourTwo}} seconds passed, click on the Job tab to the left"
+            tourtip="Click <Next> OR click on the Job tab to continue"
             tourtip-step="0"
             tourtip-element="#jobsLink"
             tourtip-placement="right"
             tourtip-next-label="Next"
             on-proceed="projectCtrl.tourService.EnterJob()"
-            on-show="projectCtrl.tourService.KillTourTwoSoon()"
             tourtip-margin="0"
-            tourtip-offset-vertical="-20"
+            tourtip-offset-vertical="-25"
             tourtip-offset-horizontal="-13"
             ></virtual-step>
     </tour>

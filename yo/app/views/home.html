@@ -12,15 +12,17 @@
                     <div class="timeline clearfix">
                         <div class="mid-line"></div>
                         <div class="row-centered" id="gettingStaredSection">
-                            <div class="col-sm-6"><p style="text-align: center;">
-                                    Create a example project and use it to see how you can run jobs and import datasets.
-                                </p>
-                            </div>
-                            <div class="col-sm-6"><button type="button" class="btn btn-default btn-large btn-block" ng-click="homeCtrl.createExampleProject()">
-                                    <span ng-if="homeCtrl.creating === false">Create Example Project and Run a job !</span>
-                                    <span ng-if="homeCtrl.creating === true"><i style="margin-top: 2px" class="fa fa-spinner fa-spin"></i></span>
-                                </button>
-                            </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"><span>
+                                    Take a small tour of Hopsworks by creating an example project and running a spark job !
+                                </span>
+                                <button style="margin-top: 5px;" type="button" class="btn btn-default btn-large" ng-click="homeCtrl.createExampleProject()">
+                                    <span class="pull-left" ng-if="homeCtrl.creating === false"><b>Take Hopsworks Tour!</b></span>
+                                    <span class="glyphicon glyphicon-play-circle" ng-if="homeCtrl.creating === false" style="margin-left: 5px; margin-top: 2px;"></span>
+                                    <span class="pull-left" ng-if="homeCtrl.creating === true"><b>Creating Example Project..</b></span>
+                                    <span ng-if="homeCtrl.creating === true"><i style="margin-top: 2px" class="fa fa-spinner fa-spin pull-right"></i></span>
+                                </button></div>
+                            <div class="col-sm-4"></div>
                         </div>
                         <div
                             ng-repeat="historyObject in homeCtrl.histories| startFrom:(homeCtrl.currentPage - 1) * homeCtrl.pageSize | limitTo:homeCtrl.pageSize">
@@ -112,7 +114,7 @@
                     class="list-group-item"
                     context-menu
                     data-target="menu-{{$index}}"
-                    id="{{project.project.name.substr(0,8) === 'HopsDemo'}}">
+                    id="{{project.project.name.substr(0, 8) === 'HopsDemo'}}">
                     <div ng-if="project.teamRole === 'Data scientist'">
                         <i style="width: 20px; margin-right: 10px; font-size: 20px;" class="fa fa-lock fa-2 pull-left"></i>
                     </div>
@@ -124,6 +126,7 @@
                            class="fa fa-ban fa-2 pull-left"></i>
                     </div>
                     {{project.project.name}}
+                    <span ng-if="project.project.name.substr(0, 8) === 'HopsDemo'" class="glyphicon glyphicon-play-circle pull-right" style="margin-top: 5px;"></span>
                 </a>
                 <div class="dropdown position-fixed" id="menu-{{$index}}">
                     <ul class="dropdown-menu dropdown-amore">
@@ -166,12 +169,12 @@
     <tour class="ng-scope" step="homeCtrl.tourService.currentStep_TourOne" post-tour="closeTour()">
         <virtual-step
             class="ng-scope"
-            tourtip="Begin the tour by clicking <Next>, OR when {{homeCtrl.tourService.alive_TourOne}} seconds passed, click on the {{homeCtrl.tourService.tourServiceProject.name}} project"
+            tourtip="Begin the tour by clicking Next, OR when {{homeCtrl.tourService.alive_TourOne}} seconds passed, click on the {{homeCtrl.tourService.tourServiceProject.name}} project"
             tourtip-step="0"
             tourtip-element="#true.list-group-item"
             tourtip-placement="left"
             tourtip-next-label="Next"
-            on-proceed="homeCtrl.tourService.EnterExampleProject()"
+            on-proceed="homeCtrl.tourService.EnterExampleProject(homeCtrl.exampleProjectID)"
             tourtip-margin="0"
             tourtip-offset-vertical="-18"
             tourtip-offset-horizontal="12"

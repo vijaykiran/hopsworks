@@ -11,6 +11,7 @@ angular.module('hopsWorksApp')
                 self.projects = [];
                 self.currentPage = 1;
                 self.creating = false;
+                self.exampleProjectID;
                 // Load all projects
 
                 var loadProjects = function (success) {
@@ -154,7 +155,7 @@ angular.module('hopsWorksApp')
                             function (success) {
                                 self.creating = false;
                                 growl.success("Created Example Project", {title: 'Success', ttl: 2000});
-                                self.tourService.tourServiceProject = success;
+                                self.exampleProjectID = success.id;
                                 updateUIAfterChange(true);
                                 if (success.errorMsg) {
                                     self.creating = false;

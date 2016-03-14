@@ -67,18 +67,30 @@
     </ul>
 
   </nav>
-    <tour ng-if="projectCtrl.exampleProject === true" class="ng-scope" step="projectCtrl.tourService.currentStep_TourTwo" post-tour="closeTour()">
+    <tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourTwo" post-tour="closeTour()">
         <virtual-step
             class="ng-scope"
-            tourtip="Click <Next> OR click on the Job tab to continue"
+            tourtip="Click Next, OR click on the Job tab to continue"
             tourtip-step="0"
             tourtip-element="#jobsLink"
             tourtip-placement="right"
             tourtip-next-label="Next"
-            on-proceed="projectCtrl.tourService.EnterJob()"
+            on-proceed="projectCtrl.tourService.EnterJobs(projectCtrl.pId)"
             tourtip-margin="0"
             tourtip-offset-vertical="-25"
             tourtip-offset-horizontal="-13"
+            ></virtual-step>
+            <virtual-step
+            class="ng-scope"
+            tourtip="Click Next OR click on the 'New Job' button to continue"
+            tourtip-step="1"
+            tourtip-element="#buttonCreateJob"
+            tourtip-placement="bottom"
+            tourtip-next-label="Next"
+            on-proceed="jobsCtrl.NewJob()"
+            tourtip-margin="0"
+            tourtip-offset-vertical="-12"
+            tourtip-offset-horizontal="30"
             ></virtual-step>
     </tour>
 </aside>

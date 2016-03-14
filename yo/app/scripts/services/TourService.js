@@ -21,9 +21,6 @@ angular.module('hopsWorksApp')
                     this.currentStep_TourOne = -1;
                     this.alive_TourOne = 15;
                 };
-                tourService.StopTourTwo = function () {
-                    this.currentStep_TourTwo = -1;
-                };
 
                 tourService.EnterExampleProject = function (id) {
                     $location.path('/project/' + id);
@@ -32,6 +29,7 @@ angular.module('hopsWorksApp')
                 
                 tourService.EnterJobs = function(id){
                     $location.path('/project/' + id + '/' + 'jobs');
+                    tourService.currentStep_TourTwo=1;
                 };
 
                 tourService.KillTourOneSoon = function ()

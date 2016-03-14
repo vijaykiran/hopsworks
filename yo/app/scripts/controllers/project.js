@@ -19,6 +19,7 @@ angular.module('hopsWorksApp')
                 self.cards = [];
                 self.projectMembers = [];
                 self.tourService = TourService;
+                self.location = $location;
 
                 self.role = "";
 
@@ -51,6 +52,20 @@ angular.module('hopsWorksApp')
                         self.endpoint = '...';
                     });
                 };
+                
+                self.initTour = function(){
+                    
+                                if (angular.equals(self.currentProject.projectName.substr(0, 8), 'HopsDemo')) {
+                                    if ($location.url() === "/project/" + self.pId + "/" + "jobs") {
+                                        self.tourService.currentStep_TourTwo = 1;
+                                    } else if ($location.url() === "/project/" + self.pId + "/" + "newjob") {
+                                        self.tourService.currentStep_TourTwo = 2;
+                                    }
+                                    else if($location.url() === "/project/" + self.pId){
+                                        self.tourService.currentStep_TourTwo = 0;
+                                    }
+                                }
+                };
 
                 getEndpoint();
 
@@ -60,21 +75,12 @@ angular.module('hopsWorksApp')
                                 self.currentProject = success;
                                 self.projectFile.id = self.currentProject.inodeid;
                                 self.projectFile.name = self.currentProject.projectName;
-                                if (angular.equals(self.projectFile.name.substr(0, 8), 'HopsDemo')) {
-                                    if ($location.url() === "/project/" + self.pId + "/" + "jobs") {
-                                        self.tourService.currentStep_TourTwo = 1;
-                                    } else if ($location.url() === "/project/" + self.pId + "/" + "newjob") {
-                                        self.tourService.currentStep_TourTwo = 2;
-                                    }
-                                    else{
-                                        self.tourService.currentStep_TourTwo = 0;
-                                    }
-                                }
                                 self.projectFile.parentId = self.currentProject.projectTeam[0].project.inode.inodePK.parentId;
                                 self.projectFile.path = "/Projects/" + self.currentProject.projectName;
                                 self.projectFile.description = self.currentProject.description;
                                 self.projectFile.retentionPeriod = self.currentProject.retentionPeriod;
                                 self.projectFile.yarnQuotaInMins = self.currentProject.yarnQuotaInMins;
+                                self.initTour();
                                 $rootScope.$broadcast('setMetadata', {file:
                                             {id: self.projectFile.id,
                                                 name: self.projectFile.name,
@@ -123,7 +129,6 @@ angular.module('hopsWorksApp')
                 }
 
                 getCurrentProject();
-
 
 
                 // Check if the service exists and otherwise add it or remove it depending on the previous choice

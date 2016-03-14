@@ -61,10 +61,13 @@ angular.module('hopsWorksApp')
                                 self.projectFile.id = self.currentProject.inodeid;
                                 self.projectFile.name = self.currentProject.projectName;
                                 if (angular.equals(self.projectFile.name.substr(0, 8), 'HopsDemo')) {
-                                    if (!$routeParams.jobs) {
-                                        self.tourService.currentStep_TourTwo = 0;
-                                    } else {
+                                    if ($location.url() === "/project/" + self.pId + "/" + "jobs") {
                                         self.tourService.currentStep_TourTwo = 1;
+                                    } else if ($location.url() === "/project/" + self.pId + "/" + "newjob") {
+                                        self.tourService.currentStep_TourTwo = 2;
+                                    }
+                                    else{
+                                        self.tourService.currentStep_TourTwo = 0;
                                     }
                                 }
                                 self.projectFile.parentId = self.currentProject.projectTeam[0].project.inode.inodePK.parentId;

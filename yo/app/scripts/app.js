@@ -251,7 +251,7 @@ angular.module('hopsWorksApp', [
                   }]
               }
             })
-            .when('/project/:projectID/:jobs', {
+            .when('/project/:projectID/jobs', {
               templateUrl: 'views/jobs.html',
               controller: 'ProjectCtrl as projectCtrl',
               resolve: {

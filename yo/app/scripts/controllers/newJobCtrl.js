@@ -12,12 +12,13 @@
 angular.module('hopsWorksApp')
         .controller('NewJobCtrl', ['$routeParams', 'growl', 'JobService',
           '$location', 'ModalService', 'StorageService', '$scope', 'SparkService',
-          'CuneiformService', 'AdamService',
+          'CuneiformService', 'AdamService','TourService',
           function ($routeParams, growl, JobService,
                   $location, ModalService, StorageService, $scope, SparkService,
-                  CuneiformService, AdamService) {
+                  CuneiformService, AdamService,TourService) {
 
             var self = this;
+            self.tourService = TourService;
             //Set services as attributes 
             this.ModalService = ModalService;
             this.growl = growl;
@@ -36,7 +37,6 @@ angular.module('hopsWorksApp')
               "ADAM": "Please select a file or folder."
             };
             this.projectId = $routeParams.projectID;
-
             //Create variables for user-entered information
             this.jobtype; //Will hold the selection of which job to create.
             this.jobname; //Will hold the name of the job
@@ -393,8 +393,7 @@ angular.module('hopsWorksApp')
               }
 
             };
-            init(); //Call upon create
-
+            init(); //Call upon create;
             /**
              * Select an ADAM command by sending the name to the server, gets an 
              * AdamJobConfiguration back.

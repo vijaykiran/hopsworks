@@ -6,10 +6,11 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('JobsCtrl', ['$scope', '$routeParams', 'growl', 'JobService', '$location', 'ModalService', '$interval', 'StorageService', '$mdSidenav',
-          function ($scope, $routeParams, growl, JobService, $location, ModalService, $interval, StorageService, $mdSidenav) {
+        .controller('JobsCtrl', ['$scope', '$routeParams', 'growl', 'JobService', '$location', 'ModalService', '$interval', 'StorageService', '$mdSidenav','TourService',
+          function ($scope, $routeParams, growl, JobService, $location, ModalService, $interval, StorageService, $mdSidenav,TourService) {
 
             var self = this;
+            self.tourService = TourService;
             this.projectId = $routeParams.projectID;
             this.jobs; // Will contain all the jobs.
             this.runningInfo; //Will contain run information
@@ -35,8 +36,7 @@ angular.module('hopsWorksApp')
             $scope.sort = function (keyname) {
               $scope.sortKey = keyname;   //set the sortKey to the param passed
               $scope.reverse = !$scope.reverse; //if true make it false and vice versa
-            }
-
+            };
             this.editAsNew = function (job) {
               JobService.getConfiguration(self.projectId, job.id).then(
                       function (success) {
@@ -50,11 +50,11 @@ angular.module('hopsWorksApp')
 
             self.buttonClickedToggle = function (id, display) {
               self.buttonArray[id] = display;
-            }
+            };
 
             self.stopbuttonClickedToggle = function (id, display) {
               self.workingArray[id] = display;
-            }
+            };
 
             self.copy = function () {
               var jobType;
@@ -70,18 +70,18 @@ angular.module('hopsWorksApp')
                   break;
               }
               var mainFileTxt, mainFileVal, jobDetailsTxt, sparkState, adamState;
-              if (jobType == 0) {
+              if (jobType === 0) {
                 mainFileTxt = "Workflow file";
                 mainFileVal = self.currentjob.runConfig.wf.name;
                 jobDetailsTxt = "Input variables";
-              } else if (jobType == 1) {
+              } else if (jobType === 1) {
                 sparkState = {
                   "selectedJar": getFileName(self.currentjob.runConfig.jarPath)
                 };
                 mainFileTxt = "JAR file";
                 mainFileVal = sparkState.selectedJar;
                 jobDetailsTxt = "Job details";
-              } else if (jobType == 2) {
+              } else if (jobType === 2) {
                 adamState = {
                   "processparameter": null,
                   "commandList": null,
@@ -129,8 +129,8 @@ angular.module('hopsWorksApp')
               $location.path('project/' + self.projectId + '/newjob');
             };
 
-
-
+            
+            
             var getAllJobs = function () {
               JobService.getAllJobsInProject(self.projectId).then(
                       function (success) {
@@ -172,9 +172,8 @@ angular.module('hopsWorksApp')
                   temp.state = self.runningInfo['' + temp.id].state;
                   temp.submissiontime = self.runningInfo['' + temp.id].submissiontime;
                 }
-              })
+              });
             };
-
             getAllJobs();
             self.getRunStatus();
             self.createAppReport();
@@ -286,7 +285,7 @@ angular.module('hopsWorksApp')
              * @returns {undefined}
              */
             this.checkJobTypeFilter = function () {
-              if (self.jobFilter.jobType == null) {
+              if (self.jobFilter.jobType === null) {
                 self.jobFilter.jobType = "";
               }
             };

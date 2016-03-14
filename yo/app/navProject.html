@@ -75,46 +75,10 @@
             tourtip-element="#jobsLink"
             tourtip-placement="right"
             tourtip-next-label="Next"
-            on-proceed="projectCtrl.tourService.EnterJobs(projectCtrl.pId)"
+            on-proceed="projectCtrl.EnterJobs(projectCtrl.pId)"
             tourtip-margin="0"
             tourtip-offset-vertical="-25"
             tourtip-offset-horizontal="-13"
-            ></virtual-step>
-            <virtual-step
-            class="ng-scope"
-            tourtip="Click Next OR click on the 'New job' button to continue"
-            tourtip-step="1"
-            tourtip-element="#buttonCreateJob"
-            tourtip-placement="bottom"
-            tourtip-next-label="Next"
-            on-proceed="jobsCtrl.newJob()"
-            tourtip-margin="0"
-            tourtip-offset-vertical="-12"
-            tourtip-offset-horizontal="30"
-            ></virtual-step>
-            <virtual-step
-            class="ng-scope"
-            tourtip="Click Next OR name the job yourself by typing in the field below"
-            tourtip-step="2"
-            tourtip-element="#inputJobName"
-            tourtip-placement="top"
-            tourtip-next-label="Next"
-            on-proceed="newJobCtrl.nameFilledIn()"
-            tourtip-margin="0"
-            tourtip-offset-vertical="15"
-            tourtip-offset-horizontal="10"
-            ></virtual-step>
-            <virtual-step
-            class="ng-scope"
-            tourtip="Click Next OR click SPARK"
-            tourtip-step="3"
-            tourtip-element="#sparkJobType"
-            tourtip-placement="top"
-            tourtip-next-label="Next"
-            on-proceed="newJobCtrl.jobTypeChosen()"
-            tourtip-margin="0"
-            tourtip-offset-vertical="15"
-            tourtip-offset-horizontal="10"
             ></virtual-step>
     </tour>
 </aside>

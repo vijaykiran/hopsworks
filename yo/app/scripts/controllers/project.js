@@ -56,15 +56,19 @@ angular.module('hopsWorksApp')
                 self.initTour = function(){
                     
                                 if (angular.equals(self.currentProject.projectName.substr(0, 8), 'HopsDemo')) {
-                                    if ($location.url() === "/project/" + self.pId + "/" + "jobs") {
-                                        self.tourService.currentStep_TourTwo = 1;
-                                    } else if ($location.url() === "/project/" + self.pId + "/" + "newjob") {
-                                        self.tourService.currentStep_TourTwo = 2;
-                                    }
-                                    else if($location.url() === "/project/" + self.pId){
+                                    if($location.url() === "/project/" + self.pId){
                                         self.tourService.currentStep_TourTwo = 0;
+                                    }else if($location.url() === "/project/" + self.pId + "/" + "jobs"){
+                                        self.tourService.currentStep_TourThree = 0;
+                                    }else if ($location.url() === "/project/" + self.pId + "/" + "newjob"){
+                                        self.tourService.currentStep_TourFour = 0;
                                     }
+                                    
                                 }
+                };
+                
+                self.EnterJobs = function(id){
+                    $location.path('/project/' + id + '/' + 'jobs');
                 };
 
                 getEndpoint();

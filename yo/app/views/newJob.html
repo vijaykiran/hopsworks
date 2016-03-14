@@ -204,6 +204,33 @@
         <!-- /#page-content-wrapper -->
       </div>
     </section>
+    <tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourFour" post-tour="closeTour()">
+            <virtual-step
+            class="ng-scope"
+            tourtip="Click Next OR name the job yourself by typing in the field below"
+            tourtip-step="0"
+            tourtip-element="#inputJobName"
+            tourtip-placement="top"
+            tourtip-next-label="Next"
+            on-proceed="newJobCtrl.nameFilledIn()"
+            tourtip-margin="0"
+            tourtip-offset-vertical="15"
+            tourtip-offset-horizontal="10"
+            ></virtual-step>
+            
+            <virtual-step
+            class="ng-scope"
+            tourtip="Click Next OR click SPARK"
+            tourtip-step="1"
+            tourtip-element="#sparkJobType"
+            tourtip-placement="top"
+            tourtip-next-label="Next"
+            on-proceed="newJobCtrl.jobTypeChosen()"
+            tourtip-margin="0"
+            tourtip-offset-vertical="15"
+            tourtip-offset-horizontal="10"
+            ></virtual-step>
+    </tour>
   </div>
   <!-- /#wrapper -->
 </div>

@@ -165,11 +165,19 @@ angular.module('hopsWorksApp')
                 this.createJob = function () {
                     self.runConfig.appName = self.jobname;
                     self.runConfig.localResources = self.localResources;
+                    if(self.tourService.currentStep_TourFour > -1){
+                                    self.tourService.currentStep_TourFour = -1;
+                                    self.tourService.currentStep_TourThree = 2;
+                                }
                     JobService.createNewJob(self.projectId, self.getJobType(), self.runConfig).then(
                             function (success) {
                                 $location.path('project/' + self.projectId + '/jobs');
                                 StorageService.remove(self.projectId + "newjob");
                                 self.removed = true;
+                                if(self.tourService.currentStep_TourFour > -1){
+                                    self.tourService.currentStep_TourFour = -1;
+                                    self.tourService.currentStep_TourThree = 1;
+                                }
                             }, function (error) {
                         growl.error(error.data.errorMsg, {title: 'Error', ttl: 15000});
                     });

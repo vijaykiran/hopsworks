@@ -54,11 +54,12 @@ angular.module('hopsWorksApp')
                 };
 
                 self.initTour = function () {
-                    self.tourService.resetTours();
                     if ($location.url() === "/project/" + self.pId) {
                         self.tourService.currentStep_TourTwo = 0;
                     } else if ($location.url() === "/project/" + self.pId + "/" + "jobs") {
-                        self.tourService.currentStep_TourThree = 0;
+                        if (self.tourService.currentStep_TourThree === -1) {
+                            self.tourService.currentStep_TourThree = 0;
+                        }
                     } else if ($location.url() === "/project/" + self.pId + "/" + "newjob") {
                         self.tourService.currentStep_TourFour = 0;
                     }

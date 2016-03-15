@@ -84,7 +84,7 @@
                     <tr
                       dir-paginate="job in jobsCtrl.jobs| orderBy :sortKey:reverse| filter:jobsCtrl.jobFilter:false | itemsPerPage:pageSize" ng-class="{'active':$index == selectedIndex}" ng-click="jobsCtrl.toggle(job,$index);jobsCtrl.showLogs(job.id);$event.stopPropagation();">
                     <td>
-                      <button style="border-color: #20AD28; min-width: 64px;"
+                      <button id="runJobButton" style="border-color: #20AD28; min-width: 64px;"
                               ng-click="jobsCtrl.toggle(job,$index);jobsCtrl.showLogs(job.id);jobsCtrl.runJob(job.id);$event.stopPropagation();jobsCtrl.buttonClickedToggle(job.id, true);jobsCtrl.stopbuttonClickedToggle(job.id, false);" class="btn btn-default btn-sm" ng-hide="jobsCtrl.runningInfo['' + job.id].running || jobsCtrl.buttonArray[job.id]"><span style="color: #20AD28" class="glyphicon glyphicon-play" aria-hidden="true"/> Run</button>
                       <button ng-click="$event.stopPropagation();"
                               class="btn btn-success btn-sm"
@@ -339,6 +339,23 @@
         tourtip-placement="bottom"
         tourtip-next-label="Next"
         on-proceed="jobsCtrl.newJob()"
+        tourtip-offset-vertical="-13"
+        tourtip-offset-horizontal="30"
+        ></virtual-step>
+        <virtual-step
+        class="ng-scope"
+        tourtip="invisible"
+        tourtip-step="1"
+        ng-hide="true"
+        ></virtual-step>
+        <virtual-step
+        class="ng-scope"
+        tourtip="Click Run to run your job, BYE!"
+        tourtip-step="2"
+        tourtip-element="#runJobButton"
+        tourtip-placement="bottom"
+        tourtip-next-label="exit"
+        on-proceed="closeTour()"
         tourtip-offset-vertical="-13"
         tourtip-offset-horizontal="30"
         ></virtual-step>

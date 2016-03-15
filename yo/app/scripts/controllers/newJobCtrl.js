@@ -206,7 +206,7 @@ angular.module('hopsWorksApp')
                 };
 
                 self.chooseParameters = function () {
-                    if (self.runConfig.mainClass === "" && self.runConfig.args === "") {
+                    if (!self.runConfig.mainClass && !self.runConfig.args ) {
                         self.runConfig.mainClass = 'org.apache.spark.examples.SparkPi';
                         self.runConfig.args = '1 111';
                     }

@@ -1,6 +1,4 @@
 <!-- Displays the defined jobs in the current project -->
-<link rel="stylesheet" href="styles/timeline.css">
-<link rel="stylesheet" href="styles/cuneiform.css">
 <div ng-controller="MainCtrl as mainCtrl">
   <div ng-include="'nav.html'"></div>
 
@@ -21,9 +19,9 @@
               <div style="max-height: 95%;overflow-y: auto;">
                 <div class="btn-group"
                      style="float: left;width: 10%; margin-bottom: 20px;">
-                  <button style="width: 100%;"
+                  <button id="buttonCreateJob" style="width: 100%;"
                           ng-click="jobsCtrl.newJob()"
-                          class="btn btn-warning" id="buttonCreateJob">
+                          class="btn btn-warning" onload="jobsCtrl.loaded === true">
                     New job
                   </button>
                 </div>
@@ -252,7 +250,7 @@
                       <span class="field-info" tooltip="Delete"
                             style="padding-top: 5px;padding-left:3px">
                       <button style="margin-left: 10px"
-                              ng-click="jobsCtrl.toggle(job,$index);jobsCtrl.deleteJob(job.id, job.name);$event.stopPropagation();"
+                              ng-click="jobsCtrl.toggle(job,$index);jobsCtrl.deleteJob(job.id);$event.stopPropagation();"
                               class="btn btn-danger glyphicon glyphicon-trash">
                       </button>
                      </span>
@@ -329,20 +327,20 @@
         </div>
 
     </section>
-    <tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourThree" post-tour="closeTour()">
-            <virtual-step
-            class="ng-scope"
-            tourtip="Click Next OR click on the 'New job' button to continue"
-            tourtip-step="0"
-            tourtip-element="#buttonCreateJob"
-            tourtip-placement="bottom"
-            tourtip-next-label="Next"
-            on-proceed="jobsCtrl.newJob()"
-            tourtip-margin="0"
-            tourtip-offset-vertical="-12"
-            tourtip-offset-horizontal="30"
-            ></virtual-step>
-    </tour>  
   </div>
   <!-- /#wrapper -->
 </div>
+<tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourThree" post-tour="closeTour()" ng-show="jobsCtrl.loaded">
+    <virtual-step
+        class="ng-scope"
+        tourtip="Click Next OR click on the 'New job' button to continue"
+        tourtip-step="0"
+        tourtip-element="#buttonCreateJob"
+        tourtip-placement="bottom"
+        tourtip-next-label="Next"
+        on-proceed="jobsCtrl.newJob()"
+        tourtip-offset-vertical="-13"
+        tourtip-offset-horizontal="30"
+        ></virtual-step>
+</tour>
+

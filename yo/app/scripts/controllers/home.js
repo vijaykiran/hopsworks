@@ -154,7 +154,7 @@ angular.module('hopsWorksApp')
                     ProjectService.example().$promise.then(
                             function (success) {
                                 self.creating = false;
-                                growl.success("Created Example Project", {title: 'Success', ttl: 2000});
+                                growl.success("Created Example Project", {title: 'Success', ttl: 10000});
                                 self.exampleProjectID = success.id;
                                 updateUIAfterChange(true);
                                 if (success.errorMsg) {

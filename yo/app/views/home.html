@@ -16,11 +16,11 @@
                             <div class="col-sm-4"><span>
                                     Take a small tour of Hopsworks by creating an example project and running a spark job !
                                 </span>
-                                <button style="margin-top: 5px;" type="button" class="btn btn-default btn-large" ng-click="homeCtrl.createExampleProject()">
-                                    <span class="pull-left" ng-if="homeCtrl.creating === false"><b>Take Hopsworks Tour!</b></span>
+                                <button style="margin-top: 5px;" type="button" class="btn btn-default btn-block" ng-click="homeCtrl.createExampleProject()">
+                                    <span ng-if="homeCtrl.creating === false"><b>Take the Hopsworks Tour !</b></span>
                                     <span class="glyphicon glyphicon-play-circle" ng-if="homeCtrl.creating === false" style="margin-left: 5px; margin-top: 2px;"></span>
-                                    <span class="pull-left" ng-if="homeCtrl.creating === true"><b>Creating Example Project..</b></span>
-                                    <span ng-if="homeCtrl.creating === true"><i style="margin-top: 2px" class="fa fa-spinner fa-spin pull-right"></i></span>
+                                    <span ng-if="homeCtrl.creating === true"><b>Load Example project..</b></span>
+                                    <span class="fa fa-spinner fa-spin" ng-if="homeCtrl.creating === true" style="margin-left: 5px; margin-top: 2px;"></span>
                                 </button></div>
                             <div class="col-sm-4"></div>
                         </div>
@@ -166,19 +166,17 @@
             <pager total-items="homeCtrl.totalItemsProjects" ng-model="homeCtrl.currentPageProjects"></pager>
         </div>
     </div>
-    <tour class="ng-scope" step="homeCtrl.tourService.currentStep_TourOne" post-tour="closeTour()">
-        <virtual-step
-            class="ng-scope"
-            tourtip="Begin the tour by clicking Next, OR when {{homeCtrl.tourService.alive_TourOne}} seconds passed, click on the {{homeCtrl.tourService.tourServiceProject.name}} project"
-            tourtip-step="0"
-            tourtip-element="#true.list-group-item"
-            tourtip-placement="left"
-            tourtip-next-label="Next"
-            on-proceed="homeCtrl.tourService.EnterExampleProject(homeCtrl.exampleProjectID)"
-            tourtip-margin="0"
-            tourtip-offset-vertical="-18"
-            tourtip-offset-horizontal="12"
-            ></virtual-step>
-    </tour>
 </div>
-
+<tour class="ng-scope" step="homeCtrl.tourService.currentStep_TourOne" post-tour="closeTour()">
+    <virtual-step
+        class="ng-scope"
+        tourtip="Begin the tour by clicking Next, OR when {{homeCtrl.tourService.alive_TourOne}} seconds passed, click on the {{homeCtrl.tourService.tourServiceProject.name}} project"
+        tourtip-step="0"
+        tourtip-element="#true.list-group-item"
+        tourtip-placement="left"
+        tourtip-next-label="Next"
+        on-proceed="homeCtrl.tourService.EnterExampleProject(homeCtrl.exampleProjectID)"
+        tourtip-offset-vertical="29"
+        tourtip-offset-horizontal="12"
+        ></virtual-step>
+</tour>

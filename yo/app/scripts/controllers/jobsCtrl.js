@@ -10,6 +10,7 @@ angular.module('hopsWorksApp')
           function ($scope, $routeParams, growl, JobService, $location, ModalService, $interval, StorageService, $mdSidenav,TourService) {
 
             var self = this;
+            self.loaded = false;
             self.tourService = TourService;
             this.projectId = $routeParams.projectID;
             this.jobs; // Will contain all the jobs.

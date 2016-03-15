@@ -18,6 +18,13 @@ angular.module('hopsWorksApp')
                 tourService.alive_TourOne = 15;
                 tourService.timeout_TourOne = null;
 
+                tourService.resetTours = function () {
+
+                    tourService.currentStep_TourOne = -1;
+                    tourService.currentStep_TourTwo = -1;
+                    tourService.currentStep_TourThree = -1;
+                    tourService.currentStep_TourFour = -1;
+                };
 
                 tourService.StopTourOne = function () {
                     this.currentStep_TourOne = -1;
@@ -37,8 +44,7 @@ angular.module('hopsWorksApp')
                         if (tourService.alive_TourOne === 0)
                         {
                             tourService.StopTourOne();
-                        }
-                        else
+                        } else
                         {
                             tourService.KillTourOneSoon();
                         }

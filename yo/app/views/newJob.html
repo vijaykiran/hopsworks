@@ -213,22 +213,25 @@
             tourtip-placement="top"
             tourtip-next-label="Next"
             on-proceed="newJobCtrl.nameFilledIn()"
-            tourtip-margin="0"
-            tourtip-offset-vertical="15"
-            tourtip-offset-horizontal="10"
+            tourtip-offset-vertical="10"
             ></virtual-step>
-            
             <virtual-step
+            ng-hide="true"    
+            class="ng-scope"
+            tourtip="invisible"
+            tourtip-step="1"
+            ></virtual-step>
+            <virtual-step
+            ng-if="newJobCtrl.accordion2.visible"    
             class="ng-scope"
             tourtip="Click Next OR click SPARK"
-            tourtip-step="1"
+            tourtip-step="2"
             tourtip-element="#sparkJobType"
             tourtip-placement="top"
             tourtip-next-label="Next"
             on-proceed="newJobCtrl.jobTypeChosen()"
-            tourtip-margin="0"
-            tourtip-offset-vertical="15"
-            tourtip-offset-horizontal="10"
+            tourtip-offset-vertical="13"
+            tourtip-offset-horizontal="-5"
             ></virtual-step>
     </tour>
   </div>

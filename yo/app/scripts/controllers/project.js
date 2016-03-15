@@ -40,7 +40,7 @@ angular.module('hopsWorksApp')
                     path: null,
                     hdfsUsageInBytes: null,
                     hdfsQuotaInBytes: null,
-                    yarnQuotaInMins: null,
+                    yarnQuotaInMins: null
                 };
 
                 var getEndpoint = function () {
@@ -52,22 +52,21 @@ angular.module('hopsWorksApp')
                         self.endpoint = '...';
                     });
                 };
-                
-                self.initTour = function(){
-                    
-                                if (angular.equals(self.currentProject.projectName.substr(0, 8), 'HopsDemo')) {
-                                    if($location.url() === "/project/" + self.pId){
-                                        self.tourService.currentStep_TourTwo = 0;
-                                    }else if($location.url() === "/project/" + self.pId + "/" + "jobs"){
-                                        self.tourService.currentStep_TourThree = 0;
-                                    }else if ($location.url() === "/project/" + self.pId + "/" + "newjob"){
-                                        self.tourService.currentStep_TourFour = 0;
-                                    }
-                                    
-                                }
+
+                self.initTour = function () {
+                    self.tourService.resetTours();
+                    if ($location.url() === "/project/" + self.pId) {
+                        self.tourService.currentStep_TourTwo = 0;
+                    } else if ($location.url() === "/project/" + self.pId + "/" + "jobs") {
+                        self.tourService.currentStep_TourThree = 0;
+                    } else if ($location.url() === "/project/" + self.pId + "/" + "newjob") {
+                        self.tourService.currentStep_TourFour = 0;
+                    }
+
+
                 };
-                
-                self.EnterJobs = function(id){
+
+                self.EnterJobs = function (id) {
                     $location.path('/project/' + id + '/' + 'jobs');
                 };
 
@@ -84,7 +83,9 @@ angular.module('hopsWorksApp')
                                 self.projectFile.description = self.currentProject.description;
                                 self.projectFile.retentionPeriod = self.currentProject.retentionPeriod;
                                 self.projectFile.yarnQuotaInMins = self.currentProject.yarnQuotaInMins;
-                                self.initTour();
+                                if (angular.equals(self.currentProject.projectName.substr(0, 8), 'HopsDemo')) {
+                                    self.initTour();
+                                }
                                 $rootScope.$broadcast('setMetadata', {file:
                                             {id: self.projectFile.id,
                                                 name: self.projectFile.name,
@@ -316,7 +317,7 @@ angular.module('hopsWorksApp')
                             }, function (error) {
                         self.role = "";
                     });
-                }
+                };
 
                 var showService = function (serviceName) {
                     var len = self.alreadyChoosenServices.length;

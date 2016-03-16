@@ -16,6 +16,7 @@ angular.module('hopsWorksApp')
                 tourService.currentStep_TourThree = -1;
                 tourService.currentStep_TourFour = -1;
                 tourService.alive_TourOne = 15;
+                tourService.createdJobName = null;
 
                 tourService.resetTours = function () {
 
@@ -24,6 +25,7 @@ angular.module('hopsWorksApp')
                     tourService.currentStep_TourTwo = -1;
                     tourService.currentStep_TourThree = -1;
                     tourService.currentStep_TourFour = -1;
+                    tourService.createdJobName = null;
                 };
 
                 tourService.KillTourOneSoon = function ()

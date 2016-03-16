@@ -67,10 +67,6 @@ angular.module('hopsWorksApp')
 
                 };
 
-                self.EnterJobs = function (id) {
-                    $location.path('/project/' + id + '/' + 'jobs');
-                };
-
                 getEndpoint();
 
                 var getCurrentProject = function () {
@@ -228,6 +224,9 @@ angular.module('hopsWorksApp')
 
                 self.goToJobs = function () {
                     $location.path('project/' + self.pId + '/jobs');
+                    if(self.tourService.currentStep_TourTwo > -1){
+                        self.tourService.resetTours();
+                    }
                 };
 
                 self.goToSsh = function () {

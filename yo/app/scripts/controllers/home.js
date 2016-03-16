@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService',
-            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q, TourService) {
+        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService','$location',
+            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q, TourService,$location) {
 
                 var self = this;
 
@@ -193,6 +193,11 @@ angular.module('hopsWorksApp')
                                 growl.error(error.data.errorMsg, {title: 'Error', ttl: 15000});
                             }
                     );
+                };
+                
+                self.EnterExampleProject = function (id) {
+                    $location.path('/project/' + id);
+                    self.tourService.resetTours();
                 };
             }]);
 

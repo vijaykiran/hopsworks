@@ -206,6 +206,9 @@ angular.module('hopsWorksApp')
             self.newJob = function () {
               StorageService.clear();
               $location.path('project/' + self.projectId + '/newjob');
+              if(self.tourService.currentStep_TourThree > -1){
+                  self.tourService.resetTours();
+              }
             };
 
             self.showDetails = function (job) {

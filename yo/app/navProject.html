@@ -16,8 +16,8 @@
         </a>
       </li>
       
-      <li ng-click="projectCtrl.goToJobs()" ng-show="projectCtrl.showJobs()">
-        <a id="jobsLink">
+      <li ng-click="projectCtrl.goToJobs()" ng-show="projectCtrl.showJobs()" id="jobsTab">
+        <a>
           Jobs <span class="sub_icon fa fa-cogs fa-lg pull-right"></span>
         </a>
       </li>
@@ -75,10 +75,10 @@
         class="ng-scope"
         tourtip="Click Next, OR click on the Job tab to continue"
         tourtip-step="0"
-        tourtip-element="#jobsLink"
+        tourtip-element="#jobsTab"
         tourtip-placement="right"
         tourtip-next-label="Next"
-        on-proceed="projectCtrl.EnterJobs(projectCtrl.pId)"
+        on-proceed="projectCtrl.goToJobs()"
         tourtip-offset-vertical="-25"
         tourtip-offset-horizontal="-13"
         ></virtual-step>

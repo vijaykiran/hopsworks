@@ -6,8 +6,8 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .factory('TourService', ['$timeout', '$location',
-            function ($timeout, $location) {
+        .factory('TourService', ['$timeout',
+            function ($timeout) {
 
                 var tourService = this;
 
@@ -16,34 +16,25 @@ angular.module('hopsWorksApp')
                 tourService.currentStep_TourThree = -1;
                 tourService.currentStep_TourFour = -1;
                 tourService.alive_TourOne = 15;
-                tourService.timeout_TourOne = null;
 
                 tourService.resetTours = function () {
 
                     tourService.currentStep_TourOne = -1;
+                    tourService.alive_TourOne = 15;
                     tourService.currentStep_TourTwo = -1;
                     tourService.currentStep_TourThree = -1;
                     tourService.currentStep_TourFour = -1;
                 };
 
-                tourService.StopTourOne = function () {
-                    this.currentStep_TourOne = -1;
-                    this.alive_TourOne = 15;
-                };
-
-                tourService.EnterExampleProject = function (id) {
-                    $location.path('/project/' + id);
-                    this.StopTourOne();
-                };
-
                 tourService.KillTourOneSoon = function ()
                 {
-                    this.timeout_TourOne = $timeout(function () {
+                    $timeout(function () {
                         tourService.alive_TourOne--;
                     }, 1000).then(function () {
                         if (tourService.alive_TourOne === 0)
                         {
-                            tourService.StopTourOne();
+                            tourService.currentStep_TourOne = -1;
+                            tourService.alive_TourOne = 15;
                         } else
                         {
                             tourService.KillTourOneSoon();

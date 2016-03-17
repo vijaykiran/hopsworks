@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService','$location',
-            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q, TourService,$location) {
+        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService','$location','$scope',
+            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q, TourService,$location,$scope) {
 
                 var self = this;
 
                 self.histories = [];
+                self.loadedView = false; 
                 self.tourService = TourService;
                 self.projects = [];
                 self.currentPage = 1;
@@ -21,6 +22,10 @@ angular.module('hopsWorksApp')
                     self.totalItemsProjects = self.projects.length;
                     self.currentPageProjects = 1;
                 };
+                
+                $scope.$on('$viewContentLoaded', function(){
+                    self.loadedView = true;
+                });
 
                 var loadActivity = function (success) {
                     var i = 0;

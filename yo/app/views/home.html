@@ -17,10 +17,10 @@
                                     Take a small tour of Hopsworks by creating an example project and running a spark job !
                                 </span>
                                 <button style="margin-top: 5px;" type="button" class="btn btn-default btn-block" ng-click="homeCtrl.createExampleProject()">
-                                    <span ng-if="homeCtrl.creating === false"><b>Take the Hopsworks Tour !</b></span>
-                                    <span class="glyphicon glyphicon-play-circle" ng-if="homeCtrl.creating === false" style="margin-left: 5px; margin-top: 2px;"></span>
-                                    <span ng-if="homeCtrl.creating === true"><b>Load Example project..</b></span>
-                                    <span class="fa fa-spinner fa-spin" ng-if="homeCtrl.creating === true" style="margin-left: 5px; margin-top: 2px;"></span>
+                                    <span ng-hide="homeCtrl.creating === true"><b>Take the Hopsworks Tour !</b></span>
+                                    <span class="glyphicon glyphicon-play-circle" ng-hide="homeCtrl.creating === true" style="margin-left: 5px; margin-top: 2px;"></span>
+                                    <span ng-hide="homeCtrl.creating === false"><b>Load Example project..</b></span>
+                                    <span class="fa fa-spinner fa-spin" ng-hide="homeCtrl.creating === false" style="margin-left: 5px; margin-top: 2px;"></span>
                                 </button></div>
                             <div class="col-sm-4"></div>
                         </div>
@@ -167,7 +167,7 @@
         </div>
     </div>
 </div>
-<tour class="ng-scope" step="homeCtrl.tourService.currentStep_TourOne" post-tour="closeTour()">
+<tour class="ng-scope" step="homeCtrl.tourService.currentStep_TourOne" post-tour="closeTour()" ng-if="homeCtrl.loadedView">
     <virtual-step
         class="ng-scope"
         tourtip="Begin the tour by clicking Next, OR when {{homeCtrl.tourService.alive_TourOne}} seconds passed, click on the project"

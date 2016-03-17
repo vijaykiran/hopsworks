@@ -11,6 +11,7 @@ angular.module('hopsWorksApp')
                     ModalService, ActivityService, $cookies, DataSetService, EndpointService, UserService, TourService) {
 
                 var self = this;
+                self.loadedView = false;
                 self.working = false;
                 self.currentProject = [];
                 self.activities = [];
@@ -42,6 +43,10 @@ angular.module('hopsWorksApp')
                     hdfsQuotaInBytes: null,
                     yarnQuotaInMins: null
                 };
+                
+                $scope.$on('$viewContentLoaded', function(){
+                    self.loadedView = true;
+                });
 
                 var getEndpoint = function () {
                     EndpointService.findEndpoint().then(

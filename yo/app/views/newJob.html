@@ -204,7 +204,7 @@
         <!-- /#page-content-wrapper -->
       </div>
     </section>
-    <tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourFour" post-tour="closeTour()">
+    <tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourFour" post-tour="closeTour()" ng-if="projectCtrl.loadedView">
             <virtual-step
             class="ng-scope"
             tourtip="Click Next OR name the job yourself by typing in the field below"

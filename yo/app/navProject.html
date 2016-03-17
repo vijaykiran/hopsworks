@@ -69,7 +69,7 @@
   </nav>
 </aside>
 
-<tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourTwo" post-tour="closeTour()" ng-if="projectCtrl.showJobs()">
+<tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourTwo" post-tour="closeTour()" ng-if="projectCtrl.showJobs() && projectCtrl.loadedView">
     <virtual-step
         id="TourTwo"
         class="ng-scope"

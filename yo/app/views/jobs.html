@@ -330,7 +330,7 @@
   </div>
   <!-- /#wrapper -->
 </div>
-<tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourThree" post-tour="closeTour()" ng-show="jobsCtrl.loaded">
+<tour class="ng-scope" step="projectCtrl.tourService.currentStep_TourThree" post-tour="closeTour()" ng-if="projectCtrl.loadedView">
     <virtual-step
         class="ng-scope"
         tourtip="Click Next OR click on the 'New job' button to continue"

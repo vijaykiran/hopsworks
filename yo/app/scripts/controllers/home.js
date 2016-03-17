@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService','$location','$scope',
-            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q, TourService,$location,$scope) {
+        .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService', '$location', '$scope',
+            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q, TourService, $location, $scope) {
 
                 var self = this;
 
                 self.histories = [];
-                self.loadedView = false; 
+                self.loadedView = false;
                 self.tourService = TourService;
                 self.projects = [];
                 self.currentPage = 1;
@@ -22,8 +22,8 @@ angular.module('hopsWorksApp')
                     self.totalItemsProjects = self.projects.length;
                     self.currentPageProjects = 1;
                 };
-                
-                $scope.$on('$viewContentLoaded', function(){
+
+                $scope.$on('$viewContentLoaded', function () {
                     self.loadedView = true;
                 });
 
@@ -116,22 +116,15 @@ angular.module('hopsWorksApp')
 
                 var updateUIAfterChange = function (exampleProject) {
 
-                    ActivityService.getByUser().then(function (result1) {
-                        ProjectService.query().$promise.then(function (result2) {
-                            loadActivity(result1);
-                            loadProjects(result2);
-                            if (exampleProject) {
-                                self.tourService.currentStep_TourOne = 0;
-                                self.tourService.KillTourOneSoon();
-                            }
-                        });
-                    });
-
                     $q.all({
                         'first': ActivityService.getByUser(),
                         'second': ProjectService.query().$promise
                     }
                     ).then(function (result) {
+                        if (exampleProject) {
+                            self.tourService.currentStep_TourOne = 0;
+                            self.tourService.KillTourOneSoon();
+                        }
                         loadActivity(result.first);
                         loadProjects(result.second);
                     },
@@ -199,7 +192,7 @@ angular.module('hopsWorksApp')
                             }
                     );
                 };
-                
+
                 self.EnterExampleProject = function (id) {
                     $location.path('/project/' + id);
                     self.tourService.resetTours();

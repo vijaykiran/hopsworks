@@ -138,6 +138,13 @@ angular.module('hopsWorksApp')
 
                 updateUIAfterChange(false);
 
+                self.showGettingStarted = function () {
+                    if (self.projects === undefined || self.projects === null || self.projects.length === 0) {
+                      return true;
+                    }
+                    return false;
+                }
+                
                 // Create a new project
                 self.newProject = function () {
                     ModalService.createProject('lg').then(

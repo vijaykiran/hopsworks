@@ -19,8 +19,4 @@ scp yo/bower.json kitchen:/usr/local/glassfish/glassfish/domains/domain1/docroot
 
 ssh kitchen './deploy'
 
-<<<<<<< HEAD
 open -a "firefox" http://193.10.64.11:8080/app
-=======
-open -a firefox http://193.10.64.11:8080/app
->>>>>>> 83e54f0c3b414dd9c3f92b4cc8a0e991a099e9a0

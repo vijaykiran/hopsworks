@@ -182,7 +182,7 @@ public class ProjectController {
                         .getYarnDefaultQuota()), 0));
         this.yarnProjectsQuotaFacade.flushEm();
         //Add the activity information
-        logActivity(ActivityFacade.NEW_PROJECT,
+        logActivity(ActivityFacade.NEW_PROJECT + project.getName(),
                 ActivityFacade.FLAG_PROJECT, user, project);
         //update role information in project
         addProjectOwner(project.getId(), user.getEmail());
@@ -281,7 +281,11 @@ public class ProjectController {
 
     if (addedService) {
       Users user = userBean.getUserByEmail(userEmail);
-      logActivity(ActivityFacade.ADDED_SERVICES, ActivityFacade.FLAG_PROJECT,
+      String servicesString = "";
+      for(int i = 0;i < services.size();i++){
+          servicesString = servicesString + services.get(i).name() + " ";
+      }
+      logActivity(ActivityFacade.ADDED_SERVICES + servicesString, ActivityFacade.FLAG_PROJECT,
               user, project);
 //      if (sshAdded == true) {
 //        try {

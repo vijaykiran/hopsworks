@@ -25,8 +25,8 @@ public class ActivityFacade extends AbstractFacade<Activity> {
           getName());
 
   // String constants
-  public static final String NEW_PROJECT = " created a new project ";
-  public static final String NEW_DATA = " added a new dataset ";
+  public static final String NEW_PROJECT = " created a new project named ";
+  public static final String NEW_DATA = " added a new dataset named ";
   public static final String SHARED_DATA = " shared dataset ";
   public static final String NEW_MEMBER = " added a member ";
   public static final String NEW_SAMPLE = " added a new sample ";
@@ -35,7 +35,7 @@ public class ActivityFacade extends AbstractFacade<Activity> {
   public static final String REMOVED_SAMPLE = " removed a sample ";
   public static final String REMOVED_FILE = " removed a file ";
   public static final String REMOVED_PROJECT = " removed project ";
-  public static final String RAN_JOB = " ran a job ";
+  public static final String RAN_JOB = " ran a job named ";
   public static final String ADDED_SERVICES = " added new services ";
   public static final String PROJECT_NAME_CHANGED = " changed project name ";
   public static final String PROJECT_DESC_CHANGED

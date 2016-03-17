@@ -27,11 +27,11 @@
                         <div
                             ng-repeat="historyObject in homeCtrl.histories| startFrom:(homeCtrl.currentPage - 1) * homeCtrl.pageSize | limitTo:homeCtrl.pageSize">
 
-                            <div class="time-header info" ng-if="historyObject.flag == 'older'">Older</div>
-                            <div class="time-header error" ng-if="historyObject.flag == 'lastweek'">Last week</div>
-                            <div class="time-header error" ng-if="historyObject.flag == 'thisweek'">This week</div>
-                            <div class="time-header completed" ng-if="historyObject.flag == 'yesterday'">Yesterday</div>
-                            <div class="time-header info" ng-if="historyObject.flag == 'today'">Today</div>
+                            <div class="time-header info" ng-if="historyObject.flag === 'older'">Older</div>
+                            <div class="time-header error" ng-if="historyObject.flag === 'lastweek'">Last week</div>
+                            <div class="time-header error" ng-if="historyObject.flag === 'thisweek'">This week</div>
+                            <div class="time-header completed" ng-if="historyObject.flag === 'yesterday'">Yesterday</div>
+                            <div class="time-header info" ng-if="historyObject.flag === 'today'">Today</div>
 
                             <div class="right">
                                 <div class="r-arrow"></div>

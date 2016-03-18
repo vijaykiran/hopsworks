@@ -263,6 +263,9 @@ public class FileOperations {
    */
   public List<String> getChildNames(String path) {
     Inode inode = inodes.getInodeAtPath(path);
+    if (inode == null) {
+      // TODO - throw an exception...o
+    }
     if (inode.isDir()) {
       List<Inode> inodekids = inodes.getChildren(inode);
       ArrayList<String> retList = new ArrayList<>(inodekids.size());

@@ -181,6 +181,9 @@ angular.module('hopsWorksApp')
                             function (success) {
                                 growl.success(success.successMessage, {title: 'Success', ttl: 15000});
                                 updateUIAfterChange(false);
+                                if(self.tourService.currentStep_TourOne > -1){
+                                    self.tourService.resetTours();
+                                }
                             },
                             function (error) {
                                 growl.error(error.data.errorMsg, {title: 'Error', ttl: 15000});
@@ -193,6 +196,9 @@ angular.module('hopsWorksApp')
                             function (success) {
                                 growl.success(success.successMessage, {title: 'Success', ttl: 15000});
                                 updateUIAfterChange(false);
+                                if(self.tourService.currentStep_TourOne > -1){
+                                    self.tourService.resetTours();
+                                }
                             },
                             function (error) {
                                 growl.error(error.data.errorMsg, {title: 'Error', ttl: 15000});

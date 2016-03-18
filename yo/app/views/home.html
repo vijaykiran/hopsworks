@@ -13,12 +13,12 @@
 <!--                        <div class="mid-line"></div>-->
                         <div class="row-centered" id="gettingStartedSection" ng-show="homeCtrl.showGettingStarted() === true">
                             <div class="col-sm-4">
-                                <button style="margin-top: 5px;" uib-popover="Take a tour of Hopsworks by creating a project and running a Spark job!"
+                                <button style="margin: 0px; padding-bottom: 5px; padding-top: 5px; padding-left: 5px; padding-right: 5px;" uib-popover="Take a tour of Hopsworks by creating a project and running a Spark job!"
                                         type="button" class="btn btn-success btn-block" ng-click="homeCtrl.createExampleProject()">
                                     <span ng-hide="homeCtrl.creating === true"><b>Get Started with Hopsworks!</b></span>
-                                    <span class="glyphicon glyphicon-play-circle" ng-hide="homeCtrl.creating === true" style="margin: 0 auto;"></span>
+                                    <span class="glyphicon glyphicon-play-circle" ng-hide="homeCtrl.creating === true"></span>
                                     <span ng-hide="homeCtrl.creating === false"><b>Load Example project..</b></span>
-                                    <span class="fa fa-spinner fa-spin" ng-hide="homeCtrl.creating === false" style="margin: 0 auto;"></span>
+                                    <span class="fa fa-spinner fa-spin" ng-hide="homeCtrl.creating === false"></span>
                                 </button></div>
                             <div class="col-sm-8"></div>
                         </div>

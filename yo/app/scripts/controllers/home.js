@@ -143,7 +143,7 @@ angular.module('hopsWorksApp')
                       return true;
                     }
                     return false;
-                }
+                };
                 
                 // Create a new project
                 self.newProject = function () {

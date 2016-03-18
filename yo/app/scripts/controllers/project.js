@@ -71,6 +71,7 @@ angular.module('hopsWorksApp')
 
 
                 };
+                
 
                 getEndpoint();
 
@@ -87,6 +88,9 @@ angular.module('hopsWorksApp')
                                 self.projectFile.yarnQuotaInMins = self.currentProject.yarnQuotaInMins;
                                 if (angular.equals(self.currentProject.projectName.substr(0, 8), 'HopsDemo')) {
                                     self.initTour();
+                                }
+                                else{
+                                    self.tourService.resetTours();
                                 }
                                 $rootScope.$broadcast('setMetadata', {file:
                                             {id: self.projectFile.id,

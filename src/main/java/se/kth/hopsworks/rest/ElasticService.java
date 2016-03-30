@@ -49,6 +49,7 @@ import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.util.Ip;
 import se.kth.hopsworks.util.Settings;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import se.kth.hopsworks.dataset.DatasetFacade;
 
 /**
  *
@@ -70,6 +71,9 @@ public class ElasticService {
   @EJB
   private Settings settings;
 
+  @EJB
+  private DatasetFacade datasetFacade;
+  
   /**
    * Searches for content composed of projects and datasets. Hits two elastic indices: 'project' and 'dataset'
    * <p/>
@@ -152,6 +156,9 @@ public class ElasticService {
         SearchHit[] hits = response.getHits().getHits();
 
         for (SearchHit hit : hits) {
+            
+            /*int inodeid = hit  TODO*/
+            
           elasticHits.add(new ElasticHit(hit));
         }
       }
@@ -171,6 +178,101 @@ public class ElasticService {
     throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.
         getStatusCode(), ResponseMessages.ELASTIC_SERVER_NOT_FOUND);
   }
+  
+  
+  @GET
+  @Path("globalpublicsearch/{searchTerm}/")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
+  public Response globalSearchWithPublic(
+      @PathParam("searchTerm") String searchTerm,
+      @Context SecurityContext sc,
+      @Context HttpServletRequest req) throws AppException {
+
+    if (searchTerm == null) {
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+          "Incomplete request!");
+    }
+
+    //some necessary client settings
+    final org.elasticsearch.common.settings.Settings settings = ImmutableSettings.settingsBuilder()
+        .put("client.transport.sniff", true) //being able to inspect other nodes 
+        .put("cluster.name", "hops")
+        .build();
+
+    String addr = getElasticIpAsString();
+    //initialize the client
+    Client client = new TransportClient(settings)
+        .addTransportAddress(new InetSocketTransportAddress(addr, Settings.ELASTIC_PORT));
+
+    //check if the indices are up and running
+    if (!this.indexExists(client, Settings.META_PROJECT_INDEX) || !this.
+        indexExists(client, Settings.META_DATASET_INDEX)) {
+
+      logger.log(Level.INFO, ResponseMessages.ELASTIC_INDEX_NOT_FOUND);
+      throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.
+          getStatusCode(), ResponseMessages.ELASTIC_INDEX_NOT_FOUND);
+    }
+
+    logger.log(Level.INFO, "Found elastic index, now executing the query.");
+
+    /*
+     * If projects contain a searchable field then the client can hit both
+     * indices (projects, datasets) with a single query. Right now the single
+     * query fails because of the lack of a searchable field in the projects.
+     * ADDED MANUALLY A SEARCHABLE FIELD IN THE RIVER. MAKES A PROJECT
+     * SEARCHABLE BY DEFAULT. NEEDS REFACTORING
+     */
+    //hit the indices - execute the queries
+//    SearchResponse response
+//        = client.prepareSearch(Settings.META_PROJECT_INDEX,
+//            Settings.META_DATASET_INDEX).
+//        setTypes(Settings.META_PROJECT_PARENT_TYPE,
+//            Settings.META_DATASET_PARENT_TYPE)
+//        .setQuery(this.matchProjectsDatasetsQuery(searchTerm))
+//        //.setQuery(this.getDatasetComboQuery(searchTerm))
+//        .addHighlightedField("name")
+//        .execute().actionGet();
+    SearchRequestBuilder srb = client.prepareSearch(Settings.META_PROJECT_INDEX, Settings.META_DATASET_INDEX);
+    srb = srb.setTypes(Settings.META_PROJECT_PARENT_TYPE,
+        Settings.META_DATASET_PARENT_TYPE);
+    srb = srb.setQuery(this.matchProjectsDatasetsQuery(searchTerm));
+    srb = srb.addHighlightedField("name");
+    logger.info("Global search Elastic query is: " + srb.toString());
+    ListenableActionFuture<SearchResponse> futureResponse = srb.execute();
+    SearchResponse response = futureResponse.actionGet();
+
+    if (response.status().getStatus() == 200) {
+      //logger.log(Level.INFO, "Matched number of documents: {0}", response.
+      //getHits().
+      //totalHits());
+
+      //construct the response
+      List<ElasticHit> elasticHits = new LinkedList<>();
+      if (response.getHits().getHits().length > 0) {
+        SearchHit[] hits = response.getHits().getHits();
+        
+        for (SearchHit hit : hits) {  
+          elasticHits.add(new ElasticHit(hit));
+        }
+      }
+
+      this.clientShutdown(client);
+      GenericEntity<List<ElasticHit>> searchResults
+          = new GenericEntity<List<ElasticHit>>(elasticHits) {
+      };
+      return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
+          entity(searchResults).build();
+    }
+
+    logger.warning("Elasticsearch error code: " + response.status().getStatus());
+
+    //something went wrong so throw an exception
+    this.clientShutdown(client);
+    throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.
+        getStatusCode(), ResponseMessages.ELASTIC_SERVER_NOT_FOUND);
+  }
+  
 
   /**
    * Searches for content inside a specific project. Hits 'project' index

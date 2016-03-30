@@ -181,7 +181,7 @@ public class ElasticService {
   @Path("globalpublicsearch/{searchTerm}/")
   @Produces(MediaType.APPLICATION_JSON)
   @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
-  public Response globalSearchWithPublic(
+  public Response publicSearch(
       @PathParam("searchTerm") String searchTerm,
       @Context SecurityContext sc,
       @Context HttpServletRequest req) throws AppException {

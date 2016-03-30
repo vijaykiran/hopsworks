@@ -16,6 +16,7 @@ angular.module('hopsWorksApp')
             self.selected = null; //The index of the selected file in the files array.
             self.selectedList = []; //The index of the selected file in the files array.
             self.fileDetail; //The details about the currently selected file.
+            self.sharedPath; //The details about the currently selected file.
 
             var dataSetService = DataSetService(self.projectId); //The datasetservice for the current project.
 
@@ -44,8 +45,20 @@ angular.module('hopsWorksApp')
             self.openMetadata = function () {
               $scope.tgState = true;
             }
-            
+
             self.openMetadata();
+
+
+            self.breadcrumbLen = function () {
+              if (self.pathArray === undefined || self.pathArray === null) {
+                return 0;
+              }
+              var displayPathLen = 4;
+              if (self.pathArray.length <= displayPathLen) {
+                return self.pathArray.length -1;
+              }
+              return displayPathLen;
+            }
 
             self.selectInode = function (inode) {
               // add to selectedList
@@ -69,12 +82,6 @@ angular.module('hopsWorksApp')
               }
             });
 
-//            $scope.$watch(MetadataHelperService.getCloseSlider, function (response) {
-//              if (response === "true") {
-//                self.close();
-//                MetadataHelperService.setCloseSlider("false");
-//              }
-//            });
 
             $scope.$watch(MetadataHelperService.getDirContents, function (response) {
               if (response === "true") {
@@ -82,6 +89,27 @@ angular.module('hopsWorksApp')
                 MetadataHelperService.setDirContents("false");
               }
             });
+
+            self.isShared = function () {
+  
+              var topLevel = self.pathArray[0] ;
+              if ((topLevel.indexOf("::") > -1)) {
+                return true;
+              }
+              return false;
+            };
+            
+            self.pathSharedDs = function () {
+              if (self.pathArray === null || self.pathArray.length === 0) {
+                return '';
+              }
+              var topLevel = self.pathArray[0] ;
+              if ((topLevel.indexOf("::") === -1)) {
+                self.sharedPath = "";
+              }
+                self.sharedPath = topLevel.replace("::", "/");
+            };
+
 
             /*
              * Get all datasets under the current project.
@@ -252,6 +280,38 @@ angular.module('hopsWorksApp')
                       function (success) {
                       }, function (error) {
                       growl.error(error.data.errorMsg, {title: 'Error', ttl: 1000});
+              });
+            };
+
+            /**
+             * Makes the dataset public for anybody within the local cluster or any outside cluster.
+             * @param id inodeId
+             */
+            self.makePublic = function (id) {
+
+              ModalService.confirm('sm', 'Confirm', 'Are you sure you want to make this DataSet public? \n\
+This will make all its files available for any registered user to download and process.').then(
+                      function (success) {
+                        dataSetService.makePublic(id).then(
+                                function (success) {
+                                  growl.success(success.data.successMessage, {title: 'The DataSet is now Public.', ttl: 1500});
+                                  getDirContents();
+                                }, function (error) {
+                          growl.error(error.data.errorMsg, {title: 'Error', ttl: 1000});
+                        });
+
+                      }
+              );
+
+
+            };
+
+
+            self.isPublic = function (id) {
+              dataSetService.isPublic(id).then(
+                      function (success) {
+                      }, function (error) {
+                growl.error(error.data.errorMsg, {title: 'Error', ttl: 1000});
               });
             };
 
@@ -456,12 +516,13 @@ angular.module('hopsWorksApp')
             self.select = function (selectedIndex, file) {
               self.selected = selectedIndex;
               self.fileDetail = file;
-              
+
             };
 
             self.deselect = function () {
-              self.selected = null;
+              self.selected = null
               self.fileDetail = null;
+              self.sharedPath = null;
             };
 
             self.toggleLeft = buildToggler('left');

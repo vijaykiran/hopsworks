@@ -156,9 +156,6 @@ public class ElasticService {
         SearchHit[] hits = response.getHits().getHits();
 
         for (SearchHit hit : hits) {
-            
-            /*int inodeid = hit  TODO*/
-            
           elasticHits.add(new ElasticHit(hit));
         }
       }
@@ -253,6 +250,8 @@ public class ElasticService {
         SearchHit[] hits = response.getHits().getHits();
         
         for (SearchHit hit : hits) {  
+          
+            /*int inodeid = hit  TODO*/
           elasticHits.add(new ElasticHit(hit));
         }
       }

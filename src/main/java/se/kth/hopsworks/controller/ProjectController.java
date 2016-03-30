@@ -881,25 +881,5 @@ public class ProjectController {
     }
     return price;
   }
-
-    public void addExampleJarToExampleProject(String username, Project project) {
-      
-      Users user = userBean.getUserByEmail(username);
-      try {  
-          datasetController.createDataset(user, project, "TestJob", "jar file to calculate pi", -1, false, true);
-      } catch (IOException ex) {
-          Logger.getLogger(ProjectController.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      try {
-          
-          HdfsLeDescriptors hdfsLeDescriptors = hdfsLeDescriptorFacade.findEndpoint();
-          File file = new File(settings.getSparkDir() + "/lib/" + "spark-examples-1.5.2-hadoop2.4.0.jar");
-          fileOps.copyToHDFSFromLocal(false,file.getAbsolutePath(), "hdfs://"+hdfsLeDescriptors.getHostname()+"/Projects/"+project.getName()+"/TestJob/");
-          
-      } catch (IOException ex) {
-          Logger.getLogger(ProjectController.class.getName()).log(Level.SEVERE, null, ex);
-      }
-        
-    }
     
 }

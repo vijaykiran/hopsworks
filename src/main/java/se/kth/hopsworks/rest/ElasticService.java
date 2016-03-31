@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
@@ -49,6 +50,9 @@ import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.util.Ip;
 import se.kth.hopsworks.util.Settings;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import se.kth.bbc.project.fb.Inode;
+import se.kth.bbc.project.fb.InodeFacade;
+import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 
 /**
@@ -71,6 +75,9 @@ public class ElasticService {
   @EJB
   private Settings settings;
 
+  @EJB
+  private InodeFacade inodes;
+  
   @EJB
   private DatasetFacade datasetFacade;
   
@@ -178,7 +185,7 @@ public class ElasticService {
   
   
   @GET
-  @Path("globalpublicsearch/{searchTerm}/")
+  @Path("publicsearch/{searchTerm}/")
   @Produces(MediaType.APPLICATION_JSON)
   @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
   public Response publicSearch(
@@ -248,11 +255,13 @@ public class ElasticService {
       List<ElasticHit> elasticHits = new LinkedList<>();
       if (response.getHits().getHits().length > 0) {
         SearchHit[] hits = response.getHits().getHits();
-        
-        for (SearchHit hit : hits) {  
-          
-            /*int inodeid = hit  TODO*/
-          elasticHits.add(new ElasticHit(hit));
+        for (SearchHit hit : hits) {
+          Inode dummy = new Inode();
+          Inode i = inodes.findById(Integer.parseInt(hit.getId()));
+          List<Dataset> dss = datasetFacade.findByInode(i);
+          if(dss.size() > 0 && dss.get(0).isPublicDs()){
+              elasticHits.add(new ElasticHit(hit));
+          }
         }
       }
 

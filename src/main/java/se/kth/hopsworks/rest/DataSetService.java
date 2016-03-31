@@ -376,7 +376,7 @@ public class DataSetService {
 
     try {
       datasetController.createDataset(user, project, dataSet.getName(), dataSet.
-          getDescription(), dataSet.getTemplate(), dataSet.isSearchable(),
+          getDescription(), dataSet.getTemplate(), dataSet.isSearchable(), dataSet.isIsPublic(),
           false);
     } catch (NullPointerException c) {
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
@@ -913,10 +913,35 @@ public class DataSetService {
               ResponseMessages.DATASET_ALREADY_PUBLIC);
     }
     ds.setPublicDs(true);
-    datasetFacade.merge(ds);
     json.setSuccessMessage("The Dataset is now public.");
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();
+  }
+  
+  @GET
+  @Path("/isPublic/{inodeId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
+  public Response isPublic(@PathParam("inodeId") Integer inodeId,
+          @Context SecurityContext sc,
+          @Context HttpServletRequest req) throws AppException {
+    JsonResponse json = new JsonResponse();
+    if (inodeId == null) {
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+              "Incomplete request!");
+    }
+    Inode inode = inodes.findById(inodeId);
+    if (inode == null) {
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+              ResponseMessages.DATASET_NOT_FOUND);
+    }
+
+    Dataset ds = datasetFacade.findByProjectAndInode(this.project, inode);
+    if (ds == null) {
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+              ResponseMessages.DATASET_NOT_FOUND);
+    }
+    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(ds.isPublicDs()).build();
   }
 
   

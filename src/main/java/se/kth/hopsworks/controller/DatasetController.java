@@ -70,6 +70,7 @@ public class DatasetController {
    * this DataSet.
    * @param searchable Defines whether the dataset can be indexed or not (i.e.
    * whether it can be visible in the search results or not)
+   * @param ispublic whether it is public or not
    * @param globallyVisible
    * @throws NullPointerException If any of the given parameters is null.
    * @throws IllegalArgumentException If the given DataSetDTO contains invalid
@@ -78,7 +79,7 @@ public class DatasetController {
    * @see FolderNameValidator.java
    */
   public void createDataset(Users user, Project project, String dataSetName,
-          String datasetDescription, int templateId, boolean searchable,
+          String datasetDescription, int templateId, boolean searchable, boolean ispublic,
           boolean globallyVisible)
           throws IOException {
     //Parameter checking.
@@ -128,7 +129,7 @@ public class DatasetController {
         ds = inodes.findByParentAndName(parent, dataSetName);
         Dataset newDS = new Dataset(ds, project);
         newDS.setSearchable(searchable);
-
+        newDS.setPublicDs(ispublic);
         if (datasetDescription != null) {
           newDS.setDescription(datasetDescription);
         }

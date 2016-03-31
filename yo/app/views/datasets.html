@@ -52,7 +52,7 @@
                   <div class="col-lg-12">
 
 
-                    <div ng-repeat="dataset in datasetsCtrl.files| filter:{shared: datasetsCtrl.shared, status: datasetsCtrl.status, isPublic: datasetsCtrl.isPublic} | orderBy: 'name'">
+                    <div ng-repeat="dataset in datasetsCtrl.files| filter:{shared: datasetsCtrl.shared, status: datasetsCtrl.status} | orderBy: 'name'">
                       <div ng-dblclick="projectCtrl.browseDataset(dataset)"
                            ng-click="datasetsCtrl.select($index, dataset); metadataCtrl.setMetadataTemplate(dataset); datasetsCtrl.openMetadata();"
                            ng-init="(iscollapsed$index) = true"
@@ -61,13 +61,13 @@
                            data-target="menu-{{ $index}}">
                         <div class="file" ng-class="{'greyed' : datasetsCtrl.selected === $index}">
                           <a>
-                            <span class="publicDS" ng-class="{'glyphicon glyphicon-globe': dataset.publicDS === true}"></span>
                             <span class="corner"></span>
                             <div class="icon">
                               <i class="glyphicon" ng-class="{'glyphicon-folder-close': datasetsCtrl.selected === $index, 'glyphicon-folder-open' : datasetsCtrl.selected !== $index}"></i>
                             </div>
                             <div class="file-name">
                               {{dataset.name}}
+                              <i class="glyphicon glyphicon-globe" ng-if="dataset.publicDs"></i>
                               <br/>
                               <small><b>Owner:</b> {{dataset.owner}}</small>
                             </div>

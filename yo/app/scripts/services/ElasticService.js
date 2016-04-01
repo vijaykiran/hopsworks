@@ -23,7 +23,7 @@ angular.module('hopsWorksApp')
                  * @returns {unresolved}
                  */
                 clusterWideSearch: function (searchTerm) {
-                  return $http.get('/api/elastic/clusterwideSearch/' + searchTerm);
+                  return $http.get('/api/elastic/clusterwidesearch/' + searchTerm);
                 },
                 /**
                  * Search under a project hitting hitting 'project' index

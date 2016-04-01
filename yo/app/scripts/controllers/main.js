@@ -8,6 +8,7 @@ angular.module('hopsWorksApp')
             function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
 
                 var self = this;
+                self.publicSearch = false;
                 self.email = $cookies['email'];
                 self.emailHash = md5.createHash(self.email || '');
                 var elasticService = ElasticService();

@@ -2,9 +2,10 @@ package se.kth.hopsworks.rest;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.RolesAllowed;
@@ -50,10 +51,13 @@ import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.util.Ip;
 import se.kth.hopsworks.util.Settings;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import org.json.JSONObject;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
+import se.kth.hopsworks.hops_site.Cluster;
+import se.kth.hopsworks.hops_site.RegisterCluster;
 
 /**
  *
@@ -80,6 +84,9 @@ public class ElasticService {
 
     @EJB
     private DatasetFacade datasetFacade;
+    
+    @EJB
+    private RegisterCluster registerCluster;
     
     
     /**
@@ -199,7 +206,27 @@ public class ElasticService {
                     "Incomplete request!");
         }
         
-        
+        JSONObject registeredclusters = registerCluster.getRegisteredClusters();
+        if(registeredclusters.length() > 0 ){
+            List<Cluster> online_clusters = new ArrayList<>();
+            Iterator<String> i = registeredclusters.keys();
+            while(i.hasNext()){
+                String key = i.next();
+                try{
+                    JSONObject obj = (JSONObject) registeredclusters.get(key);
+                    Cluster c = new Cluster(obj.getString("name"), obj.getString("restendpoint"), obj.getString("email"), obj.getString("cert"), obj.getString("udpendpoint"), obj.getLong("heartbeatsmissed"), obj.getString("dateregistered"));
+                    online_clusters.add(c);
+                    
+                }catch(Exception e){
+                    
+                }
+                
+            }
+            if(online_clusters.size() > 0){
+                
+            }
+            
+        }
         
         
         return null;

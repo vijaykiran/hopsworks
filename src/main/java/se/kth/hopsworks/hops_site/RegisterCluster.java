@@ -21,7 +21,7 @@ import org.json.JSONObject;
  * @author gnomer_fedora
  */
 @Stateful
-public class register {
+public class RegisterCluster {
 
     private final String BASE_URI = "http://bbc1.sics.se:14003/hops-site/webresources";
     private final String cluster_name = "hops";

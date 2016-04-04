@@ -223,7 +223,7 @@ public class ElasticService {
                 
             }
             if(online_clusters.size() > 0){
-                
+                /*ask clusters TODO*/
             }
             
         }

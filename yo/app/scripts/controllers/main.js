@@ -175,6 +175,7 @@ angular.module('hopsWorksApp')
                                     .then(function (response) {
                                         local_data = response.data;
                                         if (local_data.length > 0) {
+                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
                                             self.searchResult = local_data;
                                         } else {
                                             self.searchResult = [];
@@ -182,13 +183,14 @@ angular.module('hopsWorksApp')
                                         }
                                         self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
                                         self.resultItems = self.searchResult.length;
-                                        elasticService.clusterWideSearch(searchTerm).then(function (response2) {
+                                        elasticService.clusterWideSearch(self.searchTerm).then(function (response2) {
                                             global_data = response2.data;
                                             if (global_data.length > 0) {
+                                                self.searchReturnedPublic = "Public result for <b>" + self.searchTerm + "</b>";
                                                 self.searchResultPublic = global_data;
                                             } else {
                                                 self.searchResultPublic = [];
-                                                self.searchReturnedPublic = "No result found for <b>" + self.searchTerm + "</b>";
+                                                self.searchReturnedPublic = "No public result found for <b>" + self.searchTerm + "</b>";
                                             }
                                             self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
                                             self.resultItems = self.searchResult.length;
@@ -201,6 +203,7 @@ angular.module('hopsWorksApp')
                                         var searchHits = response.data;
                                         //console.log("RECEIVED RESPONSE " + JSON.stringify(response));
                                         if (searchHits.length > 0) {
+                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
                                             self.searchResult = searchHits;
                                         } else {
                                             self.searchResult = [];

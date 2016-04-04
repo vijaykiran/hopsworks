@@ -80,7 +80,8 @@ public class ElasticService {
 
     @EJB
     private DatasetFacade datasetFacade;
-
+    
+    
     /**
      * Searches for content composed of projects and datasets. Hits two elastic
      * indices: 'project' and 'dataset'
@@ -197,17 +198,11 @@ public class ElasticService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     "Incomplete request!");
         }
-
-        List<ElasticHit> dummyHits = new LinkedList<>();
-        ElasticHit dummy = new ElasticHit();
-        dummy.setId("DummyID");
-        dummy.setName("DummyName");
-        dummy.setType("DummyType");
-        GenericEntity<List<ElasticHit>> searchResults
-                = new GenericEntity<List<ElasticHit>>(dummyHits) {
-        };
-        return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
-                entity(searchResults).build();
+        
+        
+        
+        
+        return null;
     }
 
     @GET

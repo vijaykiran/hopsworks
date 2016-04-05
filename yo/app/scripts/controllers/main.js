@@ -128,12 +128,12 @@ angular.module('hopsWorksApp')
                             }, function (error) { });
                 };
 
-                self.publicSearch = false;
+                self.crossClusterSearch = false;
                 self.searchTerm = "";
                 self.searchReturned = "";
-                self.searchReturnedPublic = "";
+                self.searchReturnedCrossCluster = "";
                 self.searchResult = [];
-                self.searchResultPublic = [];
+                self.searchResultCrossCluster = [];
                 self.resultPages = 0;
                 self.resultItems = 0;
                 self.currentPage = 1;
@@ -151,7 +151,7 @@ angular.module('hopsWorksApp')
                     } else {
                         self.searchResult = [];
                         self.searchReturned = "";
-                        self.searchReturnedPublic = "";
+                        self.searchReturnedCrossCluster = "";
                     }
                 };
 
@@ -161,15 +161,15 @@ angular.module('hopsWorksApp')
                     self.currentPage = 1;
                     self.pageSize = 5;
                     self.searchResult = [];
-                    self.searchResultPublic = [];
+                    self.searchResultCrossCluster = [];
                     self.searchReturned = "";
-                    self.searchReturnedPublic = "";
+                    self.searchReturnedCrossCluster = "";
 
                     if (self.searchType === "global") {
                         var local_data;
                         var global_data;
                         //triggering a global search
-                        if (self.publicSearch) {
+                        if (self.crossClusterSearch) {
 
                             elasticService.globalSearch(self.searchTerm)
                                     .then(function (response) {
@@ -183,14 +183,14 @@ angular.module('hopsWorksApp')
                                         }
                                         self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
                                         self.resultItems = self.searchResult.length;
-                                        elasticService.clusterWideSearch(self.searchTerm).then(function (response2) {
+                                        elasticService.crossClusterSearch(self.searchTerm).then(function (response2) {
                                             global_data = response2.data;
                                             if (global_data.length > 0) {
-                                                self.searchReturnedPublic = "Public result for <b>" + self.searchTerm + "</b>";
-                                                self.searchResultPublic = global_data;
+                                                self.searchReturnedCrossCluster = "Cross cluster result for <b>" + self.searchTerm + "</b>";
+                                                self.searchResultCrossCluster = global_data;
                                             } else {
-                                                self.searchResultPublic = [];
-                                                self.searchReturnedPublic = "No public result found for <b>" + self.searchTerm + "</b>";
+                                                self.searchResultCrossCluster = [];
+                                                self.searchReturnedCrossCluster = "No cross cluster result found for <b>" + self.searchTerm + "</b>";
                                             }
                                             self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
                                             self.resultItems = self.searchResult.length;

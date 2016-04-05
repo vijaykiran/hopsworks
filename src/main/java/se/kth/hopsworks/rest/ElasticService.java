@@ -18,6 +18,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -58,6 +61,7 @@ import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.hops_site.Cluster;
 import se.kth.hopsworks.hops_site.RegisterCluster;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 /**
  *
@@ -84,11 +88,10 @@ public class ElasticService {
 
     @EJB
     private DatasetFacade datasetFacade;
-    
+
     @EJB
     private RegisterCluster registerCluster;
-    
-    
+
     /**
      * Searches for content composed of projects and datasets. Hits two elastic
      * indices: 'project' and 'dataset'
@@ -102,7 +105,7 @@ public class ElasticService {
     @GET
     @Path("globalsearch/{searchTerm}")
     @Produces(MediaType.APPLICATION_JSON)
-    @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
+    @RolesAllowed({"SYS_ADMIN", "BBC_USER"})
     public Response globalSearch(
             @PathParam("searchTerm") String searchTerm,
             @Context SecurityContext sc,
@@ -193,10 +196,9 @@ public class ElasticService {
     }
 
     @GET
-    @Path("clusterwidesearch/{searchTerm}/")
+    @Path("crossclustersearch/{searchTerm}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
-    public Response ClusterWideSearch(
+    public Response CrossClusterSearch(
             @PathParam("searchTerm") String searchTerm,
             @Context SecurityContext sc,
             @Context HttpServletRequest req) throws AppException {
@@ -205,38 +207,49 @@ public class ElasticService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     "Incomplete request!");
         }
-        
+
         JSONObject registeredclusters = registerCluster.getRegisteredClusters();
-        if(registeredclusters.length() > 0 ){
+        if (registeredclusters.length() > 0) {
             List<Cluster> online_clusters = new ArrayList<>();
             Iterator<String> i = registeredclusters.keys();
-            while(i.hasNext()){
+            while (i.hasNext()) {
                 String key = i.next();
-                try{
+                try {
                     JSONObject obj = (JSONObject) registeredclusters.get(key);
                     Cluster c = new Cluster(obj.getString("name"), obj.getString("restendpoint"), obj.getString("email"), obj.getString("cert"), obj.getString("udpendpoint"), obj.getLong("heartbeatsmissed"), obj.getString("dateregistered"));
                     online_clusters.add(c);
-                    
-                }catch(Exception e){
+
+                } catch (Exception e) {
+
+                }
+
+            }
+            if (online_clusters.size() > 0) {
+                List<JSONObject> results = new ArrayList<>();
+                for(Cluster c : online_clusters){
+                    javax.ws.rs.client.Client client = ClientBuilder.newClient();
+                    WebTarget target = client.target(c.getCluster_endpoint()).path("/" + searchTerm);
+                    Invocation.Builder request = target.request();
+                    request.accept(MediaType.APPLICATION_JSON);
+                    Response r = request.get();
+                    results.add((JSONObject) r.getEntity());
                     
                 }
                 
+                return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
+                    entity(results).build();
             }
-            if(online_clusters.size() > 0){
-                /*ask clusters TODO*/
-            }
-            
+
         }
-        
-        
-        return null;
+
+        return noCacheResponse.getNoCacheResponseBuilder(Response.Status.NOT_FOUND).
+                    entity(null).build();
     }
 
     @GET
-    @Path("publicsearch/{searchTerm}/")
+    @Path("publicdatasets/{searchTerm}/")
     @Produces(MediaType.APPLICATION_JSON)
-    @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
-    public Response publicSearch(
+    public Response PublicDatasets(
             @PathParam("searchTerm") String searchTerm,
             @Context SecurityContext sc,
             @Context HttpServletRequest req) throws AppException {

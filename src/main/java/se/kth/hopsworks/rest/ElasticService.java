@@ -62,6 +62,7 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.hops_site.Cluster;
 import se.kth.hopsworks.hops_site.RegisterCluster;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import org.json.JSONArray;
 
 /**
  *
@@ -207,43 +208,32 @@ public class ElasticService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     "Incomplete request!");
         }
-
-        JSONObject registeredclusters = registerCluster.getRegisteredClusters();
+        List<JSONArray> results = new ArrayList<>();
+        JSONArray registeredclusters = registerCluster.getRegisteredClusters();
         if (registeredclusters.length() > 0) {
-            List<Cluster> online_clusters = new ArrayList<>();
-            Iterator<String> i = registeredclusters.keys();
-            while (i.hasNext()) {
-                String key = i.next();
-                try {
-                    JSONObject obj = (JSONObject) registeredclusters.get(key);
-                    Cluster c = new Cluster(obj.getString("name"), obj.getString("restendpoint"), obj.getString("email"), obj.getString("cert"), obj.getString("udpendpoint"), obj.getLong("heartbeatsmissed"), obj.getString("dateregistered"));
-                    online_clusters.add(c);
-
-                } catch (Exception e) {
-
-                }
-
+            for (int i = 0; i < registeredclusters.length(); i++) {
+                javax.ws.rs.client.Client client = ClientBuilder.newClient();
+                WebTarget target = client.target(registeredclusters.getJSONObject(i).getString("restendpoint")).path("/" + searchTerm);
+                String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+                JSONArray r = new JSONArray(response);
+                results.add(r);
             }
-            if (online_clusters.size() > 0) {
-                List<JSONObject> results = new ArrayList<>();
-                for(Cluster c : online_clusters){
-                    javax.ws.rs.client.Client client = ClientBuilder.newClient();
-                    WebTarget target = client.target(c.getCluster_endpoint()).path("/" + searchTerm);
-                    Invocation.Builder request = target.request();
-                    request.accept(MediaType.APPLICATION_JSON);
-                    Response r = request.get();
-                    results.add((JSONObject) r.getEntity());
-                    
+            
+            JSONArray flattened = new JSONArray();
+            for(JSONArray a : results){
+                for(int i = 0;i<a.length();i++){
+                    flattened.put(a.get(i));
                 }
-                
-                return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
-                    entity(results).build();
             }
-
+            
+            JSONObject fixed = new JSONObject().put("array", flattened);
+            return Response.status(200).entity(fixed).build();
+            
         }
-
-        return noCacheResponse.getNoCacheResponseBuilder(Response.Status.NOT_FOUND).
-                    entity(null).build();
+            
+        return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
+                entity(null).build();
+        
     }
 
     @GET

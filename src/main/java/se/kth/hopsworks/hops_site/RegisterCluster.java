@@ -5,6 +5,9 @@
  */
 package se.kth.hopsworks.hops_site;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
@@ -22,6 +25,7 @@ import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.faces.context.FacesContext;
+import org.json.JSONArray;
 
 /**
  *
@@ -36,7 +40,7 @@ public class RegisterCluster {
     private final String cluster_email = "johsn@kth.se";
     private final String certificate = "xyz";
     private final String udpendpoint = "http://bbc1.sics.se:14003/hops-site/udpendpoint";
-    private JSONObject registeredclusters;
+    private JSONArray registeredclusters;
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://bbc1.sics.se:14003/hops-site/webresources";
@@ -48,7 +52,7 @@ public class RegisterCluster {
     public void init() {
 
         //ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-
+        
         my_endpoint = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
 
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -56,11 +60,9 @@ public class RegisterCluster {
 
         String response = Ping(String.class, cluster_name, my_endpoint, cluster_email, certificate, udpendpoint);
         
-        response = response.replaceAll("\\[|\\]", "");
+        registeredclusters = new JSONArray(response);
         
-        registeredclusters = new JSONObject(response);
-        
-        context.getTimerService().createTimer(30000, "time to ping");
+        context.getTimerService().createTimer(60000, "time to ping");
     }
 
     @Timeout
@@ -68,7 +70,11 @@ public class RegisterCluster {
 
         String response = this.Ping(String.class, cluster_name, my_endpoint, cluster_email, certificate, udpendpoint);
 
-        registeredclusters = new JSONObject(response);
+        response = response.replaceAll("\\[|\\]", "");
+        
+        registeredclusters = new JSONArray(response);
+        
+        context.getTimerService().createTimer(60000, "time to ping");
     }
 
     public <T> T Ping(Class<T> responseType, String name, String restEndpoint, String email, String cert, String udpEndpoint) throws ClientErrorException {
@@ -79,7 +85,7 @@ public class RegisterCluster {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public JSONObject getRegisteredClusters() {
+    public JSONArray getRegisteredClusters() {
         return this.registeredclusters;
     }
 

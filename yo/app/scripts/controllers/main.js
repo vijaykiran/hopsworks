@@ -135,7 +135,9 @@ angular.module('hopsWorksApp')
                 self.searchResult = [];
                 self.searchResultCrossCluster = [];
                 self.resultPages = 0;
+                self.resultPagesCrossCluster = 0;
                 self.resultItems = 0;
+                self.resultItemsCrossCluster = 0;
                 self.currentPage = 1;
                 self.pageSize = 5;
                 self.hitEnter = function (evt) {
@@ -192,8 +194,8 @@ angular.module('hopsWorksApp')
                                                 self.searchResultCrossCluster = [];
                                                 self.searchReturnedCrossCluster = "No cross cluster result found for <b>" + self.searchTerm + "</b>";
                                             }
-                                            self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
-                                            self.resultItems = self.searchResult.length;
+                                            self.resultPagesCrossCluster = Math.ceil(Math.max(self.searchResultCrossCluster.length,self.searchResult.length) / self.pageSize);
+                                            self.resultItemsCrossCluster = self.searchResultCrossCluster.length;
                                         });
                                     });
                         } else {

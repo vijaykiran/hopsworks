@@ -35,17 +35,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" ng-show="mainCtrl.crossClusterSearch">
                         <div  class="time-header search">
-                            <p ng-bind-html="mainCtrl.searchReturnedPublic"></p>
-                            <div ng-show="mainCtrl.resultItems > 1" class="text-muted result">
-                                {{mainCtrl.resultItems}} results found.
+                            <p ng-bind-html="mainCtrl.searchReturnedCrossCluster"></p>
+                            <div ng-show="mainCtrl.resultItemsCrossCluster > 1" class="text-muted result">
+                                {{mainCtrl.resultItemsCrossCluster}} results found.
                             </div>
-                            <div ng-show="mainCtrl.resultItems === 1" class="text-muted result">
-                                {{mainCtrl.resultItems}} result found.
+                            <div ng-show="mainCtrl.resultItemsCrossCluster === 1" class="text-muted result">
+                                {{mainCtrl.resultItemsCrossCluster}} result found.
                             </div>
                         </div>
-                        <div ng-repeat="result in mainCtrl.searchResultPublic| startFrom:(mainCtrl.currentPage - 1) * mainCtrl.pageSize | limitTo:mainCtrl.pageSize">
+                        <div ng-repeat="result in mainCtrl.searchResultCrossCluster| startFrom:(mainCtrl.currentPage - 1) * mainCtrl.pageSize | limitTo:mainCtrl.pageSize">
 
                             <div class="right">
                                 <div class="r-arrow"></div>

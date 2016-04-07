@@ -40,7 +40,7 @@ public class RegisterCluster {
     private final String cluster_email = "johsn@kth.se";
     private final String certificate = "xyz";
     private final String udpendpoint = "http://bbc1.sics.se:14003/hops-site/udpendpoint";
-    private JSONArray registeredclusters;
+    private JSONArray registeredclusters = null;
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://bbc1.sics.se:14003/hops-site/webresources";
@@ -60,7 +60,10 @@ public class RegisterCluster {
 
         String response = Ping(String.class, cluster_name, my_endpoint, cluster_email, certificate, udpendpoint);
         
-        registeredclusters = new JSONArray(response);
+        if(response != null){
+            registeredclusters = new JSONArray(response);
+        }
+        
         
         context.getTimerService().createTimer(60000, "time to ping");
     }
@@ -69,10 +72,10 @@ public class RegisterCluster {
     public void TimeoutOcurred() {
 
         String response = this.Ping(String.class, cluster_name, my_endpoint, cluster_email, certificate, udpendpoint);
-
-        response = response.replaceAll("\\[|\\]", "");
         
-        registeredclusters = new JSONArray(response);
+        if(response != null){
+            registeredclusters = new JSONArray(response);
+        }
         
         context.getTimerService().createTimer(60000, "time to ping");
     }

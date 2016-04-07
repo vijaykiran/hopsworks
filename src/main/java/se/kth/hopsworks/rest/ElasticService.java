@@ -3,7 +3,7 @@ package se.kth.hopsworks.rest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
@@ -53,16 +52,14 @@ import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.util.Ip;
 import se.kth.hopsworks.util.Settings;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import org.json.JSONObject;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import se.kth.hopsworks.hops_site.Cluster;
 import se.kth.hopsworks.hops_site.RegisterCluster;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -124,7 +121,7 @@ public class ElasticService {
                 .build();
 
         String addr = getElasticIpAsString();
-        //initialize the client
+        //initialize tvagrant he client
         Client client = new TransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress(addr, Settings.ELASTIC_PORT));
 
@@ -174,7 +171,6 @@ public class ElasticService {
             List<ElasticHit> elasticHits = new LinkedList<>();
             if (response.getHits().getHits().length > 0) {
                 SearchHit[] hits = response.getHits().getHits();
-
                 for (SearchHit hit : hits) {
                     elasticHits.add(new ElasticHit(hit));
                 }
@@ -208,30 +204,28 @@ public class ElasticService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     "Incomplete request!");
         }
-        List<JSONArray> results = new ArrayList<>();
+        List<ElasticHit> results = new ArrayList<>();
         JSONArray registeredclusters = registerCluster.getRegisteredClusters();
-        if (registeredclusters.length() > 0) {
+        if (registerCluster.getRegisteredClusters() != null && registeredclusters.length() > 0) {
             for (int i = 0; i < registeredclusters.length(); i++) {
                 javax.ws.rs.client.Client client = ClientBuilder.newClient();
                 WebTarget target = client.target(registeredclusters.getJSONObject(i).getString("restendpoint")).path("/" + searchTerm);
                 String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
-                JSONArray r = new JSONArray(response);
-                results.add(r);
-            }
-            
-            JSONArray flattened = new JSONArray();
-            for(JSONArray a : results){
-                for(int i = 0;i<a.length();i++){
-                    flattened.put(a.get(i));
+                JSONArray ja = new JSONArray(response);
+                for(int index=0;i<ja.length();i++){
+                    JSONObject jo = ja.getJSONObject(index);
+                    ElasticHit eh = new ElasticHit(jo.getString("name"),jo.getString("id"),jo.getString("type"),(JSONObject)jo.get("hits"));
+                    results.add(eh);
                 }
             }
-            
-            JSONObject fixed = new JSONObject().put("array", flattened);
-            return Response.status(200).entity(fixed).build();
+            GenericEntity<List<ElasticHit>> searchResults
+                    = new GenericEntity<List<ElasticHit>>(results) {
+            };
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(searchResults).build();
             
         }
             
-        return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
+        return noCacheResponse.getNoCacheResponseBuilder(Response.Status.NOT_FOUND).
                 entity(null).build();
         
     }
@@ -307,7 +301,6 @@ public class ElasticService {
             if (response.getHits().getHits().length > 0) {
                 SearchHit[] hits = response.getHits().getHits();
                 for (SearchHit hit : hits) {
-                    Inode dummy = new Inode();
                     Inode i = inodes.findById(Integer.parseInt(hit.getId()));
                     List<Dataset> dss = datasetFacade.findByInode(i);
                     if (dss.size() > 0 && dss.get(0).isPublicDs()) {

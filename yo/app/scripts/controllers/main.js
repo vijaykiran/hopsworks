@@ -148,7 +148,7 @@ angular.module('hopsWorksApp')
 
                 self.keyTyped = function (evt) {
 
-                    if (self.searchTerm.length > 3) {
+                    if (self.searchTerm.length > 3 || self.searchResult.length > 0) {
                         self.search();
                     } else {
                         self.searchResult = [];

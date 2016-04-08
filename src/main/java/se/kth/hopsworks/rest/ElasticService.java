@@ -208,26 +208,29 @@ public class ElasticService {
         JSONArray registeredclusters = registerCluster.getRegisteredClusters();
         if (registerCluster.getRegisteredClusters() != null && registeredclusters.length() > 0) {
             for (int i = 0; i < registeredclusters.length(); i++) {
-                javax.ws.rs.client.Client client = ClientBuilder.newClient();
-                WebTarget target = client.target(registeredclusters.getJSONObject(i).getString("restendpoint")).path("/" + searchTerm);
-                String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
-                JSONArray ja = new JSONArray(response);
-                for(int index=0;i<ja.length();i++){
-                    JSONObject jo = ja.getJSONObject(index);
-                    ElasticHit eh = new ElasticHit(jo.getString("name"),jo.getString("id"),jo.getString("type"),(JSONObject)jo.get("hits"));
-                    results.add(eh);
+                if (registeredclusters.getJSONObject(i).getLong("heartbeatsmissed") < 5) {
+                    javax.ws.rs.client.Client client = ClientBuilder.newClient();
+                    WebTarget target = client.target(registeredclusters.getJSONObject(i).getString("restendpoint")).path("/" + searchTerm);
+                    String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+                    JSONArray ja = new JSONArray(response);
+                    for (int index = 0; i < ja.length(); i++) {
+                        JSONObject jo = ja.getJSONObject(index);
+                        ElasticHit eh = new ElasticHit(jo.getString("name"), jo.getString("id"), jo.getString("type"), (JSONObject) jo.get("hits"));
+                        results.add(eh);
+                    }
                 }
+
             }
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(results) {
             };
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(searchResults).build();
-            
+
         }
-            
+
         return noCacheResponse.getNoCacheResponseBuilder(Response.Status.NOT_FOUND).
                 entity(null).build();
-        
+
     }
 
     @GET

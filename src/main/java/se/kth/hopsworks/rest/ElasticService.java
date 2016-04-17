@@ -41,6 +41,7 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.QueryBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
@@ -585,12 +586,15 @@ public class ElasticService {
         QueryBuilder namePrefixMatch = prefixQuery(Settings.META_NAME_FIELD,
                 searchTerm);
 
-        QueryBuilder namePhraseMatch = fuzzyQuery(Settings.META_NAME_FIELD,
+        QueryBuilder namePhraseMatch = matchPhraseQuery(Settings.META_NAME_FIELD,
                 searchTerm);
+        
+        QueryBuilder nameFuzzyMatch = fuzzyQuery(Settings.META_NAME_FIELD,searchTerm).fuzziness(Fuzziness.AUTO);
 
         QueryBuilder nameQuery = boolQuery()
                 .should(namePrefixMatch)
-                .should(namePhraseMatch);
+                .should(namePhraseMatch)
+                .should(nameFuzzyMatch);
 
         return nameQuery;
     }

@@ -43,6 +43,7 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchPhraseQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
@@ -584,7 +585,7 @@ public class ElasticService {
         QueryBuilder namePrefixMatch = prefixQuery(Settings.META_NAME_FIELD,
                 searchTerm);
 
-        QueryBuilder namePhraseMatch = matchPhraseQuery(Settings.META_NAME_FIELD,
+        QueryBuilder namePhraseMatch = fuzzyQuery(Settings.META_NAME_FIELD,
                 searchTerm);
 
         QueryBuilder nameQuery = boolQuery()

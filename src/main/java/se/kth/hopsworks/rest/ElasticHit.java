@@ -24,7 +24,7 @@ import static se.kth.hopsworks.rest.Index.SITE;
  * @author vangelis
  */
 @XmlRootElement
-public class ElasticHit {
+public class ElasticHit{
 
     private static final Logger logger = Logger.getLogger(ElasticHit.class.
             getName());
@@ -37,6 +37,8 @@ public class ElasticHit {
     private Map<String, Object> map;
     //whether the inode is a parent, a child or a dataset
     private String type;
+    
+    private float score;
 
     public ElasticHit() {
     }
@@ -46,6 +48,8 @@ public class ElasticHit {
         this.id = hit.getId();
         //the source of the retrieved record (i.e. all the indexed information)
         this.map = hit.getSource();
+        
+        this.score = hit.getScore();
         /*
      * depending on the source index results were retrieved from, the parent type
      * may be either 'project' or 'dataset'
@@ -83,16 +87,24 @@ public class ElasticHit {
         }
     }
 
-    public ElasticHit(String name, String id, String type, JSONObject json) {
+    public ElasticHit(String name, String id, String type, JSONObject json, float score) {
          
         Map<String, Object> source = new Gson().fromJson(json.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
         this.setName(name);
         this.setId(id);
         this.setType(type);
         this.setHits(source);
-
+        this.setScore(score);
     }
 
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+    
     public final void setId(String id) {
         this.id = id;
     }

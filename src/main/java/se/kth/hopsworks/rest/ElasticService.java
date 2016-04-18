@@ -3,6 +3,8 @@ package se.kth.hopsworks.rest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +64,8 @@ import se.kth.hopsworks.hops_site.RegisterCluster;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 /**
  *
@@ -177,7 +181,6 @@ public class ElasticService {
                     elasticHits.add(new ElasticHit(hit));
                 }
             }
-
             this.clientShutdown(client);
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
@@ -195,9 +198,9 @@ public class ElasticService {
     }
 
     @GET
-    @Path("crossclustersearch/{searchTerm}/")
+    @Path("publicsearch/{searchTerm}/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response CrossClusterSearch(
+    public Response PublicSearch(
             @PathParam("searchTerm") String searchTerm,
             @Context SecurityContext sc,
             @Context HttpServletRequest req) throws AppException {
@@ -217,7 +220,7 @@ public class ElasticService {
                     JSONArray ja = new JSONArray(response);
                     for (int index = 0; i < ja.length(); i++) {
                         JSONObject jo = ja.getJSONObject(index);
-                        ElasticHit eh = new ElasticHit(jo.getString("name"), jo.getString("id"), jo.getString("type"), (JSONObject) jo.get("hits"));
+                        ElasticHit eh = new ElasticHit(jo.getString("name"), jo.getString("id"), jo.getString("type"), (JSONObject) jo.get("hits"),jo.getLong("score"));
                         results.add(eh);
                     }
                 }
@@ -313,7 +316,6 @@ public class ElasticService {
                     }
                 }
             }
-
             this.clientShutdown(client);
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
@@ -407,7 +409,6 @@ public class ElasticService {
                     elasticHits.add(new ElasticHit(hit));
                 }
             }
-
             this.clientShutdown(client);
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
@@ -490,7 +491,6 @@ public class ElasticService {
                     elasticHits.add(new ElasticHit(hit));
                 }
             }
-
             this.clientShutdown(client);
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {

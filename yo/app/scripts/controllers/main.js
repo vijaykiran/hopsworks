@@ -128,16 +128,16 @@ angular.module('hopsWorksApp')
                             }, function (error) { });
                 };
 
-                self.crossClusterSearch = false;
+                self.PublicSearch = false;
                 self.searchTerm = "";
                 self.searchReturned = "";
-                self.searchReturnedCrossCluster = "";
+                self.searchReturnedPublicSearch = "";
                 self.searchResult = [];
-                self.searchResultCrossCluster = [];
+                self.searchResultPublicSearch = [];
                 self.resultPages = 0;
-                self.resultPagesCrossCluster = 0;
+                self.resultPagesPublicSearch = 0;
                 self.resultItems = 0;
-                self.resultItemsCrossCluster = 0;
+                self.resultItemsPublicSearch = 0;
                 self.currentPage = 1;
                 self.pageSize = 5;
                 self.hitEnter = function (evt) {
@@ -153,7 +153,7 @@ angular.module('hopsWorksApp')
                     } else {
                         self.searchResult = [];
                         self.searchReturned = "";
-                        self.searchReturnedCrossCluster = "";
+                        self.searchReturnedPublicSearch = "";
                     }
                 };
 
@@ -163,15 +163,15 @@ angular.module('hopsWorksApp')
                     self.currentPage = 1;
                     self.pageSize = 5;
                     self.searchResult = [];
-                    self.searchResultCrossCluster = [];
+                    self.searchResultPublicSearch = [];
                     self.searchReturned = "";
-                    self.searchReturnedCrossCluster = "";
+                    self.searchReturnedPublicSearch = "";
 
                     if (self.searchType === "global") {
                         var local_data;
                         var global_data;
                         //triggering a global search
-                        if (self.crossClusterSearch) {
+                        if (self.PublicSearch) {
 
                             elasticService.globalSearch(self.searchTerm)
                                     .then(function (response) {
@@ -185,17 +185,17 @@ angular.module('hopsWorksApp')
                                         }
                                         self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
                                         self.resultItems = self.searchResult.length;
-                                        elasticService.crossClusterSearch(self.searchTerm).then(function (response2) {
+                                        elasticService.publicSearch(self.searchTerm).then(function (response2) {
                                             global_data = response2.data;
                                             if (global_data.length > 0) {
-                                                self.searchReturnedCrossCluster = "Cross cluster result for <b>" + self.searchTerm + "</b>";
-                                                self.searchResultCrossCluster = global_data;
+                                                self.searchReturnedPublicSearch = "Public search results for <b>" + self.searchTerm + "</b>";
+                                                self.searchResultPublicSearch = global_data;
                                             } else {
-                                                self.searchResultCrossCluster = [];
-                                                self.searchReturnedCrossCluster = "No cross cluster result found for <b>" + self.searchTerm + "</b>";
+                                                self.searchResultPublicSearch = [];
+                                                self.searchReturnedPublicSearch = "No public search results found for <b>" + self.searchTerm + "</b>";
                                             }
-                                            self.resultPagesCrossCluster = Math.ceil(Math.max(self.searchResultCrossCluster.length,self.searchResult.length) / self.pageSize);
-                                            self.resultItemsCrossCluster = self.searchResultCrossCluster.length;
+                                            self.resultPagesPublicSearch = Math.ceil(Math.max(self.searchResultPublicSearch.length,self.searchResult.length) / self.pageSize);
+                                            self.resultItemsPublicSearch = self.searchResultPublicSearch.length;
                                         });
                                     });
                         } else {

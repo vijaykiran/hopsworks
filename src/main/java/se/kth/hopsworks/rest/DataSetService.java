@@ -913,16 +913,17 @@ public class DataSetService {
               ResponseMessages.DATASET_ALREADY_PUBLIC);
     }
     ds.setPublicDs(true);
+    datasetFacade.merge(ds);
     json.setSuccessMessage("The Dataset is now public.");
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();
   }
   
   @GET
-  @Path("/isPublic/{inodeId}")
+  @Path("/removePublic/{inodeId}")
   @Produces(MediaType.APPLICATION_JSON)
   @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
-  public Response isPublic(@PathParam("inodeId") Integer inodeId,
+  public Response removePublic(@PathParam("inodeId") Integer inodeId,
           @Context SecurityContext sc,
           @Context HttpServletRequest req) throws AppException {
     JsonResponse json = new JsonResponse();
@@ -941,7 +942,15 @@ public class DataSetService {
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
               ResponseMessages.DATASET_NOT_FOUND);
     }
-    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(ds.isPublicDs()).build();
+    if (ds.isPublicDs() == false) { 
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+              ResponseMessages.DATASET_NOT_PUBLIC);
+    }
+    ds.setPublicDs(false);
+    datasetFacade.merge(ds);
+    json.setSuccessMessage("The Dataset is no longer public.");
+    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
+            json).build();
   }
 
   

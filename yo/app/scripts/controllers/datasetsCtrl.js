@@ -293,6 +293,23 @@ This will make all its files available for any registered user to download and p
                       }
               );
             };
+            
+            self.removePublic = function (id) {
+
+              ModalService.confirm('sm', 'Confirm', 'Are you sure you want to make this DataSet private? \n\
+This will make all its files unavailable for others to download.').then(
+                      function (success) {
+                        dataSetService.removePublic(id).then(
+                                function (success) {
+                                  growl.success(success.data.successMessage, {title: 'The DataSet is now Private.', ttl: 1500});
+                                  getDirContents();
+                                }, function (error) {
+                          growl.error(error.data.errorMsg, {title: 'Error', ttl: 1000});
+                        });
+
+                      }
+              );
+            };
 
 
 //            self.isPublic = function (id) {

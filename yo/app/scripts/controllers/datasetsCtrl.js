@@ -20,6 +20,8 @@ angular.module('hopsWorksApp')
 
             var dataSetService = DataSetService(self.projectId); //The datasetservice for the current project.
 
+            $scope.isPublic = true;
+            
             $scope.tgState = true;
 
             $scope.status = {
@@ -294,10 +296,10 @@ This will make all its files available for any registered user to download and p
               );
             };
             
-            self.removePublic = function (id) {
+             self.removePublic = function (id) {
 
               ModalService.confirm('sm', 'Confirm', 'Are you sure you want to make this DataSet private? \n\
-This will make all its files unavailable for others to download.').then(
+This will make all its files unavailable to other projects unless you share it explicitly.').then(
                       function (success) {
                         dataSetService.removePublic(id).then(
                                 function (success) {
@@ -309,17 +311,8 @@ This will make all its files unavailable for others to download.').then(
 
                       }
               );
-            };
-
-
-//            self.isPublic = function (id) {
-//              dataSetService.isPublic(id).then(
-//                      function (success) {
-//                      }, function (error) {
-//                growl.error(error.data.errorMsg, {title: 'Error', ttl: 1000});
-//              });
-//            };
-
+            };           
+            
 
             self.parentPathArray = function () {
               var newPathArray = self.pathArray.slice(0);

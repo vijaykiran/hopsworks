@@ -2,7 +2,6 @@ package se.kth.hopsworks.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +14,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -37,6 +35,7 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.bbc.project.services.ProjectServiceEnum;
 import se.kth.hopsworks.controller.DataSetDTO;
+import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.controller.ProjectController;
 import se.kth.hopsworks.controller.ProjectDTO;
 import se.kth.hopsworks.controller.QuotasDTO;
@@ -612,4 +611,49 @@ public class ProjectService {
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
         price).build();
   }
+  
+  
+  @GET
+  @Path("getPublicDatasets")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AllowedRoles(roles = {AllowedRoles.ALL})
+  public Response getPublicDatasets(
+      @Context SecurityContext sc,
+      @Context HttpServletRequest req) throws AppException {
+
+    List<DataSetDTO> publicDatasets = datasetFacade.findPublicDatasets();
+    
+    
+    GenericEntity<List<DataSetDTO>> datasets
+        = new GenericEntity<List<DataSetDTO>>(publicDatasets) {
+        } ;
+    
+    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
+        datasets).build();
+  }
+
+  @GET
+  @Path("{id}/importPublicDataset/{dsId}")
+  @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
+  public Response quotasByProjectID(
+      @PathParam("id") Integer id,
+      @PathParam("dsId") Integer dsId,
+      @Context SecurityContext sc,
+      @Context HttpServletRequest req) throws AppException {
+
+    Project project = projectController.findProjectById(id);
+    Dataset ds = datasetFacade.find(dsId);
+    
+    if (ds.isPublicDs() == false) {
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+          ResponseMessages.DATASET_NOT_PUBLIC);        
+    }
+    
+    hdfsUsersBean.shareDataset(project, ds);
+
+    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).build();
+  }
+
+  
+  
 }

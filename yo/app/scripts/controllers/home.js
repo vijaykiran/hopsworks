@@ -2,7 +2,7 @@
 
 angular.module('hopsWorksApp')
         .controller('HomeCtrl', ['ProjectService', 'ModalService', 'growl', 'ActivityService', 'UtilsService', '$q', 'TourService', '$location', '$scope',
-            function (ProjectService, ModalService, growl, ActivityService, UtilsService, $q, TourService, $location, $scope) {
+            function (ProjectService,  ModalService, growl, ActivityService, UtilsService, $q, TourService, $location, $scope) {
 
                 var self = this;
 
@@ -11,8 +11,14 @@ angular.module('hopsWorksApp')
                 self.tourService = TourService;
                 self.projects = [];
                 self.currentPage = 1;
+                $scope.showTours = false;
+                $scope.showTutorials = false;
+                $scope.showPublicDatasets = false;
                 self.creating = false;
                 self.exampleProjectID;
+                self.tours = [{ 'name': 'Starting Spark', 'tip': 'Take a tour of Hopsworks by creating a project and running a Spark job!'}];
+                self.tutorials = ['Spark Intro', 'Flink Intro'];
+                self.publicDatasets = [];
                 // Load all projects
 
                 var loadProjects = function (success) {
@@ -137,6 +143,61 @@ angular.module('hopsWorksApp')
 
 
                 updateUIAfterChange(false);
+
+
+
+                self.addPublicDatasetModal = function (inodeId, name, description) {
+
+                  ProjectService.getDatasetInfo({inodeId: inodeId}).$promise.then(
+                                function (response) {
+                                    var datasetDto = response.data;
+                                    var projects;
+                                    //fetch the projects to pass them in the modal. 
+                                    ProjectService.query().$promise.then(
+                                            function (success) {
+                                                projects = success;
+
+                                                //show dataset
+                                                ModalService.viewPublicDataset('md', projects, datasetDto)
+                                                        .then(function (success) {
+                                                            growl.success(success.data.successMessage, {title: 'Success', ttl: 1000});
+                                                        }, function (error) {
+
+                                                        });
+                                            }, function (error) {
+                                        console.log('Error: ' + error);
+                                    });
+
+                                }, function (error) {
+                            growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
+                        });
+                  
+                
+                };
+                
+                
+                
+                self.getPublicDatasets = function () {
+                    ProjectService.getPublicDatasets().$promise.then(
+                            function (success) {
+                              self.publicDatasets = success;
+                            },
+                            function (error) {
+                                self.creating = false;
+                                growl.info("Could not load Public Datasets", {title: 'Info', ttl: 5000});
+                            }
+
+                    );
+                };
+                
+                self.getTours = function () {
+                  self.availableTours = ['spark'];
+                };
+
+                self.getTutorials = function () {
+                  self.availableTutorials = ['zeppelin'];
+                };
+
 
                 self.showGettingStarted = function () {
                     if (self.projects === undefined || self.projects === null || self.projects.length === 0) {

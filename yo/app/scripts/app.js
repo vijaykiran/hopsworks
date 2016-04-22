@@ -26,7 +26,8 @@ angular.module('hopsWorksApp', [
     'ngclipboard',
     'isteven-multi-select',
     'angularUtils.directives.dirPagination',
-    'angular-tour'
+    'angular-tour',
+    'partialsApplication'
 ])
         .config(['$routeProvider', '$httpProvider', '$compileProvider', 'flowFactoryProvider',
             function ($routeProvider, $httpProvider, $compileProvider, flowFactoryProvider) {
@@ -392,6 +393,15 @@ angular.module('hopsWorksApp', [
                                                 });
                                     }]
                             }
+                        })
+                        .when('/partials/download',{
+                            templateUrl: 'views/partials/download.html'
+                        })
+                        .when('/partials/upload',{
+                            templateUrl: 'views/partials/upload.html'
+                        })
+                        .when('/partials/stop',{
+                            templateUrl: 'views/partials/stop.html'
                         })
                         .otherwise({
                             redirectTo: '/'

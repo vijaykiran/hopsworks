@@ -1,3 +1,18 @@
-<div ng-controller="Stoper as st">
+<div class="jumbotron" ng-controller="Stoper as st">
+    
+    <form>
+        <div class="form-group">
+            <label >Filename</label>
+            <input type="text" class="form-control" id="inputFilename" placeholder="Filename" ng-model="st.filename">
+        </div>
+        <div class="form-group">
+            <label >Identifier</label>
+            <input type="text" class="form-control" id="inputIdentifier" placeholder="Identifier" ng-model="st.identifier">
+        </div>
+        <button class="btn btn-default" ng-click="st.stop()">
+            <label>Stop</label>
+            <i class="glyphicon glyphicon-stop"></i>
+        </button>
+    </form>
     
 </div>

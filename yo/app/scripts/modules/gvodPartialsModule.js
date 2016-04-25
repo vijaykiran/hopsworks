@@ -13,10 +13,10 @@ angular.module('partialsApplication').controller('Downloader', ['BackendService'
         self.identifier;
         self.result;
 
-        var JSONObj = { "bookname ":self.filename, "price":self.identifier };
+        
         
         self.download = function(){
-          
+            var JSONObj = { "name ":self.filename, "identifier":self.identifier };
             BackendService.download(JSONObj).then(function(result){
                 self.result = result;
             });
@@ -31,10 +31,10 @@ angular.module('partialsApplication').controller('Uploader', ['BackendService',f
         self.identifier;
         self.result;
 
-        var JSONObj = { "bookname ":self.filename, "price":self.identifier };
+        
         
         self.upload = function(){
-          
+            var JSONObj = { "name ":self.filename, "identifier":self.identifier };
             BackendService.upload(JSONObj).then(function(result){
                 self.result = result;
             });
@@ -49,10 +49,10 @@ angular.module('partialsApplication').controller('Stoper', ['BackendService',fun
         self.identifier;
         self.result;
 
-        var JSONObj = { "bookname ":self.filename, "price":self.identifier };
+        
         
         self.stop = function(){
-          
+            var JSONObj = { "name ":self.filename, "identifier":self.identifier };
             BackendService.stop(JSONObj).then(function(result){
                 self.result = result;
             });

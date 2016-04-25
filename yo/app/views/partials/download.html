@@ -1,3 +1,18 @@
-<div ng-controller="Downloader as dl">
-    
+<div class="jumbotron" ng-controller="Downloader as dl">
+
+    <form>
+        <div class="form-group">
+            <label >Filename</label>
+            <input type="text" class="form-control" id="inputFilename" placeholder="Filename" ng-model="dl.filename">
+        </div>
+        <div class="form-group">
+            <label >Identifier</label>
+            <input type="text" class="form-control" id="inputIdentifier" placeholder="Identifier" ng-model="dl.identifier">
+        </div>
+        <button class="btn btn-default" ng-click="dl.download()">
+            <label>Download</label>
+            <i class="glyphicon glyphicon-download"></i>
+        </button>
+    </form>
+
 </div>

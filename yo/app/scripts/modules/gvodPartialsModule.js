@@ -64,13 +64,13 @@ angular.module('partialsApplication').factory('BackendService',['$http',function
         var service = {
             
             download: function (json) {
-                  return $http.put('localhost:18180/torrent/download',json);
+                  return $http('http://localhost:18180/torrent/download',json);
                 },
             upload: function (json) {
-                  return $http.put('localhost:18180/torrent/upload',json);
+                  return $http.put('http://localhost:18180/torrent/upload',json);
                 },
             stop: function (json) {
-                  return $http.put('localhost:18180/torrent/stop',json);
+                  return $http.put('http://localhost:18180/torrent/stop',json);
                 }    
             
         };

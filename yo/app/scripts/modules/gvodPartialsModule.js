@@ -64,7 +64,7 @@ angular.module('partialsApplication').controller('Stoper', ['BackendService', fu
 
     }]);
 
-angular.module('partialsApplication').factory('Library',['BackendService',function(BackendService){
+angular.module('partialsApplication').controller('Library',['BackendService',function(BackendService){
 
         var self = this;
         self.identifier;
@@ -134,6 +134,13 @@ angular.module('partialsApplication').factory('BackendService', ['$http', functi
                             method: 'PUT',
                             url: 'http://bbc1.sics.se:18183/torrent/stop',
                             data: json
+                        });
+            },
+            getLibraryContents: function(){
+                return $http(
+                        {
+                            method: 'GET',
+                            url: 'http://bbc1.sics.se:18183/library/contents'
                         });
             }
 

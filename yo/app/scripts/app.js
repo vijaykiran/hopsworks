@@ -394,14 +394,8 @@ angular.module('hopsWorksApp', [
                                     }]
                             }
                         })
-                        .when('/partials/download',{
-                            templateUrl: 'views/partials/download.html'
-                        })
-                        .when('/partials/upload',{
-                            templateUrl: 'views/partials/upload.html'
-                        })
-                        .when('/partials/stop',{
-                            templateUrl: 'views/partials/stop.html'
+                        .when('/partials',{
+                            templateUrl: 'views/partials/partial.html'
                         })
                         .otherwise({
                             redirectTo: '/'

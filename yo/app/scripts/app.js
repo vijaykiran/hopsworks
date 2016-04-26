@@ -33,7 +33,7 @@ angular.module('hopsWorksApp', [
             function ($routeProvider, $httpProvider, $compileProvider, flowFactoryProvider) {
 
                 // Responseinterceptor for authentication
-                $httpProvider.interceptors.push('AuthInterceptorService');
+                //$httpProvider.interceptors.push('AuthInterceptorService');
 
                 // Requestinterceptor to transform some of the requests
                 $httpProvider.interceptors.push('RequestInterceptorService');

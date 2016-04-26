@@ -12,13 +12,14 @@ angular.module('partialsApplication').controller('Downloader', ['BackendService'
         self.filename;
         self.identifier;
         self.result;
-
+        self.downloading = false;
 
 
         self.download = function () {
             var JSONObj = {"name ": self.filename, "identifier": self.identifier};
             BackendService.download(JSONObj).then(function (result) {
                 self.result = result;
+                self.downloading = true;
             });
 
         };
@@ -30,13 +31,14 @@ angular.module('partialsApplication').controller('Uploader', ['BackendService', 
         self.filename;
         self.identifier;
         self.result;
-
+        self.uploading = false;
 
 
         self.upload = function () {
             var JSONObj = {"name ": self.filename, "identifier": self.identifier};
             BackendService.upload(JSONObj).then(function (result) {
                 self.result = result;
+                self.uploading = true;
             });
 
         };
@@ -48,25 +50,73 @@ angular.module('partialsApplication').controller('Stoper', ['BackendService', fu
         self.filename;
         self.identifier;
         self.result;
-
+        self.stoped = false;
 
 
         self.stop = function () {
             var JSONObj = {"name ": self.filename, "identifier": self.identifier};
             BackendService.stop(JSONObj).then(function (result) {
                 self.result = result;
+                self.stoped = true;
             });
 
         };
 
     }]);
+
+angular.module('partialsApplication').factory('Library',['BackendService',function(BackendService){
+
+        var self = this;
+        self.identifier;
+        self.filename;
+        self.uri;
+        self.size;
+        self.description;
+        self.result;
+        
+        self.addFile = function(){
+            
+            var fileinfo = {
+                
+                name: self.filename,
+                uri: self.uri,
+                size: self.size,
+                description : self.description
+                
+            };
+            
+            var JSONObj = {"identifier ": self.identifier, "fileinfo": fileinfo}; 
+            
+            BackendService.addFile(JSONObj).then(function(result){
+                self.result = result;
+            });
+            
+        };
+        
+        self.getLibraryContents = function(){
+            
+            BackendService.getLibraryContents().then(function(result){
+                self.result = result;
+            });
+              
+        };
+        
+        self.getLibraryElement = function(){
+            var JSONObj = {"identifier ": self.identifier, "name": self.filename}; 
+            BackendService.getLibraryElement(JSONObj).then(function(result){
+                self.result = result;
+            });
+        };
+        
+    }]);
+
 angular.module('partialsApplication').factory('BackendService', ['$http', function ($http) {
         var service = {
             download: function (json) {
                 return $http(
                         {
                             method: 'PUT',
-                            url: 'http://localhost:18180/torrent/download',
+                            url: 'http://bbc1.sics.se:18183/torrent/download',
                             data: json
                         });
             },
@@ -74,7 +124,7 @@ angular.module('partialsApplication').factory('BackendService', ['$http', functi
                 return $http(
                         {
                             method: 'PUT',
-                            url: 'http://localhost:18180/torrent/upload',
+                            url: 'http://bbc1.sics.se:18183/torrent/upload',
                             data: json
                         });
             },
@@ -82,7 +132,7 @@ angular.module('partialsApplication').factory('BackendService', ['$http', functi
                 return $http(
                         {
                             method: 'PUT',
-                            url: 'http://localhost:18180/torrent/stop',
+                            url: 'http://bbc1.sics.se:18183/torrent/stop',
                             data: json
                         });
             }

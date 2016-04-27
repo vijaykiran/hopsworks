@@ -6,11 +6,11 @@
 
 angular.module('partialsApplication', []);
 
-angular.module('partialsApplication').controller('Downloader', ['BackendService', function (BackendService) {
+angular.module('partialsApplication').controller('Downloader', ['BackendService','PartialsControllersService', function (BackendService,PartialsControllersService) {
 
         var self = this;
-        self.filename;
-        self.identifier;
+        self.filename = PartialsControllersService.filename;
+        self.identifier = PartialsControllersService.identifier;
         self.result;
         self.downloading = false;
 
@@ -25,11 +25,11 @@ angular.module('partialsApplication').controller('Downloader', ['BackendService'
         };
 
     }]);
-angular.module('partialsApplication').controller('Uploader', ['BackendService', function (BackendService) {
+angular.module('partialsApplication').controller('Uploader', ['BackendService', 'PartialsControllersService', function (BackendService,PartialsControllersService) {
 
         var self = this;
-        self.filename;
-        self.identifier;
+        self.filename = PartialsControllersService.filename;
+        self.identifier = PartialsControllersService.identifier;
         self.result;
         self.uploading = false;
 
@@ -44,11 +44,11 @@ angular.module('partialsApplication').controller('Uploader', ['BackendService', 
         };
 
     }]);
-angular.module('partialsApplication').controller('Stoper', ['BackendService', function (BackendService) {
+angular.module('partialsApplication').controller('Stoper', ['BackendService', 'PartialsControllersService', function (BackendService,PartialsControllersService) {
 
         var self = this;
-        self.filename;
-        self.identifier;
+        self.filename = PartialsControllersService.filename;
+        self.identifier = PartialsControllersService.identifier;
         self.result;
         self.stoped = false;
 
@@ -64,7 +64,7 @@ angular.module('partialsApplication').controller('Stoper', ['BackendService', fu
 
     }]);
 
-angular.module('partialsApplication').controller('Library',['BackendService',function(BackendService){
+angular.module('partialsApplication').controller('Library', ['BackendService', 'PartialsControllersService', function (BackendService, PartialsControllersService) {
 
         var self = this;
         self.identifier;
@@ -73,40 +73,83 @@ angular.module('partialsApplication').controller('Library',['BackendService',fun
         self.size;
         self.description;
         self.result;
-        
-        self.addFile = function(){
-            
+        self.viewToLoad;
+        self.showView = false;
+        self.indexToShow;
+
+        self.addFile = function () {
+
             var fileinfo = {
-                
                 name: self.filename,
                 uri: self.uri,
                 size: self.size,
-                description : self.description
-                
+                description: self.description
+
             };
-            
-            var JSONObj = {"identifier ": self.identifier, "fileinfo": fileinfo}; 
-            
-            BackendService.addFile(JSONObj).then(function(result){
+
+            var JSONObj = {"identifier ": self.identifier, "fileinfo": fileinfo};
+
+            BackendService.addFile(JSONObj).then(function (result) {
                 self.result = result;
             });
+
+        };
+
+        self.getLibraryContents = function () {
+
+            BackendService.getLibraryContents().then(function (result) {
+                self.result = result;
+            });
+
+        };
+
+        self.getLibraryElement = function () {
+            var JSONObj = {"identifier ": self.identifier, "name": self.filename};
+            BackendService.getLibraryElement(JSONObj).then(function (result) {
+                self.result = result;
+            });
+        };
+
+        self.enlarge = function (status, name, identifier, index) {
+
+            switch (status) {
+                case "NONE":
+                    self.viewToLoad = "upload";
+                    break;
+                case "UPLOADING":
+                    self.viewToLoad = "stop";
+                    break;
+                case "DOWNLOADING" :
+                    self.viewToLoad = "download";
+                    break;
+            }
+
+            PartialsControllersService.filename = name;
+            PartialsControllersService.identifier = identifier;
             
+            self.showView = true;
+            self.indexToShow = index;
+
         };
         
-        self.getLibraryContents = function(){
+        self.minimize = function(){
+          
+          self.showView = false;
+          PartialsControllersService.filename = "";
+          PartialsControllersService.identifier = "";
             
-            BackendService.getLibraryContents().then(function(result){
-                self.result = result;
-            });
-              
         };
+
+
+    }]);
+
+angular.module('partialsApplication').factory('PartialsControllersService',[function(){
         
-        self.getLibraryElement = function(){
-            var JSONObj = {"identifier ": self.identifier, "name": self.filename}; 
-            BackendService.getLibraryElement(JSONObj).then(function(result){
-                self.result = result;
-            });
-        };
+        var self = this;
+        self.identifier = "";
+        self.filename = "";
+        
+        return self;
         
     }]);
 
@@ -136,7 +179,7 @@ angular.module('partialsApplication').factory('BackendService', ['$http', functi
                             data: json
                         });
             },
-            getLibraryContents: function(){
+            getLibraryContents: function () {
                 return $http(
                         {
                             method: 'GET',

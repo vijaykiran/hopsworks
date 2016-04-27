@@ -67,8 +67,8 @@ angular.module('partialsApplication').controller('Stoper', ['BackendService', 'P
 angular.module('partialsApplication').controller('Library', ['BackendService', 'PartialsControllersService', function (BackendService, PartialsControllersService) {
 
         var self = this;
-        self.identifier;
-        self.filename;
+        self.identifier = PartialsControllersService.identifier;
+        self.filename = PartialsControllersService.filename;
         self.uri;
         self.size;
         self.description;
@@ -120,7 +120,7 @@ angular.module('partialsApplication').controller('Library', ['BackendService', '
                     self.viewToLoad = "stop";
                     break;
                 case "DOWNLOADING" :
-                    self.viewToLoad = "download";
+                    self.viewToLoad = "stop";
                     break;
             }
 
@@ -185,7 +185,24 @@ angular.module('partialsApplication').factory('BackendService', ['$http', functi
                             method: 'GET',
                             url: 'http://bbc1.sics.se:18183/library/contents'
                         });
+            },
+            addFile: function(json){
+                return $http(
+                        {
+                            method: 'PUT',
+                            url: 'http://bbc1.sics.se:18183/library/add',
+                            data: json
+                        });
+            },
+            getLibraryElement: function(json){
+                return $http(
+                        {
+                            method: 'PUT',
+                            url: 'http://bbc1.sics.se:18183/library/element',
+                            data: json
+                        });
             }
+            
 
         };
 

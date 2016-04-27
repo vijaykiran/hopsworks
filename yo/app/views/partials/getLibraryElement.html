@@ -1,3 +1,11 @@
-<div>
+<div class="jumbotron" ng-controller="Library as lib">
+    
+    <span ng-click="lib.getLibraryElement()">
+        <label>Show status</label>
+        <i class="glyphicon glyphicon-plus"> </i>
+    </span>
+    <div>
+        Status : {{lib.result}}
+    </div>
     
 </div>

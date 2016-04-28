@@ -74,12 +74,11 @@ angular.module('partialsApplication').controller('Library', ['BackendService', '
         self.description;
         self.result;
         self.viewToLoad;
-        self.showView = false;
-        self.indexToShow;
-
+        self.showView = new Array(0);
+        self.status = false;
         self.addFile = function () {
 
-            var fileinfo = {
+            var fileInfo = {
                 name: self.filename,
                 uri: self.uri,
                 size: self.size,
@@ -87,7 +86,7 @@ angular.module('partialsApplication').controller('Library', ['BackendService', '
 
             };
 
-            var JSONObj = {"identifier ": self.identifier, "fileinfo": fileinfo};
+            var JSONObj = {"identifier": self.identifier, "fileInfo": fileInfo};
 
             BackendService.addFile(JSONObj).then(function (result) {
                 self.result = result;
@@ -104,10 +103,15 @@ angular.module('partialsApplication').controller('Library', ['BackendService', '
         };
 
         self.getLibraryElement = function () {
-            var JSONObj = {"identifier ": self.identifier, "name": self.filename};
+            var JSONObj = {"identifier": self.identifier, "name": self.filename};
             BackendService.getLibraryElement(JSONObj).then(function (result) {
                 self.result = result;
             });
+            self.status = true;
+        };
+        
+        self.closeLibraryElement = function(){
+            self.status = false;
         };
 
         self.enlarge = function (status, name, identifier, index) {
@@ -127,16 +131,20 @@ angular.module('partialsApplication').controller('Library', ['BackendService', '
             PartialsControllersService.filename = name;
             PartialsControllersService.identifier = identifier;
             
-            self.showView = true;
-            self.indexToShow = index;
+            if(self.showView.length === 0){
+                self.showView = new Array(self.result.data.contents.length);
+                self.showView[index] = true;
+            }else{
+                self.showView[index] = true;
+            }
+            
+            
 
         };
         
-        self.minimize = function(){
+        self.minimize = function(index){
           
-          self.showView = false;
-          PartialsControllersService.filename = "";
-          PartialsControllersService.identifier = "";
+          self.showView[index]= false;  
             
         };
 

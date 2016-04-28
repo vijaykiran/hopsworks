@@ -35,11 +35,11 @@
                 Status: {{file.status}}
             </div>
             <div class="col-md-3">
-                <i ng-click="lib.enlarge(file.status, file.name, file.identifier,$index)" class="glyphicon glyphicon-plus" ng-if="!lib.showView"></i>
-                <i ng-click="lib.minimize()" class="glyphicon glyphicon-minus" ng-if="lib.showView"></i>
+                <i ng-click="lib.enlarge(file.status, file.name, file.identifier,$index)" class="glyphicon glyphicon-plus" ng-if="lib.showView.length === 0 || !lib.showView[$index]"></i>
+                <i ng-click="lib.minimize($index)" class="glyphicon glyphicon-minus" ng-if="lib.showView.length > 0 && lib.showView[$index] === true"></i>
             </div>
         </div>
-        <div class="row" ng-if="lib.showView && lib.indexToShow === $index " style="border: solid 5px black;">
+        <div class="row" ng-if="lib.showView.length > 0 && lib.showView[$index] === true" style="border: solid 5px black;">
             <div ng-if="lib.viewToLoad === 'upload'">
                 <div ng-include="'views/partials/upload.html'"></div>
             </div>

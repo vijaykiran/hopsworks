@@ -5,37 +5,28 @@
  */
 package se.kth.hopsworks.hops_site;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
-import javax.servlet.ServletContext;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import org.json.JSONObject;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
-import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
-import javax.faces.context.FacesContext;
 import org.json.JSONArray;
 
 /**
  *
  * @author gnomer_fedora
  */
+
+
 @Startup
 @Singleton
 public class RegisterCluster {
 
-    private final String cluster_name = "hops";
+    private final String cluster_name = "hops1";
     private String my_endpoint;
     private final String cluster_email = "johsn@kth.se";
     private final String certificate = "xyz";
@@ -50,8 +41,6 @@ public class RegisterCluster {
 
     @PostConstruct
     public void init() {
-
-        //ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         
         my_endpoint = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
 
@@ -63,8 +52,6 @@ public class RegisterCluster {
         if(response != null){
             registeredclusters = new JSONArray(response);
         }
-        
-        
         context.getTimerService().createTimer(60000, "time to ping");
     }
 

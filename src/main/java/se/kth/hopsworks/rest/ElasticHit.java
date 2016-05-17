@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.elasticsearch.common.base.Splitter;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
 import static se.kth.hopsworks.rest.Index.DATASET;

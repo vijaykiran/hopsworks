@@ -49,6 +49,43 @@ public class Settings {
 
   public static final String ERASURE_CODING_CONFIG = "erasure-coding-site.xml";
 
+  /*
+    Hops-Site stuff
+  */
+  
+  private static final String BASE_URI_HOPS_SITE = "http://bbc1.sics.se:14003/hops-site/webresources";
+  private static final String CLUSTER_MAIL = "johsn2@kth.se";
+  private static final String CLUSTER_NAME = "Hops-1";
+  private static final String GVOD_UDP_ENDPOINT = "udp://bbc1.sics.se:14003/gvod";
+  private static final String ELASTIC_PUBLIC_RESTENDPOINT = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
+  private static final String CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";
+
+    public static String getCLUSTER_CERT() {
+        return CLUSTER_CERT;
+    }
+  
+    public static String getBASE_URI_HOPS_SITE() {
+        return BASE_URI_HOPS_SITE;
+    }
+
+    public static String getCLUSTER_MAIL() {
+        return CLUSTER_MAIL;
+    }
+
+    public static String getCLUSTER_NAME() {
+        return CLUSTER_NAME;
+    }
+
+    public static String getGVOD_UDP_ENDPOINT() {
+        return GVOD_UDP_ENDPOINT;
+    }
+
+    public static String getELASTIC_PUBLIC_RESTENDPOINT() {
+        return ELASTIC_PUBLIC_RESTENDPOINT;
+    }
+  
+  
+  
   private String setUserVar(String varName, String defaultValue) {
     Variables userName = findById(varName);
     if (userName != null && userName.getValue() != null && (userName.getValue().isEmpty() == false)) {

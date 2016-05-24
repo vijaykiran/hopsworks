@@ -71,8 +71,7 @@ import se.kth.hopsworks.hops_site.RegisterCluster;
 @TransactionAttribute(TransactionAttributeType.NEVER)
 public class ElasticService {
 
-    private final static Logger logger = Logger.getLogger(ElasticService.class.
-        getName());
+    private final static Logger logger = Logger.getLogger(ElasticService.class.getName());
 
     @EJB
     private NoCacheResponse noCacheResponse;

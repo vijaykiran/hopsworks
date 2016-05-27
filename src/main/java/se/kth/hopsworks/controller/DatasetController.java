@@ -2,6 +2,7 @@ package se.kth.hopsworks.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -20,6 +21,7 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
+import se.kth.hopsworks.hops_site.RegisterCluster;
 import se.kth.hopsworks.meta.db.InodeBasicMetadataFacade;
 import se.kth.hopsworks.meta.db.TemplateFacade;
 import se.kth.hopsworks.meta.entity.InodeBasicMetadata;
@@ -54,6 +56,8 @@ public class DatasetController {
   private HdfsUsersController hdfsUsersBean;
   @EJB
   private DistributedFsService dfsSingleton;
+  @EJB
+  private Settings settings;
 
   /**
    * Create a new DataSet. This is, a folder right under the project home
@@ -129,7 +133,12 @@ public class DatasetController {
         ds = inodes.findByParentAndName(parent, dataSetName);
         Dataset newDS = new Dataset(ds, project);
         newDS.setSearchable(searchable);
-        newDS.setPublicDs(ispublic);
+        if(ispublic){
+            newDS.setPublicDs(true);
+            newDS.setPublicDsId(settings.getCLUSTER_ID()+ "_" + project.getName() + "_" + dataSetName);
+        }else{
+            newDS.setPublicDs(false);
+        }
         if (datasetDescription != null) {
           newDS.setDescription(datasetDescription);
         }

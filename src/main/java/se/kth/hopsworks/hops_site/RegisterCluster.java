@@ -30,18 +30,20 @@ public class RegisterCluster {
     private JSONArray registeredclusters = null;
     private WebTarget webTarget;
     private Client client;
-    private String cluster_id;
 
     @Resource
     private SessionContext context;
+    
+    @EJB
+    private Settings settings;
 
     @PostConstruct
     public void init() {
 
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(Settings.getBASE_URI_HOPS_SITE()).path("myresource");
+        webTarget = client.target(settings.getBASE_URI_HOPS_SITE()).path("myresource");
         TryToRegister();
-        if (this.cluster_id != null) {
+        if (settings.getCLUSTER_ID() != null) {
             TryToPing();
             if (this.registeredclusters != null) {
                 doTimeout();
@@ -55,8 +57,8 @@ public class RegisterCluster {
     @Timeout
     public void TimeoutOcurred() {
 
-        if (cluster_id != null) {
-            String response = this.PingRest(String.class, this.cluster_id, Settings.getELASTIC_PUBLIC_RESTENDPOINT(), Settings.getCLUSTER_MAIL(), Settings.getCLUSTER_CERT(), Settings.getGVOD_UDP_ENDPOINT());
+        if (settings.getCLUSTER_ID() != null) {
+            String response = this.PingRest(String.class, settings.getCLUSTER_ID(), settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
 
             if (response != null) {
                 registeredclusters = new JSONArray(response);
@@ -65,7 +67,7 @@ public class RegisterCluster {
             context.getTimerService().createTimer(60000, "time to ping");
         } else {
             TryToRegister();
-            if (this.cluster_id != null) {
+            if (settings.getCLUSTER_ID() != null) {
                 TryToPing();
                 if (this.registeredclusters != null) {
                     doTimeout();
@@ -81,14 +83,12 @@ public class RegisterCluster {
 
         String id = null;
         try {
-            id = RegisterRest(String.class, Settings.getELASTIC_PUBLIC_RESTENDPOINT(), Settings.getCLUSTER_MAIL(), Settings.getCLUSTER_CERT(), Settings.getGVOD_UDP_ENDPOINT());
+            id = RegisterRest(String.class, settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
         } catch (ClientErrorException ex) {
 
         } finally {
-            if (cluster_id != null) {
-                this.cluster_id = id;
-            } else {
-                this.cluster_id = null;
+            if (settings.getCLUSTER_ID() != null) {
+                settings.setCLUSTER_ID(id);
             }
         }
 
@@ -98,11 +98,11 @@ public class RegisterCluster {
 
         String response = null;
         try {
-            response = PingRest(String.class, this.cluster_id, Settings.getELASTIC_PUBLIC_RESTENDPOINT(), Settings.getCLUSTER_MAIL(), Settings.getCLUSTER_CERT(), Settings.getGVOD_UDP_ENDPOINT());
+            response = PingRest(String.class, settings.getCLUSTER_ID(), settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
         } catch (ClientErrorException ex) {
 
         } finally {
-            if (cluster_id != null) {
+            if (settings.getCLUSTER_ID() != null) {
                 this.registeredclusters = new JSONArray(response);
             } else {
                 this.registeredclusters = null;

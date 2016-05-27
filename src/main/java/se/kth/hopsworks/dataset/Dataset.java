@@ -46,7 +46,10 @@ import se.kth.bbc.project.fb.Inode;
           = "SELECT d FROM Dataset d WHERE d.publicDs = 1"),
   @NamedQuery(name = "Dataset.findByDescription",
           query
-          = "SELECT d FROM Dataset d WHERE d.description = :description")})
+          = "SELECT d FROM Dataset d WHERE d.description = :description"),
+
+  @NamedQuery(name = "Dataset.findByPublicDsId", 
+          query = "SELECT d FROM Dataset d WHERE d.publicDsId = :publicDsId")})
 public class Dataset implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -88,6 +91,9 @@ public class Dataset implements Serializable {
   @NotNull
   @Column(name = "public_ds")
   private boolean publicDs;
+  @Size(max = 1000)
+  @Column(name = "public_ds_id")
+  private String publicDsId;
 
   @OneToMany(cascade = CascadeType.ALL,
           mappedBy = "dataset")
@@ -173,6 +179,14 @@ public class Dataset implements Serializable {
   public void setPublicDs(boolean publicDs) {
     this.publicDs = publicDs;
   }
+  
+  public String getPublicDsId() {
+        return publicDsId;
+    }
+
+  public void setPublicDsId(String publicDsId) {
+        this.publicDsId = publicDsId;
+    }
 
   public Collection<DatasetRequest> getDatasetRequestCollection() {
     return datasetRequestCollection;

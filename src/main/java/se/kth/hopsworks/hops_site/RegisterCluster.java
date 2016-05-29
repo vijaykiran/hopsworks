@@ -46,10 +46,10 @@ public class RegisterCluster {
         if (settings.getCLUSTER_ID() != null) {
             TryToPing();
             if (this.registeredclusters != null) {
-                doTimeout();
+                DoTimeout();
             }
         } else {
-            doTimeout();
+            DoTimeout();
         }
 
     }
@@ -64,16 +64,16 @@ public class RegisterCluster {
                 registeredclusters = new JSONArray(response);
             }
 
-            context.getTimerService().createTimer(60000, "time to ping");
+            DoTimeout();
         } else {
             TryToRegister();
             if (settings.getCLUSTER_ID() != null) {
                 TryToPing();
                 if (this.registeredclusters != null) {
-                    doTimeout();
+                    DoTimeout();
                 }
             } else {
-                doTimeout();
+                DoTimeout();
             }
         }
 
@@ -131,7 +131,7 @@ public class RegisterCluster {
         return this.registeredclusters;
     }
 
-    private void doTimeout() {
+    private void DoTimeout() {
         context.getTimerService().createTimer(60000, "time to ping");
     }
 

@@ -48,11 +48,13 @@ public class Settings {
     private static final String VARIABLE_ADAM_USER = "adam_user";
     private static final String VARIABLE_ADAM_DIR = "adam_dir";
     private static final String VARIABLE_TWOFACTOR_AUTH = "twofactor_auth";
-    private static final String VARIABLE_BASE_URI_HOPS_SITE = "http://bbc1.sics.se:14003/hops-site/webresources";
-    private static final String VARIABLE_CLUSTER_MAIL = "johsn@kth.se";
-    private static final String VARIABLE_GVOD_UDP_ENDPOINT = "udp://bbc1.sics.se:14003/gvod";
-    private static final String VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
-    private static final String VARIABLE_CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";
+    
+    private static final String VARIABLE_CLUSTER_ID = "cluster_id";
+    private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_base_uri";
+    private static final String VARIABLE_CLUSTER_MAIL = "cluster_mail";
+    private static final String VARIABLE_GVOD_UDP_ENDPOINT = "gvod_endpoint";
+    private static final String VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT = "public_search_endpoint";
+    private static final String VARIABLE_CLUSTER_CERT = "certificate";
 
     public static final String ERASURE_CODING_CONFIG = "erasure-coding-site.xml";
 
@@ -87,12 +89,21 @@ public class Settings {
     }
 
     private String CLUSTER_ID = null;
+    
+    
+
+    public void setCLUSTER_ID(String id) {
+
+        em.persist(new Variables("cluster_id", id));
+        CLUSTER_ID = id;
+
+    }
 
     public String getCLUSTER_ID() {
         if (CLUSTER_ID != null) {
             return CLUSTER_ID;
         } else {
-            CLUSTER_ID = getClusterIdFromDatabase();
+            CLUSTER_ID = findById(VARIABLE_CLUSTER_ID).getValue();
             return CLUSTER_ID;
         }
     }
@@ -128,13 +139,6 @@ public class Settings {
             }
         }
         return defaultValue;
-    }
-
-    public void setCLUSTER_ID(String id) {
-
-        em.persist(new Variables("cluster_id", id));
-        CLUSTER_ID = id;
-
     }
 
     private boolean cached = false;
@@ -561,20 +565,6 @@ public class Settings {
 
     // QUOTA
     public static final float DEFAULT_YARN_PRICE = 1.0f;
-
-    private String getClusterIdFromDatabase() {
-
-        String cluster_id = null;
-        String id = "cluster_id";
-        try {
-            cluster_id = em.createNamedQuery("Variables.findById", Variables.class
-            ).setParameter("id", id).getSingleResult().getValue();
-        } catch (NoResultException e) {
-            cluster_id = null;
-        }
-
-        return cluster_id;
-    }
 
     //Project creation: default datasets
     public static enum DefaultDataset {

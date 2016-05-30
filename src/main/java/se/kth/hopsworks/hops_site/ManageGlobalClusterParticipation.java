@@ -15,13 +15,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import org.json.JSONArray;
 import se.kth.hopsworks.util.Settings;
 
-/**
- *
- * @author gnomer_fedora
- */
 @Startup
 @Singleton
 public class ManageGlobalClusterParticipation {
@@ -29,10 +28,10 @@ public class ManageGlobalClusterParticipation {
     private JSONArray registeredClusters = null;
     private WebTarget webTarget;
     private Client client;
-
+    
     @Resource
     private SessionContext context;
-    
+
     @EJB
     private Settings settings;
 
@@ -41,9 +40,9 @@ public class ManageGlobalClusterParticipation {
 
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(settings.getBASE_URI_HOPS_SITE()).path("myresource");
-        if(settings.getCLUSTER_ID() == null){
+        if (settings.getCLUSTER_ID() == null) {
             TryToRegister();
-        }else{
+        } else {
             DoTimeout();
         }
     }
@@ -51,9 +50,9 @@ public class ManageGlobalClusterParticipation {
     @Timeout
     public void TimeoutOcurred() {
 
-        if(settings.getCLUSTER_ID() != null){
+        if (settings.getCLUSTER_ID() != null) {
             TryToPing();
-        }else{
+        } else {
             TryToRegister();
         }
     }
@@ -111,7 +110,12 @@ public class ManageGlobalClusterParticipation {
     }
 
     private void DoTimeout() {
-        context.getTimerService().createTimer(60000, "time to ping");
+        
+        long duration = 6000;
+        TimerConfig timerConfig = new TimerConfig(); 
+        timerConfig.setPersistent(false);
+        Timer timer = context.getTimerService().createSingleActionTimer(duration, timerConfig);
+
     }
 
 }

@@ -24,9 +24,9 @@ import se.kth.hopsworks.util.Settings;
  */
 @Startup
 @Singleton
-public class ManageClusterParticipation {
+public class ManageGlobalClusterParticipation {
 
-    private JSONArray registeredclusters = null;
+    private JSONArray registeredClusters = null;
     private WebTarget webTarget;
     private Client client;
 
@@ -83,7 +83,7 @@ public class ManageClusterParticipation {
 
         } finally {
             if (response != null) {
-                this.registeredclusters = new JSONArray(response);
+                this.registeredClusters = new JSONArray(response);
             }
             DoTimeout();
         }
@@ -107,7 +107,7 @@ public class ManageClusterParticipation {
     }
 
     public JSONArray getRegisteredClusters() {
-        return this.registeredclusters;
+        return this.registeredClusters;
     }
 
     private void DoTimeout() {

@@ -21,7 +21,7 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
-import se.kth.hopsworks.hops_site.RegisterCluster;
+import se.kth.hopsworks.hops_site.ManageClusterParticipation;
 import se.kth.hopsworks.meta.db.InodeBasicMetadataFacade;
 import se.kth.hopsworks.meta.db.TemplateFacade;
 import se.kth.hopsworks.meta.entity.InodeBasicMetadata;

@@ -16,7 +16,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import org.json.JSONArray;
-import org.mortbay.util.ajax.JSON;
 import se.kth.hopsworks.util.Settings;
 
 /**
@@ -25,7 +24,7 @@ import se.kth.hopsworks.util.Settings;
  */
 @Startup
 @Singleton
-public class RegisterCluster {
+public class ManageClusterParticipation {
 
     private JSONArray registeredclusters = null;
     private WebTarget webTarget;
@@ -42,41 +41,21 @@ public class RegisterCluster {
 
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(settings.getBASE_URI_HOPS_SITE()).path("myresource");
-        TryToRegister();
-        if (settings.getCLUSTER_ID() != null) {
-            TryToPing();
-            if (this.registeredclusters != null) {
-                DoTimeout();
-            }
-        } else {
+        if(settings.getCLUSTER_ID() == null){
+            TryToRegister();
+        }else{
             DoTimeout();
         }
-
     }
 
     @Timeout
     public void TimeoutOcurred() {
 
-        if (settings.getCLUSTER_ID() != null) {
-            String response = this.PingRest(String.class, settings.getCLUSTER_ID(), settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
-
-            if (response != null) {
-                registeredclusters = new JSONArray(response);
-            }
-
-            DoTimeout();
-        } else {
+        if(settings.getCLUSTER_ID() != null){
+            TryToPing();
+        }else{
             TryToRegister();
-            if (settings.getCLUSTER_ID() != null) {
-                TryToPing();
-                if (this.registeredclusters != null) {
-                    DoTimeout();
-                }
-            } else {
-                DoTimeout();
-            }
         }
-
     }
 
     public void TryToRegister() {
@@ -87,9 +66,10 @@ public class RegisterCluster {
         } catch (ClientErrorException ex) {
 
         } finally {
-            if (settings.getCLUSTER_ID() != null) {
+            if (id != null) {
                 settings.setCLUSTER_ID(id);
             }
+            DoTimeout();
         }
 
     }
@@ -102,28 +82,27 @@ public class RegisterCluster {
         } catch (ClientErrorException ex) {
 
         } finally {
-            if (settings.getCLUSTER_ID() != null) {
+            if (response != null) {
                 this.registeredclusters = new JSONArray(response);
-            } else {
-                this.registeredclusters = null;
             }
+            DoTimeout();
         }
 
     }
 
-    public <T> T PingRest(Class<T> responseType, String name, String restEndpoint, String email, String cert, String udpEndpoint) throws ClientErrorException {
+    public <T> T PingRest(Class<T> responseType, String clusterId, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
         WebTarget resource = webTarget;
-        restEndpoint = restEndpoint.replaceAll("/", "'");
-        udpEndpoint = udpEndpoint.replaceAll("/", "'");
-        resource = resource.path(java.text.MessageFormat.format("ping/{0}/{1}/{2}/{3}/{4}", new Object[]{name, restEndpoint, email, cert, udpEndpoint}));
+        searchEndpoint = searchEndpoint.replaceAll("/", "'");
+        gvodEndpoint = gvodEndpoint.replaceAll("/", "'");
+        resource = resource.path(java.text.MessageFormat.format("ping/{0}/{1}/{2}/{3}/{4}", new Object[]{clusterId, searchEndpoint, email, cert, gvodEndpoint}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public <T> T RegisterRest(Class<T> responseType, String restEndpoint, String email, String cert, String udpEndpoint) throws ClientErrorException {
+    public <T> T RegisterRest(Class<T> responseType, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
         WebTarget resource = webTarget;
-        restEndpoint = restEndpoint.replaceAll("/", "'");
-        udpEndpoint = udpEndpoint.replaceAll("/", "'");
-        resource = resource.path(java.text.MessageFormat.format("register/{0}/{1}/{2}/{3}/{4}", new Object[]{restEndpoint, email, cert, udpEndpoint}));
+        searchEndpoint = searchEndpoint.replaceAll("/", "'");
+        gvodEndpoint = gvodEndpoint.replaceAll("/", "'");
+        resource = resource.path(java.text.MessageFormat.format("register/{0}/{1}/{2}/{3}", new Object[]{searchEndpoint, email, cert, gvodEndpoint}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 

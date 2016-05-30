@@ -58,7 +58,11 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import se.kth.hopsworks.hops_site.RegisterCluster;
+import se.kth.hopsworks.hops_site.ManageClusterParticipation;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
@@ -80,7 +84,7 @@ public class ElasticService {
     private NoCacheResponse noCacheResponse;
     
     @EJB
-    private RegisterCluster registerCluster;
+    private ManageClusterParticipation registerCluster;
     
     @EJB
     private DatasetFacade datasetFacade;

@@ -103,8 +103,11 @@ public class Settings {
         if (CLUSTER_ID != null) {
             return CLUSTER_ID;
         } else {
-            CLUSTER_ID = findById(VARIABLE_CLUSTER_ID).getValue();
-            return CLUSTER_ID;
+            Variables v = findById(VARIABLE_CLUSTER_ID);
+            if(v != null){
+                return v.getValue();
+            }
+            return null;
         }
     }
 

@@ -49,7 +49,6 @@ public class ManageGlobalClusterParticipation {
 
     @Timeout
     public void TimeoutOcurred() {
-
         if (settings.getCLUSTER_ID() != null) {
             TryToPing();
         } else {
@@ -111,10 +110,10 @@ public class ManageGlobalClusterParticipation {
 
     private void DoTimeout() {
         
-        long duration = 6000;
+        long duration = 60000;
         TimerConfig timerConfig = new TimerConfig(); 
         timerConfig.setPersistent(false);
-        Timer timer = context.getTimerService().createSingleActionTimer(duration, timerConfig);
+        context.getTimerService().createSingleActionTimer(duration, timerConfig);
 
     }
 

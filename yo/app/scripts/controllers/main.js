@@ -32,7 +32,7 @@ angular.module('hopsWorksApp')
                     });
                 };
 
-
+                
                 self.profileModal = function () {
                     ModalService.profile('md');
                 };
@@ -128,16 +128,12 @@ angular.module('hopsWorksApp')
                             }, function (error) { });
                 };
 
-                self.PublicSearch = false;
                 self.searchTerm = "";
+                self.globalClusterBoundary = false;
                 self.searchReturned = "";
-                self.searchReturnedPublicSearch = "";
                 self.searchResult = [];
-                self.searchResultPublicSearch = [];
                 self.resultPages = 0;
-                self.resultPagesPublicSearch = 0;
                 self.resultItems = 0;
-                self.resultItemsPublicSearch = 0;
                 self.currentPage = 1;
                 self.pageSize = 5;
                 self.hitEnter = function (evt) {
@@ -148,12 +144,11 @@ angular.module('hopsWorksApp')
 
                 self.keyTyped = function (evt) {
 
-                    if (self.searchTerm.length > 3 || (self.searchResult.length > 0 && self.searchTerm.length > 0)) {
+                    if (self.searchTerm.length > 3) {
                         self.search();
                     } else {
                         self.searchResult = [];
                         self.searchReturned = "";
-                        self.searchReturnedPublicSearch = "";
                     }
                 };
 
@@ -163,62 +158,36 @@ angular.module('hopsWorksApp')
                     self.currentPage = 1;
                     self.pageSize = 5;
                     self.searchResult = [];
-                    self.searchResultPublicSearch = [];
                     self.searchReturned = "";
-                    self.searchReturnedPublicSearch = "";
 
                     if (self.searchType === "global") {
-                        var local_data;
-                        var global_data;
                         //triggering a global search
-                        if (self.PublicSearch) {
+                        elasticService.globalSearch(self.searchTerm)
+                                .then(function (response) {
 
-                            elasticService.globalSearch(self.searchTerm)
-                                    .then(function (response) {
-                                        local_data = response.data;
-                                        if (local_data.length > 0) {
+                                    var searchHits = response.data;
+                                    //console.log("RECEIVED RESPONSE " + JSON.stringify(response));
+                                    if (searchHits.length > 0) {
+                                        if (self.globalClusterBoundary) {
                                             self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
-                                            self.searchResult = local_data;
                                         } else {
-                                            self.searchResult = [];
+                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
+                                        }
+                                        self.searchResult = searchHits;
+                                    } else {
+                                        self.searchResult = [];
+                                        if (self.globalClusterBoundary) {
+                                            self.searchReturned = "No result found for <b>" + self.searchTerm + "</b>";
+                                        } else {
                                             self.searchReturned = "No result found for <b>" + self.searchTerm + "</b>";
                                         }
-                                        self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
-                                        self.resultItems = self.searchResult.length;
-                                        elasticService.publicSearch(self.searchTerm).then(function (response2) {
-                                            global_data = response2.data;
-                                            if (global_data.length > 0) {
-                                                self.searchReturnedPublicSearch = "Public search results for <b>" + self.searchTerm + "</b>";
-                                                self.searchResultPublicSearch = global_data;
-                                            } else {
-                                                self.searchResultPublicSearch = [];
-                                                self.searchReturnedPublicSearch = "No public search results found for <b>" + self.searchTerm + "</b>";
-                                            }
-                                            self.resultPagesPublicSearch = Math.ceil(Math.max(self.searchResultPublicSearch.length,self.searchResult.length) / self.pageSize);
-                                            self.resultItemsPublicSearch = self.searchResultPublicSearch.length;
-                                        });
-                                    });
-                        } else {
-                            elasticService.globalSearch(self.searchTerm)
-                                    .then(function (response) {
+                                    }
+                                    self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
+                                    self.resultItems = self.searchResult.length;
 
-                                        var searchHits = response.data;
-                                        //console.log("RECEIVED RESPONSE " + JSON.stringify(response));
-                                        if (searchHits.length > 0) {
-                                            self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
-                                            self.searchResult = searchHits;
-                                        } else {
-                                            self.searchResult = [];
-                                            self.searchReturned = "No result found for <b>" + self.searchTerm + "</b>";
-                                        }
-                                        self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
-                                        self.resultItems = self.searchResult.length;
-
-                                    }, function (error) {
-                                        growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
-                                    });
-                        }
-
+                                }, function (error) {
+                                    growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
+                                });
                     } else if (self.searchType === "projectCentric") {
                         elasticService.projectSearch(UtilsService.getProjectName(), self.searchTerm)
                                 .then(function (response) {

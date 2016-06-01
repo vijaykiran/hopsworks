@@ -27,7 +27,7 @@ public class ElasticHit{
 
     private static final Logger logger = Logger.getLogger(ElasticHit.class.
             getName());
-
+    
     //the inode id
     private String id;
     //inode name 
@@ -38,7 +38,12 @@ public class ElasticHit{
     private String type;
     
     private float score;
-
+    
+    private String public_id;
+    
+    private int seeders = 1;
+    
+    private int leechers = 0;
     public ElasticHit() {
     }
 
@@ -95,7 +100,29 @@ public class ElasticHit{
         this.setHits(source);
         this.setScore(score);
     }
-
+    
+    public int getLeechers(){
+        return this.leechers;
+    }
+    
+    public void updateLeechers(){
+        this.leechers++;
+    }
+    public void updateSeeders(){
+        this.seeders++;
+    }
+    
+    public int getSeeders(){
+       return this.seeders;
+    }
+    
+    public void setPublicId(String id){
+        this.public_id = id;
+    }
+    public String getPublicId(){
+        return this.public_id;
+    }
+    
     public float getScore() {
         return score;
     }

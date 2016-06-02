@@ -14,8 +14,7 @@ import javax.persistence.PersistenceContext;
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class Settings {
-
-    @PersistenceContext(unitName = "kthfsPU")
+  @PersistenceContext(unitName = "kthfsPU")
     private EntityManager em;
 
     @PostConstruct
@@ -25,6 +24,7 @@ public class Settings {
     /**
      * Global Variables taken from the DB
      */
+    private static final String VARIABLE_LIVY_IP = "livy_ip";
     private static final String VARIABLE_JHS_IP = "jhs_ip";
     private static final String VARIABLE_OOZIE_IP = "oozie_ip";
     private static final String VARIABLE_SPARK_HISTORY_SERVER_IP = "spark_history_server_ip";
@@ -48,7 +48,7 @@ public class Settings {
     private static final String VARIABLE_ADAM_USER = "adam_user";
     private static final String VARIABLE_ADAM_DIR = "adam_dir";
     private static final String VARIABLE_TWOFACTOR_AUTH = "twofactor_auth";
-    
+
     private static final String VARIABLE_CLUSTER_ID = "cluster_id";
     private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_base_uri";
     private static final String VARIABLE_CLUSTER_MAIL = "cluster_mail";
@@ -89,8 +89,6 @@ public class Settings {
     }
 
     private String CLUSTER_ID = null;
-    
-    
 
     public void setCLUSTER_ID(String id) {
 
@@ -104,7 +102,7 @@ public class Settings {
             return CLUSTER_ID;
         } else {
             Variables v = findById(VARIABLE_CLUSTER_ID);
-            if(v != null){
+            if (v != null) {
                 return v.getValue();
             }
             return null;
@@ -164,6 +162,7 @@ public class Settings {
             NDB_DIR = setDirVar(VARIABLE_NDB_DIR, NDB_DIR);
             ELASTIC_IP = setIpVar(VARIABLE_ELASTIC_IP, ELASTIC_IP);
             JHS_IP = setIpVar(VARIABLE_JHS_IP, JHS_IP);
+            LIVY_IP = setIpVar(VARIABLE_LIVY_IP, LIVY_IP);
             OOZIE_IP = setIpVar(VARIABLE_OOZIE_IP, OOZIE_IP);
             SPARK_HISTORY_SERVER_IP = setIpVar(VARIABLE_SPARK_HISTORY_SERVER_IP, SPARK_HISTORY_SERVER_IP);
             CHARON_DIR = setDirVar(VARIABLE_CHARON_DIR, CHARON_DIR);
@@ -213,6 +212,8 @@ public class Settings {
      * Default Directory locations
      */
     private String SPARK_DIR = "/srv/spark";
+    public static final String SPARK_VERSION = "1.6.1";
+    public static final String HOPS_VERSION = "2.4.0";
 
     public synchronized String getSparkDir() {
         checkCache();
@@ -386,7 +387,7 @@ public class Settings {
     public static final int YARN_DEFAULT_APP_MASTER_MEMORY = 512;
     public static final String YARN_DEFAULT_OUTPUT_PATH = "Logs/Yarn/";
     public static final String HADOOP_COMMON_HOME_KEY = "HADOOP_COMMON_HOME";
-//  private static String HADOOP_COMMON_HOME_VALUE = HADOOP_DIR;
+    public static final String HADOOP_HOME_KEY = "HADOOP_HOME";
     public static final String HADOOP_HDFS_HOME_KEY = "HADOOP_HDFS_HOME";
 //  private static final String HADOOP_HDFS_HOME_VALUE = HADOOP_DIR;
     public static final String HADOOP_YARN_HOME_KEY = "HADOOP_YARN_HOME";
@@ -406,8 +407,12 @@ public class Settings {
 
     //Flink constants
     public static final String FLINK_DEFAULT_OUTPUT_PATH = "Logs/Flink/";
-    public static final String FLINK_LOCRSC_SPARK_JAR = "__flink__.jar";
-    public static final String FLINK_LOCRSC_APP_JAR = "__app__.jar";
+    public static final String FLINK_DEFAULT_CONF_FILE = "flink-conf.yaml";
+    public static final String FLINK_DEFAULT_LOG4J_FILE = "log4j.properties";
+    public static final String FLINK_DEFAULT_LOGBACK_FILE = "logback.xml";
+    public static final String FLINK_LOCRSC_FLINK_JAR = "flink.jar";
+    public static final String FLINK_LOCRSC_APP_JAR = "app.jar";
+    public static final String FLINK_AM_MAIN = "org.apache.flink.yarn.ApplicationMaster";
 
     public synchronized String getLocalFlinkJarPath() {
         return getFlinkDir() + "/flink.jar";
@@ -430,7 +435,7 @@ public class Settings {
     }
 
     private static String flinkDefaultClasspath(String flinkDir) {
-        return flinkDir + "/conf:" + flinkDir + "/lib/*";
+        return flinkDir + "/lib/*";
     }
 
     public static String getFlinkDefaultClasspath(String flinkDir) {
@@ -458,7 +463,6 @@ public class Settings {
     }
 
     private static String sparkDefaultClasspath(String sparkDir) {
-//    return sparkDir + "/conf:" + sparkDir + "/lib/*";
         return sparkDir + "/lib/*";
     }
 
@@ -476,9 +480,8 @@ public class Settings {
      */
 //ADAM constants
     public static final String ADAM_MAINCLASS = "org.bdgenomics.adam.cli.ADAMMain";
-//  public static final String ADAM_DEFAULT_JAR_HDFS_PATH = "hdfs:///user/adam/repo/adam-cli.jar";
-    //Or: "adam-cli/target/appassembler/repo/org/bdgenomics/adam/adam-cli/0.15.1-SNAPSHOT/adam-cli-0.15.1-SNAPSHOT.jar"
-    public static final String ADAM_DEFAULT_OUTPUT_PATH = "Logs/Adam/";
+  //Or: "adam-cli/target/appassembler/repo/org/bdgenomics/adam/adam-cli/0.15.1-SNAPSHOT/adam-cli-0.15.1-SNAPSHOT.jar"
+  public static final String ADAM_DEFAULT_OUTPUT_PATH = "Logs/Adam/";
     public static final String ADAM_DEFAULT_HDFS_REPO = "/user/adam/repo/";
 
     public String getAdamJarHdfsPath() {
@@ -531,6 +534,24 @@ public class Settings {
     public synchronized String getJhsIp() {
         checkCache();
         return JHS_IP;
+    }
+
+    // Livy Server
+    private String LIVY_IP = "127.0.0.1";
+    private String LIVY_YARN_MODE = "yarn";
+
+    public synchronized String getLivyIp() {
+        checkCache();
+        return LIVY_IP;
+    }
+
+    public synchronized String getLivyUrl() {
+        return "http://" + getLivyIp() + ":8998";
+    }
+
+    public synchronized String getLivyYarnMode() {
+        checkCache();
+        return LIVY_YARN_MODE;
     }
 
     // Hopsworks
@@ -601,7 +622,8 @@ public class Settings {
      * @param id
      * @return The user with given email, or null if no such user exists.
      */
-    public Variables findById(String id) {
+    public Variables
+            findById(String id) {
         try {
             return em.createNamedQuery("Variables.findById", Variables.class
             ).setParameter("id", id).getSingleResult();
@@ -609,14 +631,14 @@ public class Settings {
             return null;
         }
     }
+            //    Variables v = new Variables(id, value);
+            //    try {
+            //      em.persist(v)
+            //    } catch (EntityExistsException ex) {
+            //    }
+            //  }
 
-//  public void setIdValue(String id, String value) {
-//    Variables v = new Variables(id, value);
-//    try {
-//      em.persist(v)
-//    } catch (EntityExistsException ex) {
-//    }
-//  }
+
     public void detach(Variables variable) {
         em.detach(variable);
     }

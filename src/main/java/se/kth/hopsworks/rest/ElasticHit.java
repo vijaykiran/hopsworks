@@ -1,21 +1,11 @@
 package se.kth.hopsworks.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONObject;
-import static se.kth.hopsworks.rest.Index.DATASET;
-import static se.kth.hopsworks.rest.Index.DS;
-import static se.kth.hopsworks.rest.Index.INODE;
-import static se.kth.hopsworks.rest.Index.PROJ;
-import static se.kth.hopsworks.rest.Index.PROJECT;
-import static se.kth.hopsworks.rest.Index.UNKNOWN;
-import static se.kth.hopsworks.rest.Index.SITE;
 
 /**
  * Represents a JSONifiable version of the elastic hit object
@@ -23,153 +13,80 @@ import static se.kth.hopsworks.rest.Index.SITE;
  * @author vangelis
  */
 @XmlRootElement
-public class ElasticHit{
+public class ElasticHit {
 
-    private static final Logger logger = Logger.getLogger(ElasticHit.class.
-            getName());
+  private static final Logger logger = Logger.getLogger(ElasticHit.class.
+          getName());
+
+  //the inode id
+  private String id;
+  //inode name 
+  private String name;
+  //the rest of the hit (search match) data
+  private Map<String, Object> map;
+  //whether the inode is a parent, a child or a dataset
+  private String type;
+
+  public ElasticHit() {
+  }
+
+  public ElasticHit(SearchHit hit) {
+    //the id of the retrieved hit (i.e. the inode_id)
+    this.id = hit.getId();
+    //the source of the retrieved record (i.e. all the indexed information)
+    this.map = hit.getSource();
+    this.type = hit.getType();
     
-    //the inode id
-    private String id;
-    //inode name 
-    private String name;
-    //the rest of the hit (search match) data
-    private Map<String, Object> map;
-    //whether the inode is a parent, a child or a dataset
-    private String type;
-    
-    private float score;
-    
-    private String public_id;
-    
-    private int seeders = 1;
-    
-    private int leechers = 0;
-    public ElasticHit() {
+    //export the name of the retrieved record from the list
+    for (Entry<String, Object> entry : map.entrySet()) {
+      //set the name explicitly so that it's easily accessible in the frontend
+      if (entry.getKey().equals("name")) {
+        this.setName(entry.getValue().toString());
+      }
+
+      //logger.log(Level.FINE, "KEY -- {0} VALUE --- {1}", new Object[]{entry.getKey(), entry.getValue()});
+    }
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getId() {
+    return this.id;
+  }
+
+  public final void setName(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public String getType() {
+    return this.type;
+  }
+
+  public void setHits(Map<String, Object> source) {
+    this.map = new HashMap<>(source);
+  }
+
+  public Map<String, String> getHits() {
+    //flatten hits (remove nested json objects) to make it more readable
+    Map<String, String> refined = new HashMap<>();
+
+    for (Entry<String, Object> entry : this.map.entrySet()) {
+      //convert value to string
+      String value = (entry.getValue() == null) ? "null" : entry.getValue().
+              toString();
+      refined.put(entry.getKey(), value);
     }
 
-    public ElasticHit(SearchHit hit) {
-        //the id of the retrieved hit (i.e. the inode_id)
-        this.id = hit.getId();
-        //the source of the retrieved record (i.e. all the indexed information)
-        this.map = hit.getSource();
-        
-        this.score = hit.getScore();
-        /*
-     * depending on the source index results were retrieved from, the parent type
-     * may be either 'project' or 'dataset'
-         */
-        Index index = Index.valueOf(hit.getIndex().toUpperCase());
-        switch (index) {
-            case PROJECT:
-                if (hit.getType().equalsIgnoreCase(SITE.toString())) {
-                    this.type = PROJECT.toString().toLowerCase();
-                } else if (hit.getType().equalsIgnoreCase(PROJ.toString())) {
-                    this.type = PROJ.toString().toLowerCase();
-                } else {
-                    this.type = UNKNOWN.toString().toLowerCase();
-                }
-                break;
-            case DATASET:
-                if (hit.getType().equalsIgnoreCase(DS.toString())) {
-                    this.type = DS.toString().toLowerCase();
-                } else if (hit.getType().equalsIgnoreCase(INODE.toString())) {
-                    this.type = INODE.toString().toLowerCase();
-                } else {
-                    this.type = UNKNOWN.toString().toLowerCase();
-                }
-                break;
-        }
-
-        //export the name of the retrieved record from the list
-        for (Entry<String, Object> entry : map.entrySet()) {
-            //set the name explicitly so that it's easily accessible in the frontend
-            if (entry.getKey().equals("name")) {
-                this.setName(entry.getValue().toString());
-            }
-
-            //logger.log(Level.FINE, "KEY -- {0} VALUE --- {1}", new Object[]{entry.getKey(), entry.getValue()});
-        }
-    }
-
-    public ElasticHit(String name, String id, String type, JSONObject json, float score) {
-         
-        Map<String, Object> source = new Gson().fromJson(json.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
-        this.setName(name);
-        this.setId(id);
-        this.setType(type);
-        this.setHits(source);
-        this.setScore(score);
-    }
-    
-    public int getLeechers(){
-        return this.leechers;
-    }
-    
-    public void updateLeechers(){
-        this.leechers++;
-    }
-    public void updateSeeders(){
-        this.seeders++;
-    }
-    
-    public int getSeeders(){
-       return this.seeders;
-    }
-    
-    public void setPublicId(String id){
-        this.public_id = id;
-    }
-    public String getPublicId(){
-        return this.public_id;
-    }
-    
-    public float getScore() {
-        return score;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
-    }
-    
-    public final void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public final void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public final void setType(String type) {
-        this.type = type;
-    }
-
-    public String getType() {
-        return this.type;
-    }
-
-    public final void setHits(Map<String, Object> source) {
-        this.map = new HashMap<>(source);
-    }
-
-    public Map<String, String> getHits() {
-        //flatten hits (remove nested json objects) to make it more readable
-        Map<String, String> refined = new HashMap<>();
-
-        for (Entry<String, Object> entry : this.map.entrySet()) {
-            //convert value to string
-            String value = (entry.getValue() == null) ? "null" : entry.getValue().
-                    toString();
-            refined.put(entry.getKey(), value);
-        }
-
-        return refined;
-    }
+    return refined;
+  }
 }

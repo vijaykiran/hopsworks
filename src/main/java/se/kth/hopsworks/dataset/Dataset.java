@@ -26,222 +26,229 @@ import se.kth.bbc.project.fb.Inode;
 @Table(name = "hopsworks.dataset")
 @XmlRootElement
 @NamedQueries({
-  @NamedQuery(name = "Dataset.findAll",
-          query
-          = "SELECT d FROM Dataset d"),
-  @NamedQuery(name = "Dataset.findById",
-          query
-          = "SELECT d FROM Dataset d WHERE d.id = :id"),
-  @NamedQuery(name = "Dataset.findByInode",
-          query
-          = "SELECT d FROM Dataset d WHERE d.inode = :inode"),
-  @NamedQuery(name = "Dataset.findByProjectAndInode",
-          query
-          = "SELECT d FROM Dataset d WHERE d.projectId = :projectId AND d.inode = :inode"),
-  @NamedQuery(name = "Dataset.findByProject",
-          query
-          = "SELECT d FROM Dataset d WHERE d.projectId = :projectId"),
-  @NamedQuery(name = "Dataset.findAllPublic",
-          query
-          = "SELECT d FROM Dataset d WHERE d.publicDs = 1"),
-  @NamedQuery(name = "Dataset.findByDescription",
-          query
-          = "SELECT d FROM Dataset d WHERE d.description = :description"),
-
-  @NamedQuery(name = "Dataset.findByPublicDsId", 
-          query = "SELECT d FROM Dataset d WHERE d.publicDsId = :publicDsId")})
+    @NamedQuery(name = "Dataset.findAll",
+            query
+            = "SELECT d FROM Dataset d"),
+    @NamedQuery(name = "Dataset.findById",
+            query
+            = "SELECT d FROM Dataset d WHERE d.id = :id"),
+    @NamedQuery(name = "Dataset.findByInode",
+            query
+            = "SELECT d FROM Dataset d WHERE d.inode = :inode"),
+    @NamedQuery(name = "Dataset.findByProjectAndInode",
+            query
+            = "SELECT d FROM Dataset d WHERE d.projectId = :projectId AND d.inode = :inode"),
+    @NamedQuery(name = "Dataset.findByProject",
+            query
+            = "SELECT d FROM Dataset d WHERE d.projectId = :projectId"),
+    @NamedQuery(name = "Dataset.findAllPublic",
+            query
+            = "SELECT d FROM Dataset d WHERE d.publicDs = 1"),
+    @NamedQuery(name = "Dataset.findByDescription",
+            query
+            = "SELECT d FROM Dataset d WHERE d.description = :description"),
+    @NamedQuery(name = "Dataset.findByPublicDsId",
+            query = "SELECT d FROM Dataset d WHERE d.publicDsId = :publicDsId"),
+    @NamedQuery(name = "Dataset.findByName",
+            query
+            = "SELECT d FROM Dataset d WHERE d.name = :name")})
 public class Dataset implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  public static final boolean PENDING = false;
-  public static final boolean ACCEPTED = true;
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  @Basic(optional = false)
-  @Column(name = "id")
-  private Integer id;
-  @JoinColumns({
-    @JoinColumn(name = "inode_pid",
-            referencedColumnName = "parent_id"),
-    @JoinColumn(name = "inode_name",
-            referencedColumnName = "name")
-  })
-  @ManyToOne(optional = false)
-  private Inode inode;
-  
-  @Basic(optional = false)
-  @Column(name = "inode_id")
-  private int idForInode = 0;  
-  
-  @Size(max = 3000)
-  @Column(name = "description")
-  private String description;
-  @JoinColumn(name = "projectId",
-          referencedColumnName = "id")
-  @ManyToOne(optional = false)
-  private Project projectId;
-  @Basic(optional = false)
-  @NotNull
-  @Column(name = "editable")
-  private boolean editable = true;
-  @Basic(optional = false)
-  @NotNull
-  @Column(name = "searchable")
-  private boolean searchable = true;
-  @Basic(optional = false)
-  @NotNull
-  @Column(name = "status")
-  private boolean status = ACCEPTED;
-  @Basic(optional = false)
-  @NotNull
-  @Column(name = "public_ds")
-  private boolean publicDs;
-  @Size(max = 1000)
-  @Column(name = "public_ds_id")
-  private String publicDsId;
+    private static final long serialVersionUID = 1L;
+    public static final boolean PENDING = false;
+    public static final boolean ACCEPTED = true;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    @JoinColumns({
+        @JoinColumn(name = "inode_pid",
+                referencedColumnName = "parent_id"),
+        @JoinColumn(name = "inode_name",
+                referencedColumnName = "name")
+    })
+    @ManyToOne(optional = false)
+    private Inode inode;
 
-  @OneToMany(cascade = CascadeType.ALL,
-          mappedBy = "dataset")
-  private Collection<DatasetRequest> datasetRequestCollection;
+    @Basic(optional = false)
+    @Column(name = "inode_name", updatable = false, insertable = false)
+    private String name;
 
-  public Dataset() {
-  }
+    @Basic(optional = false)
+    @Column(name = "inode_id")
+    private int idForInode = 0;
 
-  public Dataset(Integer id) {
-    this.id = id;
-  }
+    @Size(max = 3000)
+    @Column(name = "description")
+    private String description;
+    @JoinColumn(name = "projectId",
+            referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Project projectId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "editable")
+    private boolean editable = true;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "searchable")
+    private boolean searchable = true;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "status")
+    private boolean status = ACCEPTED;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "public_ds")
+    private boolean publicDs;
+    @Size(max = 1000)
+    @Column(name = "public_ds_id")
+    private String publicDsId;
 
-  public Dataset(Integer id, Inode inode) {
-    this.id = id;
-    this.inode = inode;
-    this.idForInode = inode.getId();    
-  }
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "dataset")
+    private Collection<DatasetRequest> datasetRequestCollection;
 
-  public Dataset(Inode inode, Project project) {
-    this.inode = inode;
-    this.projectId = project;
-    this.idForInode = inode.getId();
-  }
-  
-  public Integer getId() {
-    return id;
-  }
+    public Dataset() {
+    }
 
-  public void setId(Integer id) {
-    this.id = id;
-  }
+    public Dataset(Integer id) {
+        this.id = id;
+    }
 
-  public Inode getInode() {
-    return inode;
-  }
+    public Dataset(Integer id, Inode inode) {
+        this.id = id;
+        this.inode = inode;
+        this.idForInode = inode.getId();
+        this.name = inode.getInodePK().getName();
+    }
 
-  public void setInode(Inode inode) {
-    this.inode = inode;
-  }
+    public Dataset(Inode inode, Project project) {
+        this.inode = inode;
+        this.projectId = project;
+        this.idForInode = inode.getId();
+        this.name = inode.getInodePK().getName();
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public Integer getId() {
+        return id;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-  public Project getProjectId() {
-    return projectId;
-  }
+    public Inode getInode() {
+        return inode;
+    }
 
-  public void setProjectId(Project projectId) {
-    this.projectId = projectId;
-  }
+    public void setInode(Inode inode) {
+        this.inode = inode;
+    }
 
-  public boolean isEditable() {
-    return editable;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setEditable(boolean editable) {
-    this.editable = editable;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-  public boolean isSearchable(){
-    return this.searchable;
-  }
-  
-  public void setSearchable(boolean searchable){
-    this.searchable = searchable;
-  }
-  
-  public boolean getStatus() {
-    return status;
-  }
+    public Project getProjectId() {
+        return projectId;
+    }
 
-  public void setStatus(boolean status) {
-    this.status = status;
-  }
+    public void setProjectId(Project projectId) {
+        this.projectId = projectId;
+    }
 
-  public boolean isPublicDs() {
-    return publicDs;
-  }
+    public boolean isEditable() {
+        return editable;
+    }
 
-  public void setPublicDs(boolean publicDs) {
-    this.publicDs = publicDs;
-  }
-  
-  public String getPublicDsId() {
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public boolean isSearchable() {
+        return this.searchable;
+    }
+
+    public void setSearchable(boolean searchable) {
+        this.searchable = searchable;
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public boolean isPublicDs() {
+        return publicDs;
+    }
+
+    public void setPublicDs(boolean publicDs) {
+        this.publicDs = publicDs;
+    }
+
+    public String getPublicDsId() {
         return publicDsId;
     }
 
-  public void setPublicDsId(String publicDsId) {
+    public void setPublicDsId(String publicDsId) {
         this.publicDsId = publicDsId;
     }
 
-  public Collection<DatasetRequest> getDatasetRequestCollection() {
-    return datasetRequestCollection;
-  }
-
-  public void setDatasetRequestCollection(
-          Collection<DatasetRequest> datasetRequestCollection) {
-    this.datasetRequestCollection = datasetRequestCollection;
-  }
-
-  @Override
-  public int hashCode() {
-    int hash = 0;
-    hash += (id != null ? id.hashCode() : 0);
-    return hash;
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Dataset)) {
-      return false;
+    public Collection<DatasetRequest> getDatasetRequestCollection() {
+        return datasetRequestCollection;
     }
-    Dataset other = (Dataset) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.
-            equals(other.id))) {
-      return false;
+
+    public void setDatasetRequestCollection(
+            Collection<DatasetRequest> datasetRequestCollection) {
+        this.datasetRequestCollection = datasetRequestCollection;
     }
-    return true;
-  }
 
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
 
-  /**
-   * DO NOT USE THIS - used by ePipe
-   * @return 
-   */
-  public int getIdForInode() {
-    return idForInode;
-  }
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Dataset)) {
+            return false;
+        }
+        Dataset other = (Dataset) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.
+                equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
 
-  public void setIdForInode(int idForInode) {
-    this.idForInode = idForInode;
-  }
+    /**
+     * DO NOT USE THIS - used by ePipe
+     *
+     * @return
+     */
+    public int getIdForInode() {
+        return idForInode;
+    }
 
-  
-  @Override
-  public String toString() {
-    return "se.kth.hopsworks.dataset.Dataset[ id=" + id + " ]";
-  }
+    public void setIdForInode(int idForInode) {
+        this.idForInode = idForInode;
+    }
+
+    @Override
+    public String toString() {
+        return "se.kth.hopsworks.dataset.Dataset[ id=" + id + " ]";
+    }
 
 }

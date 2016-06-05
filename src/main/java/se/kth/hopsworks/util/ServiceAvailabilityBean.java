@@ -97,12 +97,13 @@ public class ServiceAvailabilityBean {
 // Check Elastic
     String addr = this.settings.getElasticIp();
 
-    /*final org.elasticsearch.common.settings.Settings settings
-        = org.elasticsearch.common.settings.Settings.settingsBuilder()
+    final org.elasticsearch.common.settings.Settings settings
+        = org.elasticsearch.common.settings.Settings.builder()
         .put("client.transport.sniff", true) //being able to retrieve other nodes 
-        .put("cluster.name", "hops").build();*/
+        .put("cluster.name", "hops").build();
 
-    Client client = null;
+    Client client = TransportClient.builder().settings(settings).build()
+        .addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(addr, Settings.ELASTIC_PORT)));
 
     try {
       final ClusterHealthResponse healthResponse = client.admin().cluster().prepareHealth()

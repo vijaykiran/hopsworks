@@ -37,6 +37,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
@@ -44,6 +45,7 @@ import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchPhraseQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import org.elasticsearch.search.SearchHit;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.filters.AllowedRoles;
@@ -53,7 +55,15 @@ import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 /**
@@ -131,7 +141,6 @@ public class ElasticService {
     srb = srb.setTypes(Settings.META_PROJECT_TYPE,
             Settings.META_DATASET_TYPE);
     srb = srb.setQuery(this.globalSearchQuery(searchTerm));
-    //srb = srb.addHighlightedField("name");
     logger.log(Level.INFO, "Global search Elastic query is: {0}", srb.toString());
     ListenableActionFuture<SearchResponse> futureResponse = srb.execute();
     SearchResponse response = futureResponse.actionGet();
@@ -162,8 +171,15 @@ public class ElasticService {
   }
 
   private Client getClient() throws AppException {
-  
-        return null;
+    final org.elasticsearch.common.settings.Settings settings
+            = org.elasticsearch.common.settings.Settings.builder()
+            .put("client.transport.sniff", true) //being able to retrieve other nodes 
+            .put("cluster.name", "hops").build();
+
+    return TransportClient.builder().settings(settings).build()
+            .addTransportAddress(new InetSocketTransportAddress(
+                    new InetSocketAddress(getElasticIpAsString(),
+                            Settings.ELASTIC_PORT)));
   }
 
   /**
@@ -206,7 +222,6 @@ public class ElasticService {
     SearchRequestBuilder srb = client.prepareSearch(Settings.META_INDEX);
     srb = srb.setTypes(Settings.META_INODE_TYPE);
     srb = srb.setQuery(projectSearchQuery(searchTerm));
-    //srb = srb.addHighlightedField("name");
     srb = srb.setRouting(String.valueOf(projectId));
     
     logger.log(Level.INFO, "Project Elastic query is: {0}", srb.toString());
@@ -353,13 +368,13 @@ public class ElasticService {
    */
   private QueryBuilder datasetSearchQuery(int datasetId, String searchTerm) {
     //FIXME: consider metadata search as well
-    /*QueryBuilder hasParent = hasParentQuery(
-            Settings.META_DATASET_TYPE, matchQuery(Settings.META_ID, datasetId));*/
+    QueryBuilder hasParent = hasParentQuery(
+            Settings.META_DATASET_TYPE, matchQuery(Settings.META_ID, datasetId));
       
     QueryBuilder query = getNameDescriptionMetadataQuery(searchTerm);
     
     QueryBuilder cq = boolQuery()
-            .must(null)
+            .must(hasParent)
             .must(query);
     return cq;
   }
@@ -543,5 +558,9 @@ public class ElasticService {
 
     return addr;
   }
+
+    private QueryBuilder hasParentQuery(String META_DATASET_TYPE, MatchQueryBuilder matchQuery) {
+        return null;
+    }
 
 }

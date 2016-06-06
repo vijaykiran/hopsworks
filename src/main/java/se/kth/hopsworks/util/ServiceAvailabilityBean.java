@@ -23,7 +23,6 @@ import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.impl.YarnClientImpl;
 import org.elasticsearch.ElasticsearchTimeoutException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -106,13 +105,13 @@ public class ServiceAvailabilityBean {
         .addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(addr, Settings.ELASTIC_PORT)));
 
     try {
-      final ClusterHealthResponse healthResponse = client.admin().cluster().prepareHealth()
-          .setWaitForStatus(ClusterHealthStatus.GREEN).setTimeout(TimeValue.timeValueSeconds(5)).execute().actionGet();
-      if (healthResponse.isTimedOut()) {
-        elasticsearch = false;
-      } else {
-        elasticsearch = true;
-      }
+//      final ClusterHealthResponse healthResponse = client.admin().cluster().prepareHealth()
+//          .setWaitForStatus(ClusterHealthStatus.GREEN).setTimeout(TimeValue.timeValueSeconds(5)).execute().actionGet();
+//      if (healthResponse.isTimedOut()) {
+//        elasticsearch = false;
+//      } else {
+//        elasticsearch = true;
+//      }
     } catch (final ElasticsearchTimeoutException e) {
       elasticsearch = false;
     }

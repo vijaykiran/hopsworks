@@ -1,15 +1,15 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
 
-    <groupId>se.kth.hop</groupId>
-    <artifactId>hopsworks</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+  <groupId>se.kth.hop</groupId>
+  <artifactId>hopsworks</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
 
-    <name>HopsWorks</name>
+  <name>HopsWorks</name>
+
   <properties>
     <java.version>1.7</java.version>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -21,6 +21,7 @@
     <glassfish.admin>adminuser</glassfish.admin>
     <glassfish.passwd>adminpw</glassfish.passwd>           
   </properties>
+
   <dependencies>
     <!-- CDI bug. Zeppelin-interpreter includes org.sonatype.guice.**
     which has CDI annotated beans, causing deployment of hopsworks to fail. Because Zeppelin-interpreter
@@ -124,7 +125,8 @@
       <groupId>io.hops</groupId>
       <artifactId>erasure-coding</artifactId>
       <version>2.4.0</version>    
-    </dependency>   
+    </dependency>
+    
     <dependency>
      <groupId>org.apache.kafka</groupId>
       <artifactId>kafka_2.10</artifactId>
@@ -153,6 +155,7 @@
         </exclusion>
       </exclusions>
     </dependency>
+
     <!--end of io.hops -->
     <dependency>
       <groupId>org.json</groupId>
@@ -206,13 +209,13 @@
       <artifactId>commons-lang</artifactId>
       <version>2.5</version>
     </dependency>
+
     <!--End of Zeppelin dependencies -->
     <!--Elastic dependency-->
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>5.0.0-SNAPSHOT</version>
-      <type>jar</type>
+      <version>2.1.2</version>
     </dependency>
     <dependency>
     <groupId>org.apache.flink</groupId>
@@ -432,6 +435,7 @@
       </build>
     </profile>
   </profiles>
+
   <repositories>
     <repository>
       <id>apache.snapshots</id>
@@ -486,3 +490,4 @@
   </pluginRepositories>    
 
 </project>
+Status API Training Shop Blog About

@@ -70,30 +70,35 @@ public class Settings {
     private String CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";
 
     public synchronized String getCLUSTER_CERT() {
+        checkCache();
         return CLUSTER_CERT;
     }
 
     private String BASE_URI_HOPS_SITE = "http://bbc1.sics.se:14003/hops-site/webresources";
 
     public synchronized String getBASE_URI_HOPS_SITE() {
+        checkCache();
         return BASE_URI_HOPS_SITE;
     }
 
     private String CLUSTER_MAIL = "johsn@kth.se";
 
     public synchronized String getCLUSTER_MAIL() {
+        checkCache();
         return CLUSTER_MAIL;
     }
 
     private String GVOD_UDP_ENDPOINT = "udp://bbc1.sics.se:14003/gvod";
 
     public synchronized String getGVOD_UDP_ENDPOINT() {
+        checkCache();
         return GVOD_UDP_ENDPOINT;
     }
 
     private String ELASTIC_PUBLIC_RESTENDPOINT = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
 
     public synchronized String getELASTIC_PUBLIC_RESTENDPOINT() {
+        checkCache();
         return ELASTIC_PUBLIC_RESTENDPOINT;
     }
 

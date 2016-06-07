@@ -23,7 +23,7 @@ import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.client.api.impl.YarnClientImpl;
 import org.elasticsearch.ElasticsearchTimeoutException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.cluster.health.ClusterHealthStatus;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -98,7 +98,7 @@ public class ServiceAvailabilityBean {
     String addr = this.settings.getElasticIp();
 
     final org.elasticsearch.common.settings.Settings settings
-        = org.elasticsearch.common.settings.Settings.builder()
+        = org.elasticsearch.common.settings.Settings.settingsBuilder()
         .put("client.transport.sniff", true) //being able to retrieve other nodes 
         .put("cluster.name", "hops").build();
 

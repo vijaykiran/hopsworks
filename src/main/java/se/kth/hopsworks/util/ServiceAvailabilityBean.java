@@ -97,7 +97,7 @@ public class ServiceAvailabilityBean {
     String addr = this.settings.getElasticIp();
 
     final org.elasticsearch.common.settings.Settings settings
-        = org.elasticsearch.common.settings.Settings.builder()
+        = org.elasticsearch.common.settings.Settings.settingsBuilder()
         .put("client.transport.sniff", true) //being able to retrieve other nodes 
         .put("cluster.name", "hops").build();
 

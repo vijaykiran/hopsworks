@@ -37,7 +37,6 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
@@ -45,7 +44,6 @@ import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchPhraseQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.prefixQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import org.elasticsearch.search.SearchHit;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.filters.AllowedRoles;
@@ -55,15 +53,7 @@ import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 /**
@@ -141,6 +131,7 @@ public class ElasticService {
     srb = srb.setTypes(Settings.META_PROJECT_TYPE,
             Settings.META_DATASET_TYPE);
     srb = srb.setQuery(this.globalSearchQuery(searchTerm));
+    srb = srb.addHighlightedField("name");
     logger.log(Level.INFO, "Global search Elastic query is: {0}", srb.toString());
     ListenableActionFuture<SearchResponse> futureResponse = srb.execute();
     SearchResponse response = futureResponse.actionGet();
@@ -169,10 +160,47 @@ public class ElasticService {
     throw new AppException(Response.Status.INTERNAL_SERVER_ERROR.
             getStatusCode(), ResponseMessages.ELASTIC_SERVER_NOT_FOUND);
   }
+  
+  @GET
+  @Path("publicsearch/{searchTerm}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
+  public Response publicSearch(
+          @PathParam("searchTerm") String searchTerm,
+          @Context SecurityContext sc,
+          @Context HttpServletRequest req) throws AppException {
+
+    if (searchTerm == null) {
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+              "Incomplete request!");
+    }
+    
+        return null;
+    
+  }
+  
+  @GET
+  @Path("publicdatasets/{searchTerm}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
+  public Response publicDatasets(
+          @PathParam("searchTerm") String searchTerm,
+          @Context SecurityContext sc,
+          @Context HttpServletRequest req) throws AppException {
+
+    if (searchTerm == null) {
+      throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+              "Incomplete request!");
+    }
+    
+        return null;
+    
+  }
+  
 
   private Client getClient() throws AppException {
     final org.elasticsearch.common.settings.Settings settings
-            = org.elasticsearch.common.settings.Settings.builder()
+            = org.elasticsearch.common.settings.Settings.settingsBuilder()
             .put("client.transport.sniff", true) //being able to retrieve other nodes 
             .put("cluster.name", "hops").build();
 
@@ -222,6 +250,7 @@ public class ElasticService {
     SearchRequestBuilder srb = client.prepareSearch(Settings.META_INDEX);
     srb = srb.setTypes(Settings.META_INODE_TYPE);
     srb = srb.setQuery(projectSearchQuery(searchTerm));
+    srb = srb.addHighlightedField("name");
     srb = srb.setRouting(String.valueOf(projectId));
     
     logger.log(Level.INFO, "Project Elastic query is: {0}", srb.toString());
@@ -558,9 +587,5 @@ public class ElasticService {
 
     return addr;
   }
-
-    private QueryBuilder hasParentQuery(String META_DATASET_TYPE, MatchQueryBuilder matchQuery) {
-        return null;
-    }
 
 }

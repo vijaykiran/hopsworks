@@ -9,7 +9,7 @@
 
     <div ng-show="mainCtrl.searchReturned === ''" class="row" style="min-width: 1000px">
 
-        <div class="col-sm-3 col-md-3">
+        <div class="col-md-3">
             <div class="col-md-10 sidebar pull-left" style="min-width: 280px; max-width: 280px">
 
 
@@ -41,7 +41,6 @@
                             <br>
                             Getting Started with Zeppelin
                         </div>
-
                     </a>
                     <!--            <div ng-show="homeCtrl.showTutorials" ng-repeat="tutorial in homeCtrl.tutorials">
                                     <a href="//https://ci.apache.org/projects/flink/flink-docs-master/setup/yarn_setup.html" target="_blank">Flink on YARN</a>
@@ -71,66 +70,76 @@
         </div>
 
 
-        <div class="col-sm-6 col-md-6 col-lg-6" style="padding-left:56px; min-width: 500px">
+        <div class="col-md-6">
             <div class="widget-body">
-                <div class="timeline clearfix center">
-                    <h2>Public Datasets</h2>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <td>Size</td>
-                                <td>Files</td>
-                                <td>Age</td>
-                                <th>Seedes</th>
-                                <th>Leech</th>
-                                <td>Positive votes</td>
-                                <td>Negative votes</td>
-                                <td>Comments </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Taxi Trips</th>
-                                <td>20 Gigabyte</td>
-                                <td>110</td>
-                                <td>1 year old</td>
-                                <th>Seedes</th>
-                                <th>Leech</th>
-                                <td>24</td>
-                                <td>32</td>
-                                <td>Dataset describing taxi trips in the USA</td>
-                            </tr>
-                            <tr>
-                               <th>Genomic data</th>
-                                <td>10 Terabyte</td>
-                                <td>10213120</td>
-                                <td>2 years</td>
-                                <th>110</th>
-                                <th>200</th>
-                                <td>24</td>
-                                <td>22</td>
-                                <td>Genomic data </td>
-                            </tr>
-                            <tr>
-                                <th>Buisssnes 2000</th>
-                                <td>1011 Gigabyte</td>
-                                <td>10</td>
-                                <td>2 months</td>
-                                <th>32</th>
-                                <th>12</th>
-                                <td>5</td>
-                                <td>12</td>
-                                <td>Economy datasets.. </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="timeline clearfix">
+                    <div class="container-fluid jumbotron">
+                        <div class="row">
+                            <div class="col-md-4">
+                                
+                            </div>
+                            <div class="col-md-4">
+                                <h3>Top 10 popular datasets</h3>
+                            </div>
+                            <div class="col-md-4">
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <h3>Name</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <h3>Files</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <h3>Size</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <h3>Seeders</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <h3>Leechers</h3>
+                            </div>
+                            <div class="col-md-2">
+                            </div>
+                        </div>
+                        <div ng-repeat="dataset in mainCtrl.publicDatasets">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    {{dataset.name}}
+                                </div>
+                                <div class="col-md-2">
+                                    {{dataset.files}}
+                                </div>
+                                <div class="col-md-2">
+                                    {{dataset.size}}
+                                </div>
+                                <div class="col-md-2">
+                                    <label style="color:green">
+                                        {{dataset.seeds}}
+                                    </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label style="color:red">
+                                        {{dataset.leeches}}
+                                    </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <button>
+                                        <i style="color:green" class="glyphicon glyphicon-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>    
+
+                    </div>
 
                 </div>
 
             </div>
         </div>
-        <div class="col-sm-3 col-md-3 col-lg-3 sidebar">
+        <div class="col-md-3">
 
             <span class="list-group-item active">
                 <span class="badge pull-left" style="margin-right: 10px;">{{homeCtrl.projects.length}}</span> Projects

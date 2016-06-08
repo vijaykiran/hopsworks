@@ -70,30 +70,35 @@ public class Settings {
     private String CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";
 
     public synchronized String getCLUSTER_CERT() {
+        checkCache();
         return CLUSTER_CERT;
     }
 
     private String BASE_URI_HOPS_SITE = "http://bbc1.sics.se:14003/hops-site/webresources";
 
     public synchronized String getBASE_URI_HOPS_SITE() {
+        checkCache();
         return BASE_URI_HOPS_SITE;
     }
 
     private String CLUSTER_MAIL = "johsn@kth.se";
 
     public synchronized String getCLUSTER_MAIL() {
+        checkCache();
         return CLUSTER_MAIL;
     }
 
     private String GVOD_UDP_ENDPOINT = "udp://bbc1.sics.se:14003/gvod";
 
     public synchronized String getGVOD_UDP_ENDPOINT() {
+        checkCache();
         return GVOD_UDP_ENDPOINT;
     }
 
     private String ELASTIC_PUBLIC_RESTENDPOINT = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
 
     public synchronized String getELASTIC_PUBLIC_RESTENDPOINT() {
+        checkCache();
         return ELASTIC_PUBLIC_RESTENDPOINT;
     }
 
@@ -187,11 +192,11 @@ public class Settings {
       YARN_DEFAULT_QUOTA = setDirVar(VARIABLE_YARN_DEFAULT_QUOTA, YARN_DEFAULT_QUOTA);
       HDFS_DEFAULT_QUOTA = setDirVar(VARIABLE_HDFS_DEFAULT_QUOTA, HDFS_DEFAULT_QUOTA);
       MAX_NUM_PROJ_PER_USER = setDirVar(VARIABLE_MAX_NUM_PROJ_PER_USER, MAX_NUM_PROJ_PER_USER);
-      BASE_URI_HOPS_SITE = setDirVar(VARIABLE_BASE_URI_HOPS_SITE, BASE_URI_HOPS_SITE);
-      CLUSTER_CERT = setDirVar(VARIABLE_CLUSTER_CERT, CLUSTER_CERT);
-      CLUSTER_MAIL = setDirVar(VARIABLE_CLUSTER_MAIL, CLUSTER_MAIL);
-      GVOD_UDP_ENDPOINT = setDirVar(VARIABLE_GVOD_UDP_ENDPOINT, GVOD_UDP_ENDPOINT);
-      ELASTIC_PUBLIC_RESTENDPOINT = setDirVar(VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT, ELASTIC_PUBLIC_RESTENDPOINT);
+      BASE_URI_HOPS_SITE = setUserVar(VARIABLE_BASE_URI_HOPS_SITE, BASE_URI_HOPS_SITE);
+      CLUSTER_CERT = setUserVar(VARIABLE_CLUSTER_CERT, CLUSTER_CERT);
+      CLUSTER_MAIL = setUserVar(VARIABLE_CLUSTER_MAIL, CLUSTER_MAIL);
+      GVOD_UDP_ENDPOINT = setUserVar(VARIABLE_GVOD_UDP_ENDPOINT, GVOD_UDP_ENDPOINT);
+      ELASTIC_PUBLIC_RESTENDPOINT = setUserVar(VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT, ELASTIC_PUBLIC_RESTENDPOINT);
       cached = true;
     }
   }

@@ -242,4 +242,12 @@ angular.module('hopsWorksApp')
                 $scope.$on("$destroy", function () {
                     $interval.cancel(getUnreadCountInterval);
                 });
+                
+                
+                self.downloadPublicDataset = function(dataset_id){
+                    
+                    
+                    
+                };
+                
             }]);

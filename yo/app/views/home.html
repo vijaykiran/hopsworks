@@ -10,9 +10,6 @@
     <div ng-show="mainCtrl.searchReturned === ''" class="row" style="min-width: 1000px">
 
         <div class="col-md-3">
-            <div class="col-md-10 sidebar pull-left" style="min-width: 280px; max-width: 280px">
-
-
                 <div class="list-group">
                     <a href="" class="list-group-item active">Help</a>
                     <a href="" ng-click="homeCtrl.showTours = !homeCtrl.showTours; homeCtrl.getTours();" class="list-group-item"
@@ -64,22 +61,17 @@
                         </div>
                     </a>
                 </div>
-            </div>
-
-
         </div>
 
 
         <div class="col-md-6">
-            <div class="widget-body">
-                <div class="timeline clearfix">
-                    <div class="container-fluid jumbotron">
+                    <div class="container-fluid jumbotron" style="background: #2E353D"> 
                         <div class="row">
                             <div class="col-md-4">
                                 
                             </div>
                             <div class="col-md-4">
-                                <h3>Top 10 popular datasets</h3>
+                                <h3 style="font-family: Lobster; color: white;">Top 10 popular datasets</h3>
                             </div>
                             <div class="col-md-4">
                                 
@@ -87,19 +79,19 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
-                                <h3>Name</h3>
+                                <h3 style="color: white">Name</h3>
                             </div>
                             <div class="col-md-2">
-                                <h3>Files</h3>
+                                <h3 style="color: white">Files</h3>
                             </div>
                             <div class="col-md-2">
-                                <h3>Size</h3>
+                                <h3 style="color: white">Size</h3>
                             </div>
                             <div class="col-md-2">
-                                <h3>Seeders</h3>
+                                <h3 style="color: white">Seeders</h3>
                             </div>
                             <div class="col-md-2">
-                                <h3>Leechers</h3>
+                                <h3 style="color: white">Leechers</h3>
                             </div>
                             <div class="col-md-2">
                             </div>
@@ -107,22 +99,22 @@
                         <div ng-repeat="dataset in mainCtrl.publicDatasets">
                             <div class="row">
                                 <div class="col-md-2">
-                                    {{dataset.name}}
+                                    <label style="color: white">{{dataset.name}}</label>
                                 </div>
                                 <div class="col-md-2">
-                                    {{dataset.files}}
+                                   <label style="color: white">{{dataset.files}}</label>
                                 </div>
                                 <div class="col-md-2">
-                                    {{dataset.size}}
+                                    <label style="color: white">{{dataset.size}}</label>
                                 </div>
                                 <div class="col-md-2">
                                     <label style="color:green">
-                                        {{dataset.seeds}}
+                                        <label style="color: white">{{dataset.seeds}}</label>
                                     </label>
                                 </div>
                                 <div class="col-md-2">
                                     <label style="color:red">
-                                        {{dataset.leeches}}
+                                        <label style="color: white">{{dataset.leeches}}</label>
                                     </label>
                                 </div>
                                 <div class="col-md-2">
@@ -134,10 +126,6 @@
                         </div>    
 
                     </div>
-
-                </div>
-
-            </div>
         </div>
         <div class="col-md-3">
 

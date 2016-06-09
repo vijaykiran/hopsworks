@@ -12,8 +12,8 @@ angular.module('hopsWorksApp')
                 self.emailHash = md5.createHash(self.email || '');
                 var elasticService = ElasticService();
                 self.publicDatasets = 
-                [{id: "12312-12-21-21-", name: "taxi trips", size: "10 terabytes", files: "102", age: "1 years old", seeds: "12", leeches: "15",positive_votes: "24", negative_votes: "12"},
-                    {id: "1231-2135-12312", name: "genomics", size: "12 terabytes", files: "12", age: "2 years old", seeds: "14", leeches: "22",positive_votes: "12", negative_votes: "11"}
+                [{id: "12312-12-21-21-", name: "taxi trips", size: "10 tb", files: "102", age: "1 years old", seeds: "12", leeches: "15",positive_votes: "24", negative_votes: "12"},
+                    {id: "1231-2135-12312", name: "genomics", size: "12 tb", files: "12", age: "2 years old", seeds: "14", leeches: "22",positive_votes: "12", negative_votes: "11"}
                 ];
 
                 if (!angular.isUndefined($routeParams.datasetName)) {

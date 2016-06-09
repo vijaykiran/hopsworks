@@ -66,56 +66,53 @@
 
         <div class="col-md-6">
                     <div class="container-fluid jumbotron" style="background: #2E353D"> 
-                        <div class="row">
-                            <div class="col-md-4">
+                        <div class="row" style="margin-bottom: 30px;">
+                            <div class="col-md-1">
                                 
                             </div>
-                            <div class="col-md-4">
-                                <h3 style="font-family: Lobster; color: white;">Top 10 popular datasets</h3>
+                            <div class="col-md-10" style="text-align: center;">
+                                <h2 style="font-family: Lobster; color: white;">Top 10 popular datasets</h2>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-1">
                                 
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-2">
-                                <h3 style="color: white">Name</h3>
+                            <div class="col-md-2" style="text-align: center;">
+                                <label style="color: white;">Name</label>
                             </div>
-                            <div class="col-md-2">
-                                <h3 style="color: white">Files</h3>
+                            <div class="col-md-2" style="text-align: center;">
+                               <label style="color: white;">Files</label>
                             </div>
-                            <div class="col-md-2">
-                                <h3 style="color: white">Size</h3>
+                            <div class="col-md-2" style="text-align: center;">
+                                <label style="color: white;">Size</label>
                             </div>
-                            <div class="col-md-2">
-                                <h3 style="color: white">Seeders</h3>
+                            <div class="col-md-2" style="text-align: center;">
+                                <label style="color: white;">Seeders</label>
                             </div>
-                            <div class="col-md-2">
-                                <h3 style="color: white">Leechers</h3>
+                            <div class="col-md-2" style="text-align: center;">
+                                <label style="color: white;">Leechers</label>
                             </div>
                             <div class="col-md-2">
                             </div>
                         </div>
+                        <hr style="color:white;">
                         <div ng-repeat="dataset in mainCtrl.publicDatasets">
                             <div class="row">
-                                <div class="col-md-2">
-                                    <label style="color: white">{{dataset.name}}</label>
+                                <div class="col-md-2" style="text-align: center;">
+                                    <label style="color: white;">{{dataset.name}}</label>
                                 </div>
-                                <div class="col-md-2">
-                                   <label style="color: white">{{dataset.files}}</label>
+                                <div class="col-md-2" style="text-align: center;">
+                                   <label style="color: white;">{{dataset.files}}</label>
                                 </div>
-                                <div class="col-md-2">
-                                    <label style="color: white">{{dataset.size}}</label>
+                                <div class="col-md-2" style="text-align: center;">
+                                    <label style="color: white;">{{dataset.size}}</label>
                                 </div>
-                                <div class="col-md-2">
-                                    <label style="color:green">
-                                        <label style="color: white">{{dataset.seeds}}</label>
-                                    </label>
+                                <div class="col-md-2" style="text-align: center;">
+                                        <label style="color: green;">{{dataset.seeds}}</label>
                                 </div>
-                                <div class="col-md-2">
-                                    <label style="color:red">
-                                        <label style="color: white">{{dataset.leeches}}</label>
-                                    </label>
+                                <div class="col-md-2" style="text-align: center;">
+                                        <label style="color: red;">{{dataset.leeches}}</label>
                                 </div>
                                 <div class="col-md-2">
                                     <button>

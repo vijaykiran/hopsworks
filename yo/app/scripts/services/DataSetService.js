@@ -31,17 +31,13 @@ angular.module('hopsWorksApp')
                 checkFileExist: function (fileName) {
                   return $http.get('/api/project/' + id + '/dataset/fileExists/' + fileName);
                 },
-                /**
-                 * Downloads a file using location.href. This can replace the
-                 * page with error page if the download is unsuccessful. So use checkFileExist
-                 * before calling this to minimize the risk of an error page being showed. 
-                 * @param {type} fileName is a path relative to the current ds to the file 
-                 * @returns {undefined}
-                 */
+                
                 
                 getPopularPublicDatasets: function (){
-                    return $http.get('/api/project/1/dataset/populardatasets/');
+                    return $http.get('/api/project/null/dataset/populardatasets/');
                 },
+                
+                
                 
                 fileDownload: function (fileName) {
                   location.href='/hopsworks/api/project/' + id + '/dataset/fileDownload/' + fileName;

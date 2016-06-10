@@ -12,7 +12,7 @@ angular.module('hopsWorksApp')
                 self.emailHash = md5.createHash(self.email || '');
                 var elasticService = ElasticService();
                 self.popularDatasets;
-
+                self.datasetService = DataSetService(null);
                 if (!angular.isUndefined($routeParams.datasetName)) {
                     self.searchType = "datasetCentric";
                 } else if (!angular.isUndefined($routeParams.projectID)) {
@@ -112,7 +112,7 @@ angular.module('hopsWorksApp')
                 
                 var getPopularPublicDatasets = function(){
                   
-                    DataSetService.getPopularPublicDatasets().then(function(result){
+                    self.datasetService.getPopularPublicDatasets().then(function(result){
                         self.popularDatasets = result.data;
                     });
                     

@@ -38,6 +38,11 @@ angular.module('hopsWorksApp')
                  * @param {type} fileName is a path relative to the current ds to the file 
                  * @returns {undefined}
                  */
+                
+                getPopularPublicDatasets: function (){
+                    return $http.get('/api/project/1/dataset/populardatasets/');
+                },
+                
                 fileDownload: function (fileName) {
                   location.href='/hopsworks/api/project/' + id + '/dataset/fileDownload/' + fileName;
                 },

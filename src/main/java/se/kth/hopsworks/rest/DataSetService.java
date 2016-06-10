@@ -60,6 +60,7 @@ import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.MoveDTO;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
+import se.kth.hopsworks.hops_site.ManageGlobalClusterParticipation;
 import se.kth.hopsworks.meta.db.TemplateFacade;
 import se.kth.hopsworks.meta.entity.Template;
 import se.kth.hopsworks.meta.exception.DatabaseException;
@@ -112,6 +113,8 @@ public class DataSetService {
   private DownloadService downloader;
   @EJB
   private HdfsLeDescriptorsFacade hdfsLeDescriptorsFacade;
+  @EJB
+  private ManageGlobalClusterParticipation manageGlobalCLusterParticipation;
 
   private Integer projectId;
   private Project project;
@@ -955,6 +958,15 @@ public class DataSetService {
             json).build();
   }
 
-  
+  @GET
+  @Path("/populardatasets")
+  @Produces(MediaType.APPLICATION_JSON)
+  @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
+  public Response popularDatasets(@Context SecurityContext sc,
+          @Context HttpServletRequest req) throws AppException {
+          
+    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
+            this.manageGlobalCLusterParticipation.getPopularDatasets()).build();
+  }
   
 }

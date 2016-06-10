@@ -26,6 +26,7 @@ import se.kth.hopsworks.util.Settings;
 public class ManageGlobalClusterParticipation {
 
     private JSONArray registeredClusters = null;
+    private JSONArray popularDatasets = null;
     private WebTarget webTarget;
     private Client client;
     
@@ -50,7 +51,7 @@ public class ManageGlobalClusterParticipation {
     @Timeout
     public void TimeoutOcurred() {
         if (settings.getCLUSTER_ID() != null) {
-            TryToPing();
+            PingAndGetPopularDatasets();
         } else {
             TryToRegister();
         }
@@ -72,29 +73,39 @@ public class ManageGlobalClusterParticipation {
 
     }
 
-    public void TryToPing() {
+    public void PingAndGetPopularDatasets() {
 
-        String response = null;
+        String pingResponse = null;
+        String popularDatasetsResponse = null;
         try {
-            response = PingRest(String.class, settings.getCLUSTER_ID(), settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
+            pingResponse = PingRest(String.class, settings.getCLUSTER_ID());
+            popularDatasetsResponse = PopularDatasetsRest(String.class, settings.getCLUSTER_ID());
         } catch (ClientErrorException ex) {
 
         } finally {
-            if (response != null) {
-                this.registeredClusters = new JSONArray(response);
+            if (pingResponse != null) {
+                this.registeredClusters = new JSONArray(pingResponse);
+            }
+            if(popularDatasetsResponse != null){
+                this.popularDatasets = new JSONArray(popularDatasetsResponse);
             }
             DoTimeout();
         }
 
     }
 
-    public <T> T PingRest(Class<T> responseType, String clusterId, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
+    public <T> T PingRest(Class<T> responseType, String clusterId) throws ClientErrorException {
         WebTarget resource = webTarget;
-        searchEndpoint = searchEndpoint.replaceAll("/", "'");
-        gvodEndpoint = gvodEndpoint.replaceAll("/", "'");
-        resource = resource.path(java.text.MessageFormat.format("ping/{0}/{1}/{2}/{3}/{4}", new Object[]{clusterId, searchEndpoint, email, cert, gvodEndpoint}));
+        resource = resource.path(java.text.MessageFormat.format("ping/{0}/", new Object[]{clusterId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
+    
+    public <T> T PopularDatasetsRest(Class<T> responseType, String clusterId) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{clusterId}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+    
 
     public <T> T RegisterRest(Class<T> responseType, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
         WebTarget resource = webTarget;
@@ -106,6 +117,10 @@ public class ManageGlobalClusterParticipation {
 
     public JSONArray getRegisteredClusters() {
         return this.registeredClusters;
+    }
+    
+    public JSONArray getPopularDatasets() {
+        return this.popularDatasets;
     }
 
     private void DoTimeout() {

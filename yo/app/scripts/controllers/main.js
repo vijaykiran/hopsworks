@@ -4,17 +4,14 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams',
-            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
+        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams', 'DataSetService',
+            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams, DataSetService) {
 
                 var self = this;
                 self.email = $cookies['email'];
                 self.emailHash = md5.createHash(self.email || '');
                 var elasticService = ElasticService();
-                self.publicDatasets =
-                        [{id: "12312-12-21-21-", name: "taxi trips", size: "10 tb", files: "102", age: "1 years old", seeds: "12", leeches: "15", positive_votes: "24", negative_votes: "12"},
-                            {id: "1231-2135-12312", name: "genomics", size: "12 tb", files: "12", age: "2 years old", seeds: "14", leeches: "22", positive_votes: "12", negative_votes: "11"}
-                        ];
+                self.popularDatasets;
 
                 if (!angular.isUndefined($routeParams.datasetName)) {
                     self.searchType = "datasetCentric";
@@ -112,6 +109,16 @@ angular.module('hopsWorksApp')
 
                     });
                 };
+                
+                var getPopularPublicDatasets = function(){
+                  
+                    DataSetService.getPopularPublicDatasets().then(function(result){
+                        self.popularDatasets = result.data;
+                    });
+                    
+                };
+                
+                getPopularPublicDatasets();
                 getUnreadCount();
                 getMessages();
                 //this might be a bit to frequent for refresh rate 

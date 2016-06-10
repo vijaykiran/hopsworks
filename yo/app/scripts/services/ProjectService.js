@@ -56,6 +56,14 @@ angular.module('hopsWorksApp')
                 url: '/api/project/getDatasetInfo/:inodeId',
                 'method': 'GET'                  
               },
+              
+              "getPopularPublicDatasets":{
+                
+                url: '/api/project/populardatasets',
+                'method' : 'GET'
+                        
+              },
+              
               "importPublicDataset": {
                 url: '/api/project/:id/importPublicDataset/:projectName/:inodeId',
                 'method': 'GET'                  

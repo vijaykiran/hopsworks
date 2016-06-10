@@ -957,16 +957,5 @@ public class DataSetService {
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();
   }
-
-  @GET
-  @Path("/populardatasets")
-  @Produces(MediaType.APPLICATION_JSON)
-  @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
-  public Response popularDatasets(@Context SecurityContext sc,
-          @Context HttpServletRequest req) throws AppException {
-          
-    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
-            this.manageGlobalCLusterParticipation.getPopularDatasets()).build();
-  }
   
 }

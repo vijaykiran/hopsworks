@@ -4,15 +4,14 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams', 'DataSetService',
-            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams, DataSetService) {
+        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams',
+            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
 
                 var self = this;
                 self.email = $cookies['email'];
                 self.emailHash = md5.createHash(self.email || '');
                 var elasticService = ElasticService();
                 self.popularDatasets;
-                self.datasetService = DataSetService(null);
                 if (!angular.isUndefined($routeParams.datasetName)) {
                     self.searchType = "datasetCentric";
                 } else if (!angular.isUndefined($routeParams.projectID)) {
@@ -112,7 +111,7 @@ angular.module('hopsWorksApp')
                 
                 var getPopularPublicDatasets = function(){
                   
-                    self.datasetService.getPopularPublicDatasets().then(function(result){
+                    ProjectService.getPopularPublicDatasets().$promise.then(function(result){
                         self.popularDatasets = result.data;
                     });
                     

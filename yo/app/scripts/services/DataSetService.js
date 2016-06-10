@@ -32,13 +32,6 @@ angular.module('hopsWorksApp')
                   return $http.get('/api/project/' + id + '/dataset/fileExists/' + fileName);
                 },
                 
-                
-                getPopularPublicDatasets: function (){
-                    return $http.get('/api/project/null/dataset/populardatasets/');
-                },
-                
-                
-                
                 fileDownload: function (fileName) {
                   location.href='/hopsworks/api/project/' + id + '/dataset/fileDownload/' + fileName;
                 },

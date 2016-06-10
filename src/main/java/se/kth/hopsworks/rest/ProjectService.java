@@ -50,6 +50,7 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.hdfs.fileoperations.HdfsInodeAttributes;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
+import se.kth.hopsworks.hops_site.ManageGlobalClusterParticipation;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.LocalhostServices;
 
@@ -80,6 +81,8 @@ public class ProjectService {
   private BiobankingService biobanking;
   @Inject
   private CharonService charon;
+  @EJB
+  private ManageGlobalClusterParticipation manageGlobalClusterParticipation;
 
   @EJB
   private ActivityFacade activityFacade;
@@ -636,22 +639,17 @@ public class ProjectService {
             price).build();
   }
 
+  
+
   @GET
-  @Path("getPublicDatasets")
+  @Path("/populardatasets")
   @Produces(MediaType.APPLICATION_JSON)
-  @AllowedRoles(roles = {AllowedRoles.ALL})
-  public Response getPublicDatasets(
-          @Context SecurityContext sc,
+  @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
+  public Response popularDatasets(@Context SecurityContext sc,
           @Context HttpServletRequest req) throws AppException {
-
-    List<DataSetDTO> publicDatasets = datasetFacade.findPublicDatasets();
-
-    GenericEntity<List<DataSetDTO>> datasets
-            = new GenericEntity<List<DataSetDTO>>(publicDatasets) {
-    };
-
+          
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
-            datasets).build();
+            this.manageGlobalClusterParticipation.getPopularDatasets()).build();
   }
 
   @GET

@@ -124,6 +124,7 @@ angular.module('hopsWorksApp')
                 var getUnreadCountInterval = $interval(function () {
                     getUnreadCount();
                 }, 3000);
+                
                 self.getMessages = function () {
                     getMessages();
                 };

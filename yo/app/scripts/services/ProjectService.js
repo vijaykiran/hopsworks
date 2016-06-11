@@ -60,7 +60,8 @@ angular.module('hopsWorksApp')
               "getPopularPublicDatasets":{
                 
                 url: '/api/project/populardatasets',
-                'method' : 'GET'
+                'method' : 'GET',
+                isArray: true
                         
               },
               

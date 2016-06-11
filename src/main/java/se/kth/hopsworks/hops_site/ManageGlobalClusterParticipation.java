@@ -37,7 +37,7 @@ public class ManageGlobalClusterParticipation {
     private Settings settings;
 
     @PostConstruct
-    public void init() {
+    private void init() {
 
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(settings.getBASE_URI_HOPS_SITE()).path("myresource");
@@ -49,7 +49,7 @@ public class ManageGlobalClusterParticipation {
     }
 
     @Timeout
-    public void TimeoutOcurred() {
+    private void TimeoutOcurred() {
         if (settings.getCLUSTER_ID() != null) {
             PingAndGetPopularDatasets();
         } else {
@@ -57,7 +57,7 @@ public class ManageGlobalClusterParticipation {
         }
     }
 
-    public void TryToRegister() {
+    private void TryToRegister() {
 
         String id = null;
         try {
@@ -73,7 +73,7 @@ public class ManageGlobalClusterParticipation {
 
     }
 
-    public void PingAndGetPopularDatasets() {
+    private void PingAndGetPopularDatasets() {
 
         String pingResponse = null;
         String popularDatasetsResponse = null;
@@ -94,20 +94,20 @@ public class ManageGlobalClusterParticipation {
 
     }
 
-    public <T> T PingRest(Class<T> responseType, String clusterId) throws ClientErrorException {
+    private <T> T PingRest(Class<T> responseType, String clusterId) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("ping/{0}/", new Object[]{clusterId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
     
-    public <T> T PopularDatasetsRest(Class<T> responseType, String clusterId) throws ClientErrorException {
+    private <T> T PopularDatasetsRest(Class<T> responseType, String clusterId) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{clusterId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
     
 
-    public <T> T RegisterRest(Class<T> responseType, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
+    private <T> T RegisterRest(Class<T> responseType, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
         WebTarget resource = webTarget;
         searchEndpoint = searchEndpoint.replaceAll("/", "'");
         gvodEndpoint = gvodEndpoint.replaceAll("/", "'");

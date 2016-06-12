@@ -3,6 +3,7 @@ package se.kth.hopsworks.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +53,6 @@ import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.hdfs.fileoperations.HdfsInodeAttributes;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.hops_site.ManageGlobalClusterParticipation;
-import se.kth.hopsworks.hops_site.PopularDataset;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.LocalhostServices;
 
@@ -650,20 +650,9 @@ public class ProjectService {
 
         JSONArray popularDatasets = this.manageGlobalClusterParticipation.getPopularDatasets();
 
-        List<PopularDataset> list = new ArrayList<>();
-
         if (popularDatasets != null) {
 
-            for (int i = 0; i < popularDatasets.length(); i++) {
-
-                list.add(new PopularDataset(popularDatasets.getJSONObject(i)));
-            }
-
-            GenericEntity<List<PopularDataset>> to_ret
-                    = new GenericEntity<List<PopularDataset>>(list) {
-            };
-
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(to_ret).build();
+            return Response.ok(popularDatasets.toString(), MediaType.APPLICATION_JSON).build();
 
         } else {
 

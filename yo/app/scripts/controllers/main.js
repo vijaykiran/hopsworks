@@ -112,7 +112,7 @@ angular.module('hopsWorksApp')
                 var getPopularPublicDatasets = function(){
                   
                     ProjectService.getPopularPublicDatasets().$promise.then(function(result){
-                        self.popularDatasets = result.data;
+                        self.popularDatasets = result;
                     });
                     
                 };
@@ -124,6 +124,11 @@ angular.module('hopsWorksApp')
                 var getUnreadCountInterval = $interval(function () {
                     getUnreadCount();
                 }, 3000);
+                
+                var getPopularPublicDatasetsInterval = $interval(function () {
+                    getPopularPublicDatasets();
+                }, 6000);
+                
                 
                 self.getMessages = function () {
                     getMessages();
@@ -289,6 +294,7 @@ angular.module('hopsWorksApp')
                 };
                 $scope.$on("$destroy", function () {
                     $interval.cancel(getUnreadCountInterval);
+                    $interval.cancel(getPopularPublicDatasetsInterval);
                 });
 
 

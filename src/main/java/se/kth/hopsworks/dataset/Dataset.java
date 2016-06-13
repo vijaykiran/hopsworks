@@ -74,6 +74,7 @@ public class Dataset implements Serializable {
     @Basic(optional = false)
     @Column(name = "inode_name", updatable = false, insertable = false)
     private String name;
+
     @Basic(optional = false)
     @Column(name = "inode_id")
     private int idForInode = 0;
@@ -104,6 +105,10 @@ public class Dataset implements Serializable {
     @Size(max = 1000)
     @Column(name = "public_ds_id")
     private String publicDsId;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "shared")
+    private boolean shared = false;
 
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "dataset")
@@ -129,10 +134,12 @@ public class Dataset implements Serializable {
         this.idForInode = inode.getId();
         this.name = inode.getInodePK().getName();
     }
+
     public String getName() {
         return name;
     }
 
+    
     
     public Integer getId() {
         return id;
@@ -204,6 +211,14 @@ public class Dataset implements Serializable {
 
     public void setPublicDsId(String publicDsId) {
         this.publicDsId = publicDsId;
+    }
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public void setShared(boolean shared) {
+        this.shared = shared;
     }
 
     public Collection<DatasetRequest> getDatasetRequestCollection() {

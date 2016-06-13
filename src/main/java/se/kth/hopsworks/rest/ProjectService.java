@@ -658,7 +658,6 @@ public class ProjectService {
 
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).build();
         }
-
     }
 
     @GET

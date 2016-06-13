@@ -74,7 +74,6 @@ public class Dataset implements Serializable {
     @Basic(optional = false)
     @Column(name = "inode_name", updatable = false, insertable = false)
     private String name;
-
     @Basic(optional = false)
     @Column(name = "inode_id")
     private int idForInode = 0;
@@ -130,7 +129,11 @@ public class Dataset implements Serializable {
         this.idForInode = inode.getId();
         this.name = inode.getInodePK().getName();
     }
+    public String getName() {
+        return name;
+    }
 
+    
     public Integer getId() {
         return id;
     }

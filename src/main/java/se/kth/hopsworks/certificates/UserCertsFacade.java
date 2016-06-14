@@ -91,8 +91,8 @@ public class UserCertsFacade {
     }
     
     public void putUserCerts(String projectname, String username){
-      try(FileInputStream kfin = new FileInputStream(new File("/tmp/" + projectname + "__" + username + "__kstore.jks"));
-          FileInputStream tfin = new FileInputStream(new File("/tmp/" + projectname + "__" + username + "__tstore.jks"))){
+      try(FileInputStream kfin = new FileInputStream(new File("/tmp/tempstores/" + projectname + "__" + username + "__kstore.jks"));
+          FileInputStream tfin = new FileInputStream(new File("/tmp/tempstores/" + projectname + "__" + username + "__tstore.jks"))){
        
             byte[] kStoreBlob = ByteStreams.toByteArray(kfin);
             byte[] tStoreBlob = ByteStreams.toByteArray(tfin);
@@ -104,6 +104,7 @@ public class UserCertsFacade {
             em.persist(uc);
             em.flush();    
       
+            // TODO - DO NOT SWALLOW EXCEPTIONS!!!
         } catch (FileNotFoundException e) {
             Logger.getLogger(UserCertsFacade.class.getName()).log(Level.SEVERE, null, e);
         } catch (IOException ex) {

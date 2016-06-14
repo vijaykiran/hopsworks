@@ -1,107 +1,116 @@
 <div class="container" ng-controller="MainCtrl as mainCtrl" style="padding-top:25px; width: 1500px;" style="margin-left: -100px;">
     <div ng-include="'nav.html'"></div>
+
+
     <div ng-show="mainCtrl.searchReturned !== ''" class="row">
         <div id="projectSearchResults">
             <div ng-include="'views/searchResult.html'"></div>
         </div>
     </div>
 
-
-    <div ng-show="mainCtrl.searchReturned === ''" class="row" style="min-width: 1000px">
+    <div ng-show="mainCtrl.searchReturned === ''" class="row">
 
         <div class="col-md-3">
-                <div class="list-group">
-                    <a href="" class="list-group-item active">Help</a>
-                    <a href="" ng-click="homeCtrl.showTours = !homeCtrl.showTours; homeCtrl.getTours();" class="list-group-item"
-                       ng-class="{'tour-highlight': homeCtrl.showGettingStarted()}">
-                        <span class="glyphicon" ng-class="{'glyphicon-triangle-right':!homeCtrl.showTours, 'glyphicon-triangle-bottom':homeCtrl.showTours}"></span>
-                        Tours
-                        <span class="glyphicon glyphicon-expand pull-right"></span>
-                        <div ng-show="homeCtrl.showTours" ng-repeat="tour in homeCtrl.tours">              
-                            <button style="margin: 0px; padding-bottom: 5px; padding-top: 5px; padding-left: 0px; padding-right: 0px;" uib-popover="Take a tour of Hopsworks by creating a project and running a Spark job!"
-                                    type="button" class="btn btn-default btn-block" ng-click="homeCtrl.showTours = !homeCtrl.showTours; homeCtrl.createExampleProject()">
-                                <span>{{tour.name}}</span>
-                                <span style="margin-right: 5px" class="glyphicon glyphicon-play-circle pull-right" ng-hide="homeCtrl.creating === true"></span>
-                                <span style="margin-right: 5px" class="fa fa-spinner fa-spin pull-right" ng-hide="homeCtrl.creating === false"></span>
-                            </button>
-                        </div>
-                    </a>
-                    <a href="" ng-click="homeCtrl.showTutorials = !homeCtrl.showTutorials; homeCtrl.getTutorials();" class="list-group-item">
-                        <span class="glyphicon" ng-class="{'glyphicon-triangle-right':!homeCtrl.showTutorials, 'glyphicon-triangle-bottom':homeCtrl.showTutorials}"></span>
-                        Tutorials
-                        <span class="fa fa-graduation-cap pull-right" style="margin-right: -1px;"></span>
-                        <div style="margin-left: 20px;" ng-show="homeCtrl.showTutorials">
-                            <!--<a href="//" target="_blank">Spark on YARN</a>-->
-                            Spark on YARN
-                            <br>
-                            Flink on YARN
-                            <br>
-                            Getting Started with Zeppelin
-                        </div>
-                    </a>
-                </div>
+            <div class="list-group">
+                <a href="" class="list-group-item active">Help</a>
+                <a href="" ng-click="homeCtrl.showTours = !homeCtrl.showTours; homeCtrl.getTours();" class="list-group-item"
+                   ng-class="{'tour-highlight': homeCtrl.showGettingStarted()}">
+                    <span class="glyphicon" ng-class="{'glyphicon-triangle-right':!homeCtrl.showTours, 'glyphicon-triangle-bottom':homeCtrl.showTours}"></span>
+                    Tours
+                    <span class="glyphicon glyphicon-expand pull-right"></span>
+                    <div ng-show="homeCtrl.showTours" ng-repeat="tour in homeCtrl.tours">              
+                        <button style="margin: 0px; padding-bottom: 5px; padding-top: 5px; padding-left: 0px; padding-right: 0px;" uib-popover="Take a tour of Hopsworks by creating a project and running a Spark job!"
+                                type="button" class="btn btn-default btn-block" ng-click="homeCtrl.showTours = !homeCtrl.showTours; homeCtrl.createExampleProject()">
+                            <span>{{tour.name}}</span>
+                            <span style="margin-right: 5px" class="glyphicon glyphicon-play-circle pull-right" ng-hide="homeCtrl.creating === true"></span>
+                            <span style="margin-right: 5px" class="fa fa-spinner fa-spin pull-right" ng-hide="homeCtrl.creating === false"></span>
+                        </button>
+                    </div>
+                </a>
+                <a href="" ng-click="homeCtrl.showTutorials = !homeCtrl.showTutorials; homeCtrl.getTutorials();" class="list-group-item">
+                    <span class="glyphicon" ng-class="{'glyphicon-triangle-right':!homeCtrl.showTutorials, 'glyphicon-triangle-bottom':homeCtrl.showTutorials}"></span>
+                    Tutorials
+                    <span class="fa fa-graduation-cap pull-right" style="margin-right: -1px;"></span>
+                    <div style="margin-left: 20px;" ng-show="homeCtrl.showTutorials">
+                        <!--<a href="//" target="_blank">Spark on YARN</a>-->
+                        Spark on YARN
+                        <br>
+                        Flink on YARN
+                        <br>
+                        Getting Started with Zeppelin
+                    </div>
+                </a>
+            </div>
         </div>
 
-
         <div class="col-md-6">
-                    <div class="container-fluid jumbotron" style="background: #2E353D"> 
-                        <div class="row" style="margin-bottom: 30px;">
-                            <div class="col-md-1">
-                                
-                            </div>
-                            <div class="col-md-10" style="text-align: center;">
-                                <h2 style="font-family: Lobster; color: white;">Top 10 most popular datasets</h2>
-                            </div>
-                            <div class="col-md-1">
-                                
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-2" style="text-align: center;">
-                                <label style="color: white;">Name</label>
-                            </div>
-                            <div class="col-md-2" style="text-align: center;">
-                               <label style="color: white;">Files</label>
-                            </div>
-                            <div class="col-md-2" style="text-align: center;">
-                                <label style="color: white;">Size</label>
-                            </div>
-                            <div class="col-md-2" style="text-align: center;">
-                                <label style="color: white;">Seeders</label>
-                            </div>
-                            <div class="col-md-2" style="text-align: center;">
-                                <label style="color: white;">Leechers</label>
-                            </div>
-                            <div class="col-md-2">
-                            </div>
-                        </div>
-                        <hr style="color:white;">
-                        <div ng-repeat="dataset in mainCtrl.popularDatasets">
-                            <div class="row">
-                                <div class="col-md-2" style="text-align: center;">
-                                    <label style="color: white;">{{dataset.name}}</label>
-                                </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                   <label style="color: white;">{{dataset.files}}</label>
-                                </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                    <label style="color: white;">{{dataset.size}}</label>
-                                </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                        <label style="color: green;">{{dataset.seeds}}</label>
-                                </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                        <label style="color: red;">{{dataset.leeches}}</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <button ng-click="mainCtrl.downloadPublicDataset(dataset.id)">
-                                        <i style="color:green" class="glyphicon glyphicon-download"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>    
+            <div class="container-fluid" style="background: white; border-color: lightgray; border-width: 0.5px; border-style: solid;"> 
+                <div class="row" style="margin-bottom: 30px; background-color: #2E353D;">
+                    <div class="col-md-1">
 
                     </div>
+                    <div class="col-md-10" style="text-align: center;">
+                        <h2 style="font-family: Lobster; color: white;">Top 10 most popular datasets</h2>
+                    </div>
+                    <div class="col-md-1">
+
+                    </div>
+                </div>
+                <div class="row" ng-if="mainCtrl.popularDatasets.length === 0">
+                    <div class="col-md-1" style="text-align: center;">
+                    </div>
+                    <div class="col-md-10" style="text-align: center;">
+                        <label style="color: #2E353D;">No datasets available at the moment</label>
+                    </div>
+                    <div class="col-md-1" style="text-align: center;">
+                    </div>
+                </div>
+                <div class="row" ng-if='mainCtrl.popularDatasets.length > 0'>
+                    <div class="col-md-2" style="text-align: center;">
+                        <label style="color: #2E353D;">Name</label>
+                    </div>
+                    <div class="col-md-2" style="text-align: center;">
+                        <label style="color: #2E353D;">Files</label>
+                    </div>
+                    <div class="col-md-2" style="text-align: center;">
+                        <label style="color: #2E353D;">Size</label>
+                    </div>
+                    <div class="col-md-2" style="text-align: center;">
+                        <label style="color: #2E353D;">Seeders</label>
+                    </div>
+                    <div class="col-md-2" style="text-align: center;">
+                        <label style="color: #2E353D;">Leechers</label>
+                    </div>
+                    <div class="col-md-2">
+                    </div>
+                </div>
+                <hr style="color:black; width: 1px;">
+                <div ng-repeat="dataset in mainCtrl.popularDatasets">
+                    <div class="list-group-item">
+                        <div class="col-md-2" style="text-align: center;">
+                            <label style="color: #2E353D;">{{dataset.name}}</label>
+                        </div>
+                        <div class="col-md-2" style="text-align: center;">
+                            <label style="color: #2E353D;">{{dataset.files}}</label>
+                        </div>
+                        <div class="col-md-2" style="text-align: center;">
+                            <label style="color: #2E353D;">{{dataset.size}}</label>
+                        </div>
+                        <div class="col-md-2" style="text-align: center;">
+                            <label style="color: green;">{{dataset.seeds}}</label>
+                        </div>
+                        <div class="col-md-2" style="text-align: center;">
+                            <label style="color: red;">{{dataset.leeches}}</label>
+                        </div>
+                        <div class="col-md-2">
+                            <button ng-click="mainCtrl.downloadPublicDataset(dataset.id)">
+                                <i style="color:green" class="glyphicon glyphicon-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>    
+
+            </div>
         </div>
         <div class="col-md-3">
 

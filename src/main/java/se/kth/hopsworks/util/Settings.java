@@ -777,8 +777,7 @@ public class Settings {
    * @param id
    * @return The user with given email, or null if no such user exists.
    */
-  public Variables
-      findById(String id) {
+  public Variables findById(String id) {
     try {
       return em.createNamedQuery("Variables.findById", Variables.class
       ).setParameter("id", id).getSingleResult();

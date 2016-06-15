@@ -1,11 +1,14 @@
 package se.kth.hopsworks.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.elasticsearch.search.SearchHit;
+import org.json.JSONObject;
 
 /**
  * Represents a JSONifiable version of the elastic hit object
@@ -26,6 +29,10 @@ public class ElasticHit {
   private Map<String, Object> map;
   //whether the inode is a parent, a child or a dataset
   private String type;
+  
+  private float score;
+  
+  private String publicId;
 
   public ElasticHit() {
   }
@@ -47,6 +54,32 @@ public class ElasticHit {
       //logger.log(Level.FINE, "KEY -- {0} VALUE --- {1}", new Object[]{entry.getKey(), entry.getValue()});
     }
   }
+  
+  public ElasticHit(String name, String id, String type, JSONObject json, float score) {
+         
+        Map<String, Object> source = new Gson().fromJson(json.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
+        this.name = name;
+        this.id = id;
+        this.type = type;
+        this.setHits(source);
+        this.score = score;
+    }
+
+    public String getPublicId() {
+        return publicId;
+    }
+
+    public void setPublicId(String publicId) {
+        this.publicId = publicId;
+    }
+  
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
 
   public void setId(String id) {
     this.id = id;

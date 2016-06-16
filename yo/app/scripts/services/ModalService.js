@@ -560,7 +560,7 @@ angular.module('hopsWorksApp')
                 });
                 return modalInstance.result;
               },     
-              displaySchemaContent: function (size, projectId, schemaName, schemaVersion) {
+              viewSchemaContent: function (size, projectId, schemaName, schemaVersion) {
                 var modalInstance = $modal.open({
                   templateUrl: 'views/schemaViewContent.html',
                   controller: 'SchemaViewContentCtrl as schemaViewContentCtrl',
@@ -677,6 +677,33 @@ angular.module('hopsWorksApp')
                 var modalInstance = $modal.open({
                   templateUrl: 'views/jobDetails.html',
                   controller: 'JobDetailCtrl as jobDetailCtrl',
+                  size: size,
+                  resolve: {
+                    auth: ['$q', '$location', 'AuthService',
+                      function ($q, $location, AuthService) {
+                        return AuthService.session().then(
+                                function (success) {
+                                },
+                                function (err) {
+                                  $location.path('/login');
+                                  $location.replace();
+                                  return $q.reject(err);
+                                });
+                      }],
+                    job: function () {
+                      return job;
+                    },
+                    projectId: function () {
+                      return projectId;
+                    }
+                  }
+                });
+                return modalInstance.result;
+              },
+              jobUI: function (size, job, projectId) {
+                var modalInstance = $modal.open({
+                  templateUrl: 'views/jobUI.html',
+                  controller: 'jobUICtrl as jobUICtrl',
                   size: size,
                   resolve: {
                     auth: ['$q', '$location', 'AuthService',

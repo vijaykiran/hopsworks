@@ -148,16 +148,27 @@ angular.module('hopsWorksApp')
             };
             
             self.listSchemas = function () {
-
+                
                 KafkaService.getSchemasForTopics(self.projectId).then(
                  function (success) {
                  self.schemas = success.data;
+                 var size = self.schemas.length;
+                for(var i =0; i<size;i++){
+                    self.schemaVersions[i] = Math.max.apply(null, self.schemas[i].versions);
+                }
                  }, function (error) {
                  growl.error(error.data.errorMsg, {title: 'Could not get schemas for topic', ttl: 5000, referenceId: 21});
                  });
+            
+                
             };
             
             self.deleteSchema = function(schemaName, index){
+                
+                if(!self.schemaVersions[index]>0){
+                  growl.info("Delete aborted", {title: 'Schema version not selected', ttl: 2000});  
+                    return;
+                }
                  ModalService.confirm("sm", "Delete Schema (" + schemaName + ")",
                       "Do you really want to delete this Scehma? This action cannot be undone.")
                       .then(function (success) {
@@ -172,9 +183,14 @@ angular.module('hopsWorksApp')
                     });
             };
             
-            self.displaySchemaContent = function(schemaName, index){
+            self.viewSchemaContent = function(schemaName, index){
                 
-               ModalService.displaySchemaContent('lg', self.projectId, schemaName, self.schemaVersions[index]).then(
+                if(!self.schemaVersions[index]>0){
+                     growl.info("Please select schema version", {title: 'Schema version not selected', ttl: 2000});
+                return;
+                }
+                
+               ModalService.viewSchemaContent('lg', self.projectId, schemaName, self.schemaVersions[index]).then(
                       function (success) {
                          
                       }, function (error) {
@@ -185,7 +201,7 @@ angular.module('hopsWorksApp')
             self.updateSchemaContent = function(schema){
                 
                 //increment the version number
-                self.version = Math.max.apply(null,schema.versions)+1;
+                self.version = Math.max.apply(null,schema.versions);
                 
                  ModalService.updateSchemaContent('lg', self.projectId, schema.name, self.version).then(
                       function (success) {
@@ -327,12 +343,14 @@ angular.module('hopsWorksApp')
                 });
             };
 
-             self.init = function(){
+            self.init = function(){
                 self.getAllTopics();
                 self.getAllSharedTopics();              
              };
-             self.init();
-             self.showTopic = function(){
+            
+            self.init();
+
+            self.showTopic = function(){
               self.showSchemas = -1;
               self.showTopics = 1;
             };

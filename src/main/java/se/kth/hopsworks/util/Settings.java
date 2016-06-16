@@ -590,7 +590,7 @@ public class Settings {
 
   public synchronized String getSparkHistoryServerIp() {
     checkCache();
-    return SPARK_HISTORY_SERVER_IP;
+    return SPARK_HISTORY_SERVER_IP + ":18080";
   }  
   
   // Oozie
@@ -645,8 +645,8 @@ public class Settings {
   
   
   // Kafka
-  private String KAFKA_IP = "127.0.0.1";
-  public static final int KAFKA_PORT = 9092;
+  private String KAFKA_IP = "10.0.2.15";
+  public static final int KAFKA_PORT = 9091;
 
   public synchronized String getKafkaConnectStr() {
     checkCache();
@@ -735,9 +735,12 @@ public class Settings {
   public static final String KAFKA_K_CERTIFICATE = "kafka_k_certificate";
   public static final String KAFKA_T_CERTIFICATE = "kafka_t_certificate";
   
+  public static final String KAFKA_TMP_CERT_STORE_LOCAL = "/srv/glassfish/kafkacerts";
+  public static final String KAFKA_TMP_CERT_STORE_REMOTE = "/user/glassfish/kafkacerts";
+  
   public static final String KAFKA_SESSIONID_ENV_VAR = "kafka.sessionid";
   public static final String KAFKA_PROJECTID_ENV_VAR = "kafka.projectid";
-  
+  public static final String KAFKA_BROKERADDR_ENV_VAR = "kafka.brokeraddress";
 //  public static final String KAFKA_K_CERTIFICATE_ENV_VAR = "kafka.key.certificate";
 //  public static final String KAFKA_T_CERTIFICATE_ENV_VAR = "kafka.trusted.certificate";
 //  

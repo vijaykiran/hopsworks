@@ -42,6 +42,7 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
@@ -521,7 +522,7 @@ public class ElasticService {
     
     private QueryBuilder matchPublicQuery() {
         
-        QueryBuilder q = matchPhraseQuery("public_ds","true");
+        QueryBuilder q = QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD,"true");
         return q;
         
     }

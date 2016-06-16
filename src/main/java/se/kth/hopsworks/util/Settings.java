@@ -715,6 +715,7 @@ public class Settings {
   public static final int MAX_USERNAME_SUFFIX = 99;
   public static final int MAX_RETRIES = 500;
   public static final String META_NAME_FIELD = "name";
+  public static final String META_PUBLIC_FIELD = "public_ds";
   public static final String META_DESCRIPTION_FIELD = "description";
   public static final String META_INDEX = "projects";
   public static final String META_PROJECT_TYPE = "proj";

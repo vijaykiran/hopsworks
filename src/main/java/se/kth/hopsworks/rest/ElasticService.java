@@ -258,7 +258,7 @@ public class ElasticService {
         SearchRequestBuilder srb = client.prepareSearch(Settings.META_INDEX);
         srb = srb.setTypes(Settings.META_PROJECT_TYPE,
                 Settings.META_DATASET_TYPE);
-        srb = srb.setQuery(this.globalSearchQuery(searchTerm));
+        srb = srb.setQuery(this.publicSearchQuery(searchTerm));
         srb = srb.addHighlightedField("name");
         logger.log(Level.INFO, "Global search Elastic query is: {0}", srb.toString());
         ListenableActionFuture<SearchResponse> futureResponse = srb.execute();
@@ -499,6 +499,33 @@ public class ElasticService {
         return cq;
     }
 
+    
+    
+    private QueryBuilder publicSearchQuery(String searchTerm) {
+
+        QueryBuilder nameQuery = getNameQuery(searchTerm);
+        QueryBuilder descriptionQuery = getDescriptionQuery(searchTerm);
+        QueryBuilder metadataQuery = getMetadataQuery(searchTerm);
+        QueryBuilder publicQuery = matchPublicQuery();
+
+        QueryBuilder textCondition = boolQuery()
+                .should(nameQuery)
+                .should(descriptionQuery)
+                .should(metadataQuery)
+                .must(publicQuery);
+
+        return textCondition;
+        
+    }
+    
+    
+    private QueryBuilder matchPublicQuery() {
+        
+        QueryBuilder q = matchPhraseQuery("public_ds","true");
+        return q;
+        
+    }
+    
     /**
      * Creates the main query condition. Applies filters on the texts describing
      * a document i.e. on the description
@@ -588,6 +615,7 @@ public class ElasticService {
      * @param searchTerm
      * @return
      */
+    
     private QueryBuilder getMetadataQuery(String searchTerm) {
 
         QueryBuilder metadataQuery = queryStringQuery(searchTerm)
@@ -677,5 +705,8 @@ public class ElasticService {
 
         return addr;
     }
+
+
+    
 
 }

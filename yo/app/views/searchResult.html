@@ -87,6 +87,9 @@
                         <div class="header">{{result.name}}
                             <small class="muted" ng-show="result.type === 'project' || result.type === 'ds'">
                                 <div ng-click="mainCtrl.view(result.name, result.id, result.type)" class="pull-right btn btn-default btn-sm" >View</div>
+                                <div ng-click="" class="pull-right btn btn-default" >
+                                    <i class="glyphicon glyphicon-download"></i>
+                                </div>
                             </small>
                         </div>
                         <p ng-show="result.type === 'ds'" class="no-margin text-muted">

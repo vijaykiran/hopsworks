@@ -42,6 +42,7 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.hasParentQuery;
@@ -76,6 +77,8 @@ import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import se.kth.bbc.project.fb.Inode;
+import se.kth.bbc.project.fb.InodeFacade;
 
 /**
  *
@@ -106,6 +109,10 @@ public class ElasticService {
 
     @EJB
     private DatasetFacade datasetFacade;
+    
+    @EJB
+    private InodeFacade inodeFacade;
+    
 
     @EJB
     ManageGlobalClusterParticipation manageGlobalClusterParticipation;
@@ -271,7 +278,12 @@ public class ElasticService {
                 SearchHit[] hits = response.getHits().getHits();
 
                 for (SearchHit hit : hits) {
-                    elasticHits.add(new ElasticHit(hit));
+                    String inode_id = hit.getId();
+                    Inode i = inodeFacade.findById(Integer.parseInt(inode_id));
+                    Dataset ds =  datasetFacade.findByInode(i).get(0);
+                    ElasticHit elasticHit = new ElasticHit(hit);
+                    elasticHit.setPublicId(ds.getPublicDsId());
+                    elasticHits.add(elasticHit);
                 }
             }
 
@@ -460,9 +472,11 @@ public class ElasticService {
     private QueryBuilder globalSearchQuery(String searchTerm) {
         //FIXME: consider metadata search as well
         QueryBuilder nameDescQuery = getNameDescriptionMetadataQuery(searchTerm);
+        QueryBuilder notPublic =  QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD,"false");
 
         QueryBuilder query = boolQuery()
-                .must(nameDescQuery);
+                .must(nameDescQuery)
+                .must(notPublic);
 
         return query;
     }
@@ -521,7 +535,7 @@ public class ElasticService {
     
     private QueryBuilder matchPublicQuery() {
         
-        QueryBuilder q = matchPhraseQuery("public_ds","true");
+        QueryBuilder q = QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD,"true");
         return q;
         
     }

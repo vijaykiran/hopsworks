@@ -108,15 +108,15 @@ angular.module('hopsWorksApp')
 
                     });
                 };
-                
-                var getPopularPublicDatasets = function(){
-                  
-                    ProjectService.getPopularPublicDatasets().$promise.then(function(result){
+
+                var getPopularPublicDatasets = function () {
+
+                    ProjectService.getPopularPublicDatasets().$promise.then(function (result) {
                         self.popularDatasets = result;
                     });
-                    
+
                 };
-                
+
                 getPopularPublicDatasets();
                 getUnreadCount();
                 getMessages();
@@ -124,12 +124,12 @@ angular.module('hopsWorksApp')
                 var getUnreadCountInterval = $interval(function () {
                     getUnreadCount();
                 }, 3000);
-                
+
                 var getPopularPublicDatasetsInterval = $interval(function () {
                     getPopularPublicDatasets();
                 }, 6000);
-                
-                
+
+
                 self.getMessages = function () {
                     getMessages();
                 };
@@ -298,9 +298,19 @@ angular.module('hopsWorksApp')
                 });
 
 
-                self.downloadPublicDataset = function (dataset_id) {
+                self.downloadPublicDataset = function (datasetId,datasetName) {
 
+                    ModalService.selectProject('md', true, "/[^]*/",
+                            "Select a Project as download destination.").then(
+                            function (success) {
+                                var destProj = success.projectId;
+                                ModalService.setupDownload('md', destProj, datasetId, datasetName).then(function () {
+                                    growl.success("Download in progress, check your project p2p service for more info", {title: 'Success', ttl: 1000});
+                                });
 
+                            }, function (error) {
+                                growl.error("Problem with project selection", {title: 'Error', ttl: 1000});
+                    });
 
                 };
 

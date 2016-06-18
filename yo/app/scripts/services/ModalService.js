@@ -908,6 +908,40 @@ angular.module('hopsWorksApp')
                 });
                 return modalInstance.result;
               },
+              
+              
+              setupDownload: function(size, projectId ,datasetId, datasetName){
+                  var modalInstance = $modal.open({
+                  templateUrl: 'views/setupDownload.html',
+                  controller: 'gvodDownloaderController as ctrl',
+                  size: size,
+                  resolve: {
+                    auth: ['$q', '$location', 'AuthService',
+                      function ($q, $location, AuthService) {
+                        return AuthService.session().then(
+                                function (success) {
+                                },
+                                function (err) {
+                                  $location.path('/login');
+                                  $location.replace();
+                                  return $q.reject(err);
+                                });
+                      }],
+                    projectId: function () {
+                      return projectId;
+                    },
+                    datasetId: function () {
+                      return datasetId;
+                    },
+                    datasetName: function () {
+                      return datasetName;
+                    }
+                  }
+                });
+                return modalInstance.result;
+              },
+              
+              
               noteName: function (size, title, msg, val ) {
                 var modalInstance = $modal.open({
                   templateUrl: 'views/noteNameModal.html',

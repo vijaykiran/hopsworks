@@ -61,11 +61,10 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import se.kth.hopsworks.hops_site.ManageGlobalClusterParticipation;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
-
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 /**
  *
  * @author vangelis

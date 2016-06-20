@@ -913,7 +913,7 @@ angular.module('hopsWorksApp')
               setupDownload: function(size, projectId ,datasetId, datasetName){
                   var modalInstance = $modal.open({
                   templateUrl: 'views/gvod/setupDownload.html',
-                  controller: 'gvodDownloaderController as ctrl',
+                  controller: 'MainCtrl as ctrl',
                   size: size,
                   resolve: {
                     auth: ['$q', '$location', 'AuthService',

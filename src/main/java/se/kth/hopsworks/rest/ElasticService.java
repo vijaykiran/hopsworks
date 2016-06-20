@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -159,6 +160,7 @@ public class ElasticService {
             }
 
             this.clientShutdown(client);
+            Collections.sort(elasticHits, new ElasticHit());
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
             };
@@ -200,7 +202,7 @@ public class ElasticService {
                         JSONObject jsonObject = jsonArray.getJSONObject(index);
                         if (!results.containsKey(jsonObject.getString("publicId"))) {
 
-                            ElasticHit elasticHit = new ElasticHit(jsonObject.getString("name"), jsonObject.getString("id"), jsonObject.getString("type"), (JSONObject) jsonObject.get("hits"), jsonObject.getLong("score"));
+                            ElasticHit elasticHit = new ElasticHit(jsonObject.getString("name"), jsonObject.getString("id"), jsonObject.getString("type"), (JSONObject) jsonObject.get("hits"), (float) jsonObject.getDouble("score"));
                             elasticHit.setPublicId(jsonObject.getString("publicId"));
                             results.put(jsonObject.getString("publicId"), elasticHit);
 
@@ -210,6 +212,7 @@ public class ElasticService {
 
             }
             List<ElasticHit> list = new ArrayList<>(results.values());
+            Collections.sort(list, new ElasticHit());
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(list) {
             };
@@ -360,6 +363,7 @@ public class ElasticService {
             }
 
             this.clientShutdown(client);
+            Collections.sort(elasticHits, new ElasticHit());
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
             };
@@ -438,6 +442,7 @@ public class ElasticService {
             }
 
             this.clientShutdown(client);
+            Collections.sort(elasticHits, new ElasticHit());
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
             };

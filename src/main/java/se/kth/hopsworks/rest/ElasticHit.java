@@ -2,6 +2,7 @@ package se.kth.hopsworks.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,7 +17,7 @@ import org.json.JSONObject;
  * @author vangelis
  */
 @XmlRootElement
-public class ElasticHit {
+public class ElasticHit implements Comparator<ElasticHit> {
 
   private static final Logger logger = Logger.getLogger(ElasticHit.class.
           getName());
@@ -43,13 +44,15 @@ public class ElasticHit {
     //the source of the retrieved record (i.e. all the indexed information)
     this.map = hit.getSource();
     this.type = hit.getType();
-    
+    this.score = hit.getScore();
     //export the name of the retrieved record from the list
     for (Entry<String, Object> entry : map.entrySet()) {
       //set the name explicitly so that it's easily accessible in the frontend
       if (entry.getKey().equals("name")) {
         this.setName(entry.getValue().toString());
       }
+      
+      
 
       //logger.log(Level.FINE, "KEY -- {0} VALUE --- {1}", new Object[]{entry.getKey(), entry.getValue()});
     }
@@ -122,4 +125,9 @@ public class ElasticHit {
 
     return refined;
   }
+
+    @Override
+    public int compare(ElasticHit o1, ElasticHit o2) {
+        return Float.compare(o2.getScore(), o1.getScore());
+    }
 }

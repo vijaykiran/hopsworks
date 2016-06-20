@@ -44,8 +44,8 @@
         </div>
 
         <div class="col-md-6">
-            <div class="container-fluid" style="background: white;"> 
-                <div class="row" style="margin-bottom: 30px; background-color: #2E353D;">
+            <div style="background: white;"> 
+                <div class="row" style="margin-bottom: 1px; background-color: #2E353D;">
                     <div class="col-md-1">
 
                     </div>
@@ -54,15 +54,6 @@
                     </div>
                     <div class="col-md-1">
 
-                    </div>
-                </div>
-                <div class="row" ng-if="mainCtrl.popularDatasets.length === 0">
-                    <div class="col-md-1" style="text-align: center;">
-                    </div>
-                    <div class="col-md-10" style="text-align: center;">
-                        <label style="color: #2E353D;">No datasets available at the moment</label>
-                    </div>
-                    <div class="col-md-1" style="text-align: center;">
                     </div>
                 </div>
                 <div class="row" style="background:#F5F5F5;" ng-if='mainCtrl.popularDatasets.length > 0'>
@@ -84,7 +75,15 @@
                     <div class="col-md-2">
                     </div>
                 </div>
-                <hr style="color:black; width: 1px;">
+                <div class="row" ng-if="mainCtrl.popularDatasets.length === 0">
+                    <div class="col-md-1" style="text-align: center;">
+                    </div>
+                    <div class="col-md-10" style="text-align: center;">
+                        <label style="color: #2E353D;">No datasets available at the moment</label>
+                    </div>
+                    <div class="col-md-1" style="text-align: center;">
+                    </div>
+                </div>
                 <div ng-repeat="dataset in mainCtrl.popularDatasets">
                     <div class="row list-group-item">
                         <div class="col-md-2" style="text-align: center;">
@@ -104,7 +103,7 @@
                         </div>
                         <div class="col-md-2">
                             <button ng-click="mainCtrl.downloadPublicDataset(dataset.datasetId, dataset.name)">
-                                <i style="color:green" class="glyphicon glyphicon-download"></i>
+                                <i class="glyphicon glyphicon-download"></i>
                             </button>
                         </div>
                     </div>

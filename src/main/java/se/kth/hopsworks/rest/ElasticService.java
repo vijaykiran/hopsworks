@@ -196,7 +196,7 @@ public class ElasticService {
                     target = rest_client.target(registeredClusters.getJSONObject(i).getString("searchEndpoint")).path("/" + searchTerm);
                     String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
                     JSONArray jsonArray = new JSONArray(response);
-                    for (int index = 0; i < jsonArray.length(); index++) {
+                    for (int index = 0; index < jsonArray.length(); index++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(index);
                         if (!results.containsKey(jsonObject.getString("publicId"))) {
 

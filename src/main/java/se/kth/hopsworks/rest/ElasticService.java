@@ -188,14 +188,15 @@ public class ElasticService {
         HashMap<String, ElasticHit> results = new HashMap<>();
         JSONArray registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
         if (registeredClusters != null && registeredClusters.length() > 0) {
-            for (int i = 0; i < registeredClusters.length(); i++) {
+            int length = registeredClusters.length();
+            for (int i = 0; i < length; i++) {
                 if (registeredClusters.getJSONObject(i).getLong("heartbeatsMissed") < 5) {
 
                     rest_client = ClientBuilder.newClient();
                     target = rest_client.target(registeredClusters.getJSONObject(i).getString("searchEndpoint")).path("/" + searchTerm);
                     String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
                     JSONArray jsonArray = new JSONArray(response);
-                    for (int index = 0; i < jsonArray.length(); i++) {
+                    for (int index = 0; i < jsonArray.length(); index++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(index);
                         if (!results.containsKey(jsonObject.getString("publicId"))) {
 

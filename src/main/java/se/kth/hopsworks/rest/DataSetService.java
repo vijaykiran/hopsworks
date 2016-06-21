@@ -57,7 +57,6 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.dataset.DatasetRequest;
 import se.kth.hopsworks.dataset.DatasetRequestFacade;
 import se.kth.hopsworks.filters.AllowedRoles;
-import se.kth.hopsworks.gvod.GVodController;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.MoveDTO;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -116,8 +115,6 @@ public class DataSetService {
   private HdfsLeDescriptorsFacade hdfsLeDescriptorsFacade;
   @EJB
   private ManageGlobalClusterParticipation manageGlobalCLusterParticipation;
-  @EJB
-  private GVodController gvodController;
 
   private Integer projectId;
   private Project project;
@@ -923,7 +920,7 @@ public class DataSetService {
     }
     ds.setPublicDs(true);
     ds.setPublicDsId(settings.getCLUSTER_ID()+ "_" + this.project.getName()+"_"+ ds.getName());
-    gvodController.UploadDatasetToGVodLibrary(ds);
+    //Do some ulpload to gvod
     datasetFacade.merge(ds);
     datasetFacade.merge(ds);
     json.setSuccessMessage("The Dataset is now public.");

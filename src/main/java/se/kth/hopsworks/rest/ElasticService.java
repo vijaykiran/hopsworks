@@ -66,6 +66,12 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 /**
  *
  * @author vangelis
@@ -193,7 +199,6 @@ public class ElasticService {
             int length = registeredClusters.length();
             for (int i = 0; i < length; i++) {
                 if (registeredClusters.getJSONObject(i).getLong("heartbeatsMissed") < 5) {
-
                     rest_client = ClientBuilder.newClient();
                     target = rest_client.target(registeredClusters.getJSONObject(i).getString("searchEndpoint")).path("/" + searchTerm);
                     String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
@@ -204,8 +209,11 @@ public class ElasticService {
 
                             ElasticHit elasticHit = new ElasticHit(jsonObject.getString("name"), jsonObject.getString("id"), jsonObject.getString("type"), (JSONObject) jsonObject.get("hits"), (float) jsonObject.getDouble("score"));
                             elasticHit.setPublicId(jsonObject.getString("publicId"));
+                            elasticHit.appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
                             results.put(jsonObject.getString("publicId"), elasticHit);
-
+                        }
+                        else{
+                            results.get(jsonObject.getString("publicId")).appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
                         }
                     }
                 }
@@ -272,6 +280,7 @@ public class ElasticService {
                     Dataset ds =  datasetFacade.findByInode(i).get(0);
                     ElasticHit elasticHit = new ElasticHit(hit);
                     elasticHit.setPublicId(ds.getPublicDsId());
+                    elasticHit.setOriginalGvodEndpoint(settings.getGVOD_UDP_ENDPOINT());
                     elasticHits.add(elasticHit);
                 }
             }

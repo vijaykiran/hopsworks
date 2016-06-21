@@ -2,8 +2,10 @@ package se.kth.hopsworks.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
@@ -34,6 +36,10 @@ public class ElasticHit implements Comparator<ElasticHit> {
   private float score;
   
   private String publicId;
+  
+  private List gvodEndpoints;
+  
+  private String originalGvodEndpoint;
 
   public ElasticHit() {
   }
@@ -56,6 +62,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
 
       //logger.log(Level.FINE, "KEY -- {0} VALUE --- {1}", new Object[]{entry.getKey(), entry.getValue()});
     }
+    this.gvodEndpoints = new ArrayList<>();
   }
   
   public ElasticHit(String name, String id, String type, JSONObject json, float score) {
@@ -68,6 +75,23 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.score = score;
     }
 
+    public String getOriginalGvodEndpoint() {
+        return originalGvodEndpoint;
+    }
+
+    public void setOriginalGvodEndpoint(String originalGvodEndpoint) {
+        this.originalGvodEndpoint = originalGvodEndpoint;
+    }
+  
+    public List getGvodEndpoint() {
+        return gvodEndpoints;
+    }
+
+    public void appendEndpoint(String gvod_endpoint) {
+        this.gvodEndpoints.add(gvod_endpoint);
+    }
+    
+    
     public String getPublicId() {
         return publicId;
     }

@@ -45,7 +45,7 @@
 
         <div class="col-md-6">
             <div style="background: white;"> 
-                <div class="row" style="margin-bottom: 1px; background-color: #2E353D;">
+                <div class="row" style="background-color: #2E353D;">
                     <div class="col-md-1">
 
                     </div>
@@ -102,7 +102,7 @@
                             <label style="color: red;">{{dataset.leeches}}</label>
                         </div>
                         <div class="col-md-2">
-                            <button ng-click="mainCtrl.downloadPublicDataset(dataset.datasetId, dataset.name)">
+                            <button ng-click="mainCtrl.downloadPublicDataset(dataset.datasetId, dataset.name,dataset.partners)">
                                 <i class="glyphicon glyphicon-download"></i>
                             </button>
                         </div>

@@ -298,18 +298,19 @@ angular.module('hopsWorksApp')
                 });
 
 
-                self.downloadPublicDataset = function (datasetId,datasetName) {
+                self.downloadPublicDataset = function (datasetId, datasetName, partners) {
 
                     ModalService.selectProject('md', true, "/[^]*/",
                             "Select a Project as download destination.").then(
                             function (success) {
                                 var destProj = success.projectId;
-                                ModalService.setupDownload('md', destProj, datasetId, datasetName).then(function () {
+                                ModalService.setupDownload('md', destProj, datasetId, datasetName, partners).then(function () {
                                     growl.success("Download in progress, check your project p2p service for more info", {title: 'Success', ttl: 1000});
+                                    
                                 });
 
                             }, function (error) {
-                                growl.error("Problem with project selection", {title: 'Error', ttl: 1000});
+                        growl.error("Problem with project selection", {title: 'Error', ttl: 1000});
                     });
 
                 };

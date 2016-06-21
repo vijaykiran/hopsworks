@@ -18,7 +18,6 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import se.kth.hopsworks.gvod.GVodController;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -59,8 +58,6 @@ public class DatasetController {
   private DistributedFsService dfsSingleton;
   @EJB
   private Settings settings;
-  @EJB
-  private GVodController gvodController;
 
   /**
    * Create a new DataSet. This is, a folder right under the project home
@@ -151,7 +148,7 @@ public class DatasetController {
         hdfsUsersBean.addDatasetUsersGroups(user, project, newDS);
         if(isPublic){
             
-            gvodController.UploadDatasetToGVodLibrary(newDS);
+           //do some upload to gvod
         }
         
         

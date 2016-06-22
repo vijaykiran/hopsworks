@@ -7,7 +7,6 @@ package se.kth.hopsworks.hops_site;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ws.rs.ClientErrorException;
@@ -21,7 +20,6 @@ import org.json.JSONArray;
 import se.kth.hopsworks.util.Settings;
 
 @Startup
-@DependsOn("Settings")
 @Singleton
 public class ManageGlobalClusterParticipation {
 

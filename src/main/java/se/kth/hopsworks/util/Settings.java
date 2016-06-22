@@ -10,15 +10,17 @@ import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class Settings {
 
-    @PersistenceContext(unitName = "kthfsPU")
+    @PersistenceContext(unitName = "kthfsPU", type = PersistenceContextType.TRANSACTION)
     private EntityManager em;
 
     @PostConstruct

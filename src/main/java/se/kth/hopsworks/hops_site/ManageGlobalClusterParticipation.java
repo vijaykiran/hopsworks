@@ -17,6 +17,7 @@ import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import se.kth.hopsworks.util.Settings;
 
 @Startup
@@ -25,9 +26,9 @@ public class ManageGlobalClusterParticipation {
 
     private JSONArray registeredClusters = null;
     private JSONArray popularDatasets = null;
-    private WebTarget webTarget;
-    private Client client;
-    
+    private WebTarget webTarget = null;
+    private Client client = null;
+
     @Resource
     private SessionContext context;
 
@@ -37,17 +38,23 @@ public class ManageGlobalClusterParticipation {
     @PostConstruct
     private void init() {
 
-        client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(settings.getBASE_URI_HOPS_SITE()).path("myresource");
-        if (settings.getCLUSTER_ID() == null) {
-            TryToRegister();
-        } else {
-            DoTimeout();
-        }
+        DoTimeout();
     }
 
     @Timeout
     private void TimeoutOcurred() {
+
+        if (webTarget != null && client != null) {
+            doTimeoutStuff();
+        } else {
+            client = javax.ws.rs.client.ClientBuilder.newClient();
+            webTarget = client.target(settings.getBASE_URI_HOPS_SITE()).path("myresource");
+            doTimeoutStuff();
+        }
+
+    }
+
+    private void doTimeoutStuff() {
         if (settings.getCLUSTER_ID() != null) {
             PingAndGetPopularDatasets();
         } else {
@@ -84,7 +91,7 @@ public class ManageGlobalClusterParticipation {
             if (pingResponse != null) {
                 this.registeredClusters = new JSONArray(pingResponse);
             }
-            if(popularDatasetsResponse != null){
+            if (popularDatasetsResponse != null) {
                 this.popularDatasets = new JSONArray(popularDatasetsResponse);
             }
             DoTimeout();
@@ -93,38 +100,35 @@ public class ManageGlobalClusterParticipation {
     }
 
     private <T> T PingRest(Class<T> responseType, String clusterId) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("ping/{0}/", new Object[]{clusterId}));
+        WebTarget resource = webTarget.path(java.text.MessageFormat.format("ping/{0}/", new Object[]{clusterId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
-    
+
     private <T> T PopularDatasetsRest(Class<T> responseType, String clusterId) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{clusterId}));
+        WebTarget resource = webTarget.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{clusterId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
-    
 
     private <T> T RegisterRest(Class<T> responseType, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
-        WebTarget resource = webTarget;
         searchEndpoint = searchEndpoint.replaceAll("/", "'");
-        gvodEndpoint = gvodEndpoint.replaceAll("/", "'");
-        resource = resource.path(java.text.MessageFormat.format("register/{0}/{1}/{2}/{3}", new Object[]{searchEndpoint, email, cert, gvodEndpoint}));
+        gvodEndpoint = gvodEndpoint.replace("{", "&");
+        gvodEndpoint = gvodEndpoint.replace("}", "%");
+        WebTarget resource = webTarget.path(java.text.MessageFormat.format("register/{0}/{1}/{2}/{3}", new Object[]{searchEndpoint, email, cert, gvodEndpoint}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public JSONArray getRegisteredClusters() {
         return this.registeredClusters;
     }
-    
+
     public JSONArray getPopularDatasets() {
         return this.popularDatasets;
     }
 
     private void DoTimeout() {
-        
+
         long duration = 60000;
-        TimerConfig timerConfig = new TimerConfig(); 
+        TimerConfig timerConfig = new TimerConfig();
         timerConfig.setPersistent(false);
         context.getTimerService().createSingleActionTimer(duration, timerConfig);
 

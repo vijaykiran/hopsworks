@@ -10,17 +10,15 @@ import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class Settings {
 
-    @PersistenceContext(unitName = "kthfsPU", type = PersistenceContextType.TRANSACTION)
+    @PersistenceContext(unitName = "kthfsPU")
     private EntityManager em;
 
     @PostConstruct
@@ -71,8 +69,8 @@ public class Settings {
     private static final String VARIABLE_KAFKA_NUM_REPLICAS = "kafka_num_replicas";
 
     private static final String VARIABLE_CLUSTER_ID = "cluster_id";
-    private Client rest_client;
-    private WebTarget target;
+    private Client restClient = null;
+    private WebTarget target = null;
     private static final String VARIABLE_GVOD_REST_ENDPOINT = "gvod_rest_endpoint";
     private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_base_uri";
     private static final String VARIABLE_CLUSTER_MAIL = "cluster_mail";
@@ -114,7 +112,7 @@ public class Settings {
         return ELASTIC_PUBLIC_RESTENDPOINT;
     }
 
-    private String GVOD_REST_ENDPOINT = "someHardCodedVal";
+    private String GVOD_REST_ENDPOINT = "http://bbc1.sics.se:19308";
 
     public synchronized String getGVOD_REST_ENDPOINT() {
         checkCache();
@@ -144,14 +142,16 @@ public class Settings {
 
     private String getGvodEndpoint() {
 
-        if (GVOD_UDP_ENDPOINT !=  null) {
-            
+        if (GVOD_UDP_ENDPOINT != null) {
+
             return GVOD_UDP_ENDPOINT;
-            
-        }else{
+
+        } else {
             String response;
-            rest_client = ClientBuilder.newClient();
-            target = rest_client.target(this.GVOD_REST_ENDPOINT).path("/vod/endpoint");
+            if(restClient == null || target == null){
+                restClient = ClientBuilder.newClient();
+                target = restClient.target(this.GVOD_REST_ENDPOINT).path("/vod/endpoint");
+            }
             response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
             return response;
         }

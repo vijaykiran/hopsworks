@@ -910,10 +910,10 @@ angular.module('hopsWorksApp')
               },
               
               
-              setupDownload: function(size, projectId ,datasetId, datasetName){
+              setupDownload: function(size, projectId ,datasetId, datasetName, partners){
                   var modalInstance = $modal.open({
                   templateUrl: 'views/setupDownload.html',
-                  controller: 'GVodDownloaderController as setupDownloadCtrl',
+                  controller: 'GVodDownloadController as setupDownloadCtrl',
                   size: size,
                   resolve: {
                     auth: ['$q', '$location', 'AuthService',
@@ -935,6 +935,9 @@ angular.module('hopsWorksApp')
                     },
                     datasetName: function () {
                       return datasetName;
+                    },
+                    partners: function () {
+                      return partners;
                     }
                   }
                 });

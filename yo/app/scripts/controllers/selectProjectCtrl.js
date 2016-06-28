@@ -27,7 +27,7 @@ angular.module('hopsWorksApp')
               }
             };
 
-            self.init();
+        self.init();
 
             self.selectProject = function () {
               if (self.selectedProject === undefined || self.selectedProject === "") {

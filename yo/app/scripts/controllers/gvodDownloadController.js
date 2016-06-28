@@ -1,5 +1,5 @@
-angular.module('hopsWorksApp').controller('GVodDownloadController', ['$modalInstance', 'datasetName', 'datasetId', 'projectId', 'partners',
-    function ($modalInstance, datasetName, datasetId, projectId, partners) {
+angular.module('hopsWorksApp').controller('GVodDownloadController', ['$modalInstance', 'datasetName', 'datasetId', 'projectId', 'partners','$scope',
+    function ($modalInstance, datasetName, datasetId, projectId, partners,$scope) {
 
 
         var self = this;
@@ -29,23 +29,19 @@ angular.module('hopsWorksApp').controller('GVodDownloadController', ['$modalInst
             }
         };
 
-        self.setHdfs = function () {
+        $scope.setHdfs = function () {
             if(self.hdfsDownload){
                 self.hdfsDownload = false;
-                $("buttonHdfs").focus();
             }else{
                 self.hdfsDownload = true;
-                $("buttonHdfs").blur();
             }
         };
 
-        self.setHdfs = function () {
+        $scope.setHdfs = function () {
             if (self.kafkaDownload) {
                 self.kafkaDownload = false;
-                $("buttonKafka").focus();
             } else {
                 self.kafkaDownload = true;
-                $("buttonKafka").blur();
             }
         };
 

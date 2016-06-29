@@ -2,7 +2,6 @@ package se.kth.hopsworks.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -11,6 +10,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.security.AccessControlException;
+import org.json.JSONObject;
 import se.kth.bbc.activity.ActivityFacade;
 import se.kth.bbc.fileoperations.FileOperations;
 import se.kth.bbc.project.Project;
@@ -21,7 +21,6 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
-import se.kth.hopsworks.hops_site.ManageGlobalClusterParticipation;
 import se.kth.hopsworks.meta.db.InodeBasicMetadataFacade;
 import se.kth.hopsworks.meta.db.TemplateFacade;
 import se.kth.hopsworks.meta.entity.InodeBasicMetadata;
@@ -58,6 +57,8 @@ public class DatasetController {
   private DistributedFsService dfsSingleton;
   @EJB
   private Settings settings;
+  
+  private GVodController gvodController;
 
   /**
    * Create a new DataSet. This is, a folder right under the project home
@@ -148,7 +149,15 @@ public class DatasetController {
         hdfsUsersBean.addDatasetUsersGroups(user, project, newDS);
         if(isPublic){
             
-           //do some upload to gvod
+            try{
+                JSONObject jsonObject = new JSONObject(settings.getGVOD_UDP_ENDPOINT());
+                String ip = jsonObject.getString("ip");
+                String port = jsonObject.getString("port");
+                gvodController.upload(ip,port, dsPath, newDS.getName(), username, newDS.getPublicDsId());
+            }catch(Exception e){
+                throw new IOException("Failed to share dataset via gvod ", e);
+            }
+            
         }
         
         

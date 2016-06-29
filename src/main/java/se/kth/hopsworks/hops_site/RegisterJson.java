@@ -33,7 +33,7 @@ public class RegisterJson {
         return searchEndpoint;
     }
 
-    public String getGVodEndpoint() {
+    public String getGvodEndpoint() {
         return gvodEndpoint;
     }
 

@@ -5,6 +5,7 @@
  */
 package se.kth.hopsworks.hops_site;
 
+import com.owlike.genson.Genson;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -31,6 +32,7 @@ public class ManageGlobalClusterParticipation {
     private JSONArray popularDatasets = null;
     private WebTarget webTarget = null;
     private Client client = null;
+    private final Genson genson = new Genson();
 
     @Resource
     private SessionContext context;
@@ -118,9 +120,17 @@ public class ManageGlobalClusterParticipation {
         
         WebTarget resource = webTarget.path("register");
         
-        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(registerJson, MediaType.APPLICATION_JSON), Response.class);
+        String jsonReqeust = genson.serialize(registerJson);
         
-        return r.readEntity(String.class);
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(jsonReqeust, MediaType.APPLICATION_JSON), Response.class);
+        
+        if(r != null && r.getStatus() == 200){
+            return r.readEntity(String.class);
+        }else{
+            return null;
+        }
+        
+       
         
         
         

@@ -72,6 +72,7 @@ import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+
 /**
  *
  * @author vangelis
@@ -101,10 +102,9 @@ public class ElasticService {
 
     @EJB
     private DatasetFacade datasetFacade;
-    
+
     @EJB
     private InodeFacade inodeFacade;
-    
 
     @EJB
     ManageGlobalClusterParticipation manageGlobalClusterParticipation;
@@ -211,8 +211,7 @@ public class ElasticService {
                             elasticHit.setPublicId(jsonObject.getString("publicId"));
                             elasticHit.appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
                             results.put(jsonObject.getString("publicId"), elasticHit);
-                        }
-                        else{
+                        } else {
                             results.get(jsonObject.getString("publicId")).appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
                         }
                     }
@@ -277,11 +276,14 @@ public class ElasticService {
                 for (SearchHit hit : hits) {
                     String inode_id = hit.getId();
                     Inode i = inodeFacade.findById(Integer.parseInt(inode_id));
-                    Dataset ds =  datasetFacade.findByInode(i).get(0);
-                    ElasticHit elasticHit = new ElasticHit(hit);
-                    elasticHit.setPublicId(ds.getPublicDsId());
-                    elasticHit.setOriginalGvodEndpoint(settings.getGVOD_UDP_ENDPOINT());
-                    elasticHits.add(elasticHit);
+                    if (i != null) {
+
+                        Dataset ds = datasetFacade.findByInode(i).get(0);
+                        ElasticHit elasticHit = new ElasticHit(hit);
+                        elasticHit.setPublicId(ds.getPublicDsId());
+                        elasticHit.setOriginalGvodEndpoint(settings.getGVOD_UDP_ENDPOINT());
+                        elasticHits.add(elasticHit);
+                    }
                 }
             }
 
@@ -472,7 +474,7 @@ public class ElasticService {
     private QueryBuilder globalSearchQuery(String searchTerm) {
         //FIXME: consider metadata search as well
         QueryBuilder nameDescQuery = getNameDescriptionMetadataQuery(searchTerm);
-        QueryBuilder notPublic =  QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD,"false");
+        QueryBuilder notPublic = QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD, "false");
 
         QueryBuilder query = boolQuery()
                 .must(nameDescQuery)
@@ -513,8 +515,6 @@ public class ElasticService {
         return cq;
     }
 
-    
-    
     private QueryBuilder publicSearchQuery(String searchTerm) {
 
         QueryBuilder nameQuery = getNameQuery(searchTerm);
@@ -529,17 +529,16 @@ public class ElasticService {
                 .must(publicQuery);
 
         return textCondition;
-        
+
     }
-    
-    
+
     private QueryBuilder matchPublicQuery() {
-        
-        QueryBuilder q = QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD,"true");
+
+        QueryBuilder q = QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD, "true");
         return q;
-        
+
     }
-    
+
     /**
      * Creates the main query condition. Applies filters on the texts describing
      * a document i.e. on the description
@@ -629,7 +628,6 @@ public class ElasticService {
      * @param searchTerm
      * @return
      */
-    
     private QueryBuilder getMetadataQuery(String searchTerm) {
 
         QueryBuilder metadataQuery = queryStringQuery(searchTerm)
@@ -719,8 +717,5 @@ public class ElasticService {
 
         return addr;
     }
-
-
-    
 
 }

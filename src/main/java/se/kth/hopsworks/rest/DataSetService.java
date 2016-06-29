@@ -927,7 +927,7 @@ public class DataSetService {
     datasetFacade.merge(ds);
     
     
-    gvodController.upload(settings.getGVOD_UDP_ENDPOINT(), TODO, ds.getName(), TODO, ds.getPublicDsId());
+    gvodController.upload(settings.getGVOD_UDP_ENDPOINT(), "TODO", ds.getName(), "TODO", ds.getPublicDsId());
     json.setSuccessMessage("The Dataset is now public.");
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();

@@ -50,6 +50,7 @@ import se.kth.bbc.security.ua.UserManager;
 import se.kth.hopsworks.controller.DataSetDTO;
 import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.controller.FileTemplateDTO;
+import se.kth.hopsworks.controller.GVodController;
 import se.kth.hopsworks.controller.JobController;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.dataset.Dataset;
@@ -120,6 +121,7 @@ public class DataSetService {
   private Project project;
   private String path;
   private Dataset dataset;
+  private GVodController gvodController = new GVodController();
 
   public DataSetService() {
   }
@@ -923,6 +925,9 @@ public class DataSetService {
     //Do some ulpload to gvod
     datasetFacade.merge(ds);
     datasetFacade.merge(ds);
+    
+    
+    gvodController.upload(settings.getGVOD_UDP_ENDPOINT(), TODO, ds.getName(), TODO, ds.getPublicDsId());
     json.setSuccessMessage("The Dataset is now public.");
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();

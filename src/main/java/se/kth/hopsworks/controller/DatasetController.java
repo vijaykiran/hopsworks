@@ -58,7 +58,7 @@ public class DatasetController {
   @EJB
   private Settings settings;
   
-  private GVodController gvodController;
+  private GVodController gvodController = new GVodController();
 
   /**
    * Create a new DataSet. This is, a folder right under the project home
@@ -150,10 +150,7 @@ public class DatasetController {
         if(isPublic){
             
             try{
-                JSONObject jsonObject = new JSONObject(settings.getGVOD_UDP_ENDPOINT());
-                String ip = jsonObject.getString("ip");
-                String port = jsonObject.getString("port");
-                gvodController.upload(ip,port, dsPath, newDS.getName(), username, newDS.getPublicDsId());
+                gvodController.upload(settings.getGVOD_UDP_ENDPOINT(), dsPath, newDS.getName(), username, newDS.getPublicDsId());
             }catch(Exception e){
                 throw new IOException("Failed to share dataset via gvod ", e);
             }

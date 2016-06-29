@@ -9,9 +9,9 @@ package se.kth.hopsworks.controller;
  *
  * @author jsvhqr
  */
-class GVodController {
+public class GVodController {
 
-    void upload(String address, String port, String path, String datasetName, String username, String publicDsId) {
+    public void upload(String gvodEndpoint, String path, String datasetName, String username, String publicDsId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

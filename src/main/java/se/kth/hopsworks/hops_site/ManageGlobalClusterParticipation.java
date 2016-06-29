@@ -16,8 +16,11 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.glassfish.jersey.client.ClientResponse;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import se.kth.hopsworks.util.Settings;
 
 @Startup
@@ -66,7 +69,7 @@ public class ManageGlobalClusterParticipation {
 
         String id = null;
         try {
-            id = RegisterRest(String.class, settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
+            id = RegisterRest(settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
         } catch (ClientErrorException ex) {
 
         } finally {
@@ -109,12 +112,19 @@ public class ManageGlobalClusterParticipation {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    private <T> T RegisterRest(Class<T> responseType, String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
-        searchEndpoint = searchEndpoint.replaceAll("/", "'");
-        gvodEndpoint = gvodEndpoint.replace("{", "&");
-        gvodEndpoint = gvodEndpoint.replace("}", "%");
-        WebTarget resource = webTarget.path(java.text.MessageFormat.format("register/{0}/{1}/{2}/{3}", new Object[]{searchEndpoint, email, cert, gvodEndpoint}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    private String RegisterRest(String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
+        
+        RegisterJson registerJson = new RegisterJson(searchEndpoint, gvodEndpoint, email, cert);
+        
+        WebTarget resource = webTarget.path("register");
+        
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(registerJson, MediaType.APPLICATION_JSON), Response.class);
+        
+        return r.readEntity(String.class);
+        
+        
+        
+        
     }
 
     public JSONArray getRegisteredClusters() {

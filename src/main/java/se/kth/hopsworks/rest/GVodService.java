@@ -69,7 +69,7 @@ public class GVodService {
         JSONObject jsonObject = new JSONObject(json);
 
         String response = gvodController.downloadHdfs(settings.getGVOD_REST_ENDPOINT(),
-                File.separator + Settings.DIR_ROOT + File.separator + projectFacade.find(jsonObject.getString("projectId")).getName() + File.separator,
+                Integer.parseInt(jsonObject.getString("projectId")),
                 jsonObject.getString("datasetName"),
                 usersController.generateUsername(sc.getUserPrincipal().getName()),
                 jsonObject.getString("datasetId"),

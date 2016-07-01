@@ -150,16 +150,21 @@ public class Settings {
             return GVOD_UDP_ENDPOINT;
 
         } else {
-            String response;
-            if(restClient == null || target == null){
+            Response response = null;
+            if (restClient == null || target == null) {
                 restClient = ClientBuilder.newClient();
-                target = restClient.target(this.GVOD_REST_ENDPOINT).path("/vod/endpoint");
+                target = restClient.target(GVOD_REST_ENDPOINT).path("/vod/endpoint");
             }
-            Response r = target.request().accept(MediaType.APPLICATION_JSON).get();
-            if(r.getStatus() == 200){
-                return r.readEntity(String.class);
-            }else{
-                return null;
+            try {
+                response = target.request().accept(MediaType.APPLICATION_JSON).get();
+            } catch (Exception e) {
+
+            } finally {
+                if (response != null && response.getStatus() == 200) {
+                    return response.readEntity(String.class);
+                } else {
+                    return null;
+                }
             }
         }
 

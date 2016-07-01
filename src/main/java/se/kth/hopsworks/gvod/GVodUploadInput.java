@@ -12,13 +12,13 @@ package se.kth.hopsworks.gvod;
  */
 public class GVodUploadInput {
     
-    private final HdfsResource resource;
+    private final HdfsResource hdfsResource;
     private final TorrentId torrentId;
 
     public GVodUploadInput(HdfsResource resource, TorrentId torrentId) {
-        this.resource = resource;
+        this.hdfsResource = resource;
         this.torrentId = torrentId;
-    }
+    }   
     
     
     

@@ -50,7 +50,6 @@ import se.kth.bbc.security.ua.UserManager;
 import se.kth.hopsworks.controller.DataSetDTO;
 import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.controller.FileTemplateDTO;
-import se.kth.hopsworks.controller.GVodController;
 import se.kth.hopsworks.controller.JobController;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.dataset.Dataset;
@@ -58,6 +57,7 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.dataset.DatasetRequest;
 import se.kth.hopsworks.dataset.DatasetRequestFacade;
 import se.kth.hopsworks.filters.AllowedRoles;
+import se.kth.hopsworks.gvod.GVodController;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.MoveDTO;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -927,7 +927,7 @@ public class DataSetService {
     datasetFacade.merge(ds);
     
     
-    gvodController.upload(settings.getGVOD_UDP_ENDPOINT(), "TODO", ds.getName(), "TODO", ds.getPublicDsId());
+    String result = gvodController.uploadToGVod(settings.getGVOD_REST_ENDPOINT(),File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator , ds.getName(), "TODO", ds.getPublicDsId());
     json.setSuccessMessage("The Dataset is now public.");
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();

@@ -1,5 +1,6 @@
 package se.kth.hopsworks.controller;
 
+import se.kth.hopsworks.gvod.GVodController;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -57,8 +58,8 @@ public class DatasetController {
   private DistributedFsService dfsSingleton;
   @EJB
   private Settings settings;
-  
-  private GVodController gvodController = new GVodController();
+  @EJB
+  private GVodController gvodController;
 
   /**
    * Create a new DataSet. This is, a folder right under the project home
@@ -150,7 +151,7 @@ public class DatasetController {
         if(isPublic){
             
             try{
-                gvodController.upload(settings.getGVOD_UDP_ENDPOINT(), dsPath, newDS.getName(), username, newDS.getPublicDsId());
+                String restult = gvodController.uploadToGVod(settings.getGVOD_REST_ENDPOINT(), dsPath, newDS.getName(), username, newDS.getPublicDsId());
             }catch(Exception e){
                 throw new IOException("Failed to share dataset via gvod ", e);
             }

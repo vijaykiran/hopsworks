@@ -1,5 +1,5 @@
-angular.module('hopsWorksApp').controller('GVodDownloadController', ['$modalInstance', 'datasetName', 'datasetId', 'projectId', 'partners',
-    function ($modalInstance, datasetName, datasetId, projectId, partners) {
+angular.module('hopsWorksApp').controller('GVodDownloadController', ['$modalInstance', 'datasetName', 'datasetId', 'projectId', 'partners', 'GVodService', 'growl',
+    function ($modalInstance, datasetName, datasetId, projectId, partners, GVodService, growl) {
 
 
         var self = this;
@@ -10,29 +10,65 @@ angular.module('hopsWorksApp').controller('GVodDownloadController', ['$modalInst
         self.kafkaDownload = false;
         self.hdfsDownload = false;
 
-        self.myHdfsIp;
-        self.myHdfsPort;
-        self.myHdfsDestination;
-        self.user;
-
         self.partners = partners;
+
+
+        self.topic;
+        self.schema;
+        self.kafkaCert;
+        self.sessionId;
 
         self.download = function () {
 
             if (self.kafkaDownload && !self.hdfsDownload) {
 
+                var json = {"topic" : self.topic,"schema": self.schema,"cert": self.kafkaCert,"sessionId": self.sessionId,"projectId": self.projectId, "datasetName": self.datasetName ,"datasetId": self.datasetId, "partners": self.partners};
+
+                GVodService.downloadKafka(json).then(function (success) {
+                    growl.success(success, {title: 'Success Kafka Download', ttl: 1000});
+                },
+                        function (error) {
+                            growl.error(error, {title: 'Error', ttl: 1000});
+                        });
+
             } else if (!self.kafkaDownload && self.hdfsDownload) {
 
+                var json = {"projectId": self.projectId, "datasetName": self.datasetName ,"datasetId": self.datasetId, "partners": self.partners};
+
+                GVodService.downloadHdfs(json).then(function (success) {
+
+                    growl.success(success, {title: 'Success Hdfs Download', ttl: 1000});
+
+                },
+                        function (error) {
+
+                            growl.error(error, {title: 'Error', ttl: 1000});
+
+                        });
 
             } else if (self.kafkaDownload && self.hdfsDownload) {
+
+                GVodService.downloadHdfs(json).then(function (success) {
+
+                    GVodService.downloadKafka(json).then(function (success) {
+
+                    },
+                            function (error) {
+
+                            });
+
+                },
+                        function (error) {
+
+                        });
 
             }
         };
 
         self.setHdfs = function () {
-            if(self.hdfsDownload){
+            if (self.hdfsDownload) {
                 self.hdfsDownload = false;
-            }else{
+            } else {
                 self.hdfsDownload = true;
             }
         };

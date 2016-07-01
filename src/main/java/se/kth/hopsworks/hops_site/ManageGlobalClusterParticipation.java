@@ -71,7 +71,10 @@ public class ManageGlobalClusterParticipation {
 
         String id = null;
         try {
-            id = RegisterRest(settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), settings.getGVOD_UDP_ENDPOINT());
+            String gvodEndpoint = settings.getGVOD_UDP_ENDPOINT();
+            if (gvodEndpoint != null) {
+                id = RegisterRest(settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), gvodEndpoint);
+            }
         } catch (ClientErrorException ex) {
 
         } finally {
@@ -115,26 +118,21 @@ public class ManageGlobalClusterParticipation {
     }
 
     private String RegisterRest(String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
-        
+
         RegisterJson registerJson = new RegisterJson(searchEndpoint, gvodEndpoint, email, cert);
-        
+
         WebTarget resource = webTarget.path("register");
-        
+
         String jsonReqeust = genson.serialize(registerJson);
-        
+
         Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(jsonReqeust, MediaType.APPLICATION_JSON), Response.class);
-        
-        if(r != null && r.getStatus() == 200){
+
+        if (r != null && r.getStatus() == 200) {
             return r.readEntity(String.class);
-        }else{
+        } else {
             return null;
         }
-        
-       
-        
-        
-        
-        
+
     }
 
     public JSONArray getRegisteredClusters() {

@@ -12,7 +12,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
@@ -112,7 +115,7 @@ public class Settings {
         return ELASTIC_PUBLIC_RESTENDPOINT;
     }
 
-    private String GVOD_REST_ENDPOINT = "http://bbc1.sics.se:19308";
+    private String GVOD_REST_ENDPOINT = "http://bbc1.sics.se:19303";
 
     public synchronized String getGVOD_REST_ENDPOINT() {
         checkCache();
@@ -152,8 +155,12 @@ public class Settings {
                 restClient = ClientBuilder.newClient();
                 target = restClient.target(this.GVOD_REST_ENDPOINT).path("/vod/endpoint");
             }
-            response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
-            return response;
+            Response r = target.request().accept(MediaType.APPLICATION_JSON).get();
+            if(r.getStatus() == 200){
+                return r.readEntity(String.class);
+            }else{
+                return null;
+            }
         }
 
     }

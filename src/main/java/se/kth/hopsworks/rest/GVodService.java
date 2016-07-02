@@ -7,6 +7,7 @@ package se.kth.hopsworks.rest;
 
 import com.owlike.genson.Genson;
 import java.io.File;
+import java.io.IOException;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.TransactionAttribute;
@@ -64,7 +65,7 @@ public class GVodService {
     @Consumes(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
     public Response downloadDatasetHdfs(@Context SecurityContext sc,
-            @Context HttpServletRequest req, String json) {
+            @Context HttpServletRequest req, String json) throws IOException {
 
         JSONObject jsonObject = new JSONObject(json);
 
@@ -73,7 +74,7 @@ public class GVodService {
                 jsonObject.getString("datasetName"),
                 usersController.generateUsername(sc.getUserPrincipal().getName()),
                 jsonObject.getString("datasetId"),
-                jsonObject.getJSONArray("partners"));
+                jsonObject.getString("partners"));
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();

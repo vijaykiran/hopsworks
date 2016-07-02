@@ -5,20 +5,20 @@
  */
 package se.kth.hopsworks.gvod;
 
-import org.json.JSONArray;
-
 /**
  *
  * @author jsvhqr
  */
-public class GVodHdfsDownloadInput {
+public class DownloadGVoDJson {
 
-    private final HdfsResource resource;
+    private final HdfsResource hdfsResource;
+    private final KafkaResource kafkaResource;
     private final TorrentId torrentId;
-    private final JSONArray partners;
+    private final String partners;
 
-    public GVodHdfsDownloadInput(HdfsResource resource, TorrentId torrentId, JSONArray partners) {
-        this.resource = resource;
+    public DownloadGVoDJson(HdfsResource hdfsResource, KafkaResource kafkaResource, TorrentId torrentId, String partners) {
+        this.hdfsResource = hdfsResource;
+        this.kafkaResource = kafkaResource;        
         this.torrentId = torrentId;
         this.partners = partners;
     }

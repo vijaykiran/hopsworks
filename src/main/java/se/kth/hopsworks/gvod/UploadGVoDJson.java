@@ -10,12 +10,12 @@ package se.kth.hopsworks.gvod;
  *
  * @author jsvhqr
  */
-public class GVodUploadInput {
+public class UploadGVoDJson {
     
     private final HdfsResource hdfsResource;
     private final TorrentId torrentId;
 
-    public GVodUploadInput(HdfsResource resource, TorrentId torrentId) {
+    public UploadGVoDJson(HdfsResource resource, TorrentId torrentId) {
         this.hdfsResource = resource;
         this.torrentId = torrentId;
     }   

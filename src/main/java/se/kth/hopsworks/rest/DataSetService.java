@@ -920,6 +920,10 @@ public class DataSetService {
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
               ResponseMessages.DATASET_ALREADY_PUBLIC);
     }
+    if(settings.getCLUSTER_ID() == null){
+        throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+              ResponseMessages.NOT_REGISTERD_WITH_HOPS_SITE);
+    }
     ds.setPublicDs(true);
     ds.setPublicDsId(settings.getCLUSTER_ID()+ "_" + this.project.getName()+"_"+ ds.getName());
     //Do some ulpload to gvod

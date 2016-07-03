@@ -1,0 +1,39 @@
+<div class="jumbotron">
+
+    <div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+            </div>
+            <div class="col-md-4 text-center">
+                <h2>Contents</h2>
+            </div>
+            <div class="col-md-4 text-center">
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+            </div>
+            <div class="col-md-4 text-center"> <span class="btn btn-default" ng-click="p2pCtrl.getContents()">
+                    <i class="glyphicon glyphicon-refresh"></i>
+                </span>
+            </div>
+            <div class="col-md-4 text-center">
+            </div>
+        </div>
+    </div>
+    <div ng-repeat="file in p2pCtrl.result.data.contents " style="padding: 15px;">
+        <div class="container-fluid" style="border-bottom: solid 1px black;">
+            <div class="col-md-3">
+                Name: {{file.fileName}}
+            </div>
+            <div class="col-md-3">
+                ID: {{file.torrentId.val}}
+            </div>
+            <div class="col-md-3">
+                Status: {{file.torrentStatus}}
+            </div>
+        </div>
+    </div>
+</div>

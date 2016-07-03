@@ -7,6 +7,7 @@ package se.kth.hopsworks.controller;
 public class ResponseMessages {
 
   //response for validation error
+  public final static String NOT_REGISTERD_WITH_HOPS_SITE = "Not registered with hops-site";
   public final static String USER_DOES_NOT_EXIST = "User does not exist.";
   public final static String USER_WAS_NOT_FOUND
           = "Ops! The operation failed. User not found";

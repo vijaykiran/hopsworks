@@ -28,7 +28,7 @@ angular.module('hopsWorksApp')
 
             // We could instead implement a service to get all the available types but this will do it for now
 //        self.projectTypes = ['JOBS', 'ZEPPELIN', 'BIOBANKING', 'CHARON'];
-            self.projectTypes = ['JOBS', 'ZEPPELIN', 'KAFKA'];
+            self.projectTypes = ['JOBS', 'ZEPPELIN', 'KAFKA','P2P'];
             $scope.activeService = "home";
 
             self.alreadyChoosenServices = [];
@@ -165,16 +165,6 @@ angular.module('hopsWorksApp')
                         getAllActivities();
                         getCurrentProject();
 
-                        // Check if the service exists and otherwise add it or remove it depending on the previous choice
-                        self.exists = function (projectType) {
-                          var idx = self.selectionProjectTypes.indexOf(projectType);
-                          if (idx > -1) {
-                            self.selectionProjectTypes.splice(idx, 1);
-                          } else {
-                            self.selectionProjectTypes.push(projectType);
-                          }
-                        };
-
                       });
             };
 
@@ -232,7 +222,7 @@ angular.module('hopsWorksApp')
             self.goToUrl = function(serviceName) {
               $scope.activeService = serviceName;
               $location.path('project/' + self.pId + '/' + serviceName);              
-            }
+            };
 
             self.goToDatasets = function () {
               self.goToUrl('datasets');
@@ -332,6 +322,10 @@ angular.module('hopsWorksApp')
 
             self.showKafka = function () {
               return showService("Kafka");
+            };
+            
+            self.showP2P = function(){
+                return showService("P2p");
             };
 
 

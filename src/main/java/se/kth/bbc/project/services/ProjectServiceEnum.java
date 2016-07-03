@@ -11,7 +11,8 @@ public enum ProjectServiceEnum {
   KAFKA("Kafka"),
   //  BIOBANKING("Biobanking"),
   //  CHARON("Charon"),
-  JOBS("Jobs");
+  JOBS("Jobs"),
+  P2P("P2p");
 
   private final String readable;
 

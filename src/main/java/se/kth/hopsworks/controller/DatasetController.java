@@ -98,6 +98,9 @@ public class DatasetController {
         } else if (dataSetName == null) {
             throw new NullPointerException(
                     "A valid DataSet name must be passed upon DataSet creation. Received null.");
+        }else if(isPublic && settings.getCLUSTER_ID() == null){
+            throw new NullPointerException(
+                    "Cluster not registered with hops_site, no cluster_id. Recieved null.");
         }
         try {
             FolderNameValidator.isValidName(dataSetName);
@@ -138,24 +141,23 @@ public class DatasetController {
                 if (datasetDescription != null) {
                     newDS.setDescription(datasetDescription);
                 }
-                datasetFacade.persistDataset(newDS);
-                activityFacade.persistActivity(ActivityFacade.NEW_DATA + dataSetName, project, user);
-                // creates a dataset and adds user as owner.
-                hdfsUsersBean.addDatasetUsersGroups(user, project, newDS);
-
                 if (isPublic) {
                     newDS.setPublicDs(true);
                     newDS.setPublicDsId(settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataSetName);
                     try {
                         String restult = gvodController.uploadToGVod(settings.getGVOD_REST_ENDPOINT(), dsPath, newDS.getName(), username, newDS.getPublicDsId());
                     } catch (Exception e) {
+                        newDS.setPublicDs(false);
+                        datasetFacade.merge(newDS);
                         throw new IOException("Failed to share dataset via gvod ", e);
                     }
-                    datasetFacade.merge(newDS);
                 } else {
                     newDS.setPublicDs(false);
-                    datasetFacade.merge(newDS);
                 }
+                datasetFacade.persistDataset(newDS);
+                activityFacade.persistActivity(ActivityFacade.NEW_DATA + dataSetName, project, user);
+                // creates a dataset and adds user as owner.
+                hdfsUsersBean.addDatasetUsersGroups(user, project, newDS);
             } catch (Exception e) {
                 IOException failed = new IOException("Failed to create dataset at path "
                         + dsPath + ".", e);

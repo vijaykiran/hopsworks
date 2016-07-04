@@ -111,6 +111,7 @@ public class DatasetController {
         boolean success;
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator
                 + project.getName();
+        String pathToDs = dsPath;
         dsPath = dsPath + File.separator + dataSetName;
         Inode parent = inodes.getProjectRoot(project.getName());
         Inode ds = inodes.findByParentAndName(parent, dataSetName);
@@ -145,7 +146,7 @@ public class DatasetController {
                     newDS.setPublicDs(true);
                     newDS.setPublicDsId(settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataSetName);
                     try {
-                        String restult = gvodController.uploadToGVod(settings.getGVOD_REST_ENDPOINT(), dsPath, newDS.getName(), username, newDS.getPublicDsId());
+                        String restult = gvodController.uploadToGVod(settings.getHadoopConfDir(), pathToDs, newDS.getName(), username, newDS.getPublicDsId());
                     } catch (Exception e) {
                         newDS.setPublicDs(false);
                         datasetFacade.merge(newDS);
@@ -228,19 +229,12 @@ public class DatasetController {
                 if (datasetDescription != null) {
                     newDS.setDescription(datasetDescription);
                 }
+                newDS.setPublicDs(true);
+                newDS.setPublicDsId(publicId);
                 datasetFacade.persistDataset(newDS);
                 activityFacade.persistActivity(ActivityFacade.NEW_DATA + dataSetName, project, user);
                 // creates a dataset and adds user as owner.
                 hdfsUsersBean.addDatasetUsersGroups(user, project, newDS);
-
-                newDS.setPublicDs(true);
-                newDS.setPublicDsId(publicId);
-                try {
-                    String restult = gvodController.uploadToGVod(settings.getGVOD_REST_ENDPOINT(), dsPath, newDS.getName(), username, newDS.getPublicDsId());
-                } catch (Exception e) {
-                    throw new IOException("Failed to share dataset via gvod ", e);
-                }
-                datasetFacade.merge(newDS);
             } catch (Exception e) {
                 IOException failed = new IOException("Failed to create dataset at path "
                         + dsPath + ".", e);

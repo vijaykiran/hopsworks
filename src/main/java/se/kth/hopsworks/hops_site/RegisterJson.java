@@ -14,13 +14,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RegisterJson {
 
-    private String searchEndpoint;
+    private final String searchEndpoint;
 
-    private String gvodEndpoint;
+    private final String gvodEndpoint;
 
-    private String email;
+    private final String email;
 
-    private String cert;
+    private final String cert;
 
     public RegisterJson(String searchEndpoint, String gvodEndpoint, String email, String cert) {
         this.searchEndpoint = searchEndpoint;

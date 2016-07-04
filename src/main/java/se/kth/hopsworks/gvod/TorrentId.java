@@ -5,17 +5,25 @@
  */
 package se.kth.hopsworks.gvod;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author jsvhqr
  */
+@XmlRootElement
 public class TorrentId {
     
-    private final String torrentId;
+    private final String val;
 
-    public TorrentId(String torrentId) {
-        this.torrentId = torrentId;
+    public TorrentId(String val) {
+        this.val = val;
     }
+
+    public String getVal() {
+        return val;
+    }
+    
     
     
     

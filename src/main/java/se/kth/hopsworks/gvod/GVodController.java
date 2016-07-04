@@ -7,6 +7,8 @@ package se.kth.hopsworks.gvod;
 
 import com.owlike.genson.Genson;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -48,11 +50,9 @@ public class GVodController {
     private Client rest_client = null;
     private final Genson genson = new Genson();
 
-    public String uploadToGVod(String restEndpoint, String path, String datasetName, String username, String publicDsId) {
+    public String uploadToGVod(String hdfsConfigurationXML, String path, String datasetName, String username, String publicDsId) {
         
-        String [] splitURL = restEndpoint.split(":");
-        
-        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(splitURL[0],splitURL[1],path,datasetName,username), new TorrentId(publicDsId));
+        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigurationXML,path,datasetName,username), new TorrentId(publicDsId));
         
         String restToSend = genson.serialize(uploadGVoDJson);
         
@@ -73,7 +73,7 @@ public class GVodController {
         return null;
     }
     
-    public String downloadHdfs(String restEndpoint,int projectId, String datasetName, String username, String publicDsId, String partners) throws IOException {
+    public String downloadHdfs(String hdfsConfigurationXML,int projectId, String datasetName, String username, String publicDsId, String partners) throws IOException  {
         
         Project project = projectFacade.find(projectId);
         
@@ -81,9 +81,7 @@ public class GVodController {
         
         String dsPath = datasetController.createDatasetForDownload(user, project, datasetName, datasetName, publicDsId);
         
-        String [] splitURL = restEndpoint.split(":");
-        
-        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(splitURL[0],splitURL[1],dsPath,datasetName,username),null,new TorrentId(publicDsId), partners);
+        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigurationXML, dsPath,datasetName,username),null,new TorrentId(publicDsId), partners);
         
         String restToSend = genson.serialize(downloadGVoDJson);
         

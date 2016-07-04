@@ -4,6 +4,7 @@ import io.hops.hdfs.HdfsLeDescriptorsFacade;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -116,6 +117,10 @@ public class DataSetService {
   private HdfsLeDescriptorsFacade hdfsLeDescriptorsFacade;
   @EJB
   private ManageGlobalClusterParticipation manageGlobalCLusterParticipation;
+  @EJB
+  private HdfsUsersController hdfsUsersController;
+  @EJB
+  private UserFacade userFacade;
 
   private Integer projectId;
   private Project project;
@@ -899,7 +904,7 @@ public class DataSetService {
   @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
   public Response makePublic(@PathParam("inodeId") Integer inodeId,
           @Context SecurityContext sc,
-          @Context HttpServletRequest req) throws AppException {
+          @Context HttpServletRequest req) throws AppException, MalformedURLException {
     JsonResponse json = new JsonResponse();
     if (inodeId == null) {
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -930,8 +935,13 @@ public class DataSetService {
     datasetFacade.merge(ds);
     datasetFacade.merge(ds);
     
+    String email = sc.getUserPrincipal().getName();
+    Users user = userFacade.findByEmail(email);
     
-    String result = gvodController.uploadToGVod(settings.getGVOD_REST_ENDPOINT(),File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator , ds.getName(), "TODO", ds.getPublicDsId());
+    
+    String username = hdfsUsersController.getHdfsUserName(project, user);
+    
+    String result = gvodController.uploadToGVod(settings.getHadoopConfDir(),File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator , ds.getName(),username, ds.getPublicDsId());
     json.setSuccessMessage("The Dataset is now public.");
     return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
             json).build();

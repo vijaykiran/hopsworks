@@ -5,20 +5,31 @@
  */
 package se.kth.hopsworks.gvod;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  *
  * @author jsvhqr
  */
+@XmlRootElement
 public class UploadGVoDJson {
     
-    private final HdfsResource hdfsResource;
+    private final HdfsResource resource;
     private final TorrentId torrentId;
 
     public UploadGVoDJson(HdfsResource resource, TorrentId torrentId) {
-        this.hdfsResource = resource;
+        this.resource = resource;
         this.torrentId = torrentId;
     }   
+
+    public HdfsResource getResource() {
+        return resource;
+    }
+
+    public TorrentId getTorrentId() {
+        return torrentId;
+    }
     
     
     

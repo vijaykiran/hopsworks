@@ -26,11 +26,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.controller.UsersController;
 
 import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.gvod.GVodController;
+import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
+import se.kth.hopsworks.user.model.Users;
+import se.kth.hopsworks.users.UserFacade;
 import se.kth.hopsworks.util.Settings;
 
 /**
@@ -49,8 +53,12 @@ public class GVodService {
     private Client rest_client;
     private ProjectFacade projectFacade;
     private Genson genson = new Genson();
-
-    private UsersController usersController;
+    
+    @EJB
+    private HdfsUsersController hdfsUsersController;
+    
+    @EJB
+    private UserFacade userFacade;
 
     @EJB
     private Settings settings;
@@ -68,11 +76,13 @@ public class GVodService {
             @Context HttpServletRequest req, String json) throws IOException {
 
         JSONObject jsonObject = new JSONObject(json);
-
-        String response = gvodController.downloadHdfs(settings.getGVOD_REST_ENDPOINT(),
+        String email = sc.getUserPrincipal().getName();
+        Project project = projectFacade.find(Integer.parseInt(jsonObject.getString("projectId")));
+        Users user = userFacade.findByEmail(email);
+        String response = gvodController.downloadHdfs(settings.getHadoopConfDir(),
                 Integer.parseInt(jsonObject.getString("projectId")),
                 jsonObject.getString("datasetName"),
-                usersController.generateUsername(sc.getUserPrincipal().getName()),
+                hdfsUsersController.getHdfsUserName(project, user),
                 jsonObject.getString("datasetId"),
                 jsonObject.getString("partners"));
 

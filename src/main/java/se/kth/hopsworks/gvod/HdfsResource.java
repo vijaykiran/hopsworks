@@ -5,24 +5,41 @@
  */
 package se.kth.hopsworks.gvod;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author jsvhqr
  */
+@XmlRootElement
 public class HdfsResource {
     
-    private final String hopsIp;
-    private final String hopsPort;
+    private final String hdfsConfigurationXML;
     private final String dirPath;
     private final String fileName;
     private final String user;
 
-    public HdfsResource(String hopsIp, String hopsPort, String dirPath, String fileName, String user) {
-        this.hopsIp = hopsIp;
-        this.hopsPort = hopsPort;
+    public HdfsResource(String hdfsConfigurationXML, String dirPath, String fileName, String user) {
+        this.hdfsConfigurationXML = hdfsConfigurationXML;
         this.dirPath = dirPath;
         this.fileName = fileName;
         this.user = user;
+    }
+
+    public String getHdfsConfigurationXML() {
+        return hdfsConfigurationXML;
+    }
+    
+    public String getDirPath() {
+        return dirPath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getUser() {
+        return user;
     }
     
     

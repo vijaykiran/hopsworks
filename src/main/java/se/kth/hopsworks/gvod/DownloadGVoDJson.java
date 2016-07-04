@@ -5,10 +5,13 @@
  */
 package se.kth.hopsworks.gvod;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author jsvhqr
  */
+@XmlRootElement
 public class DownloadGVoDJson {
 
     private final HdfsResource hdfsResource;
@@ -21,6 +24,22 @@ public class DownloadGVoDJson {
         this.kafkaResource = kafkaResource;        
         this.torrentId = torrentId;
         this.partners = partners;
+    }
+
+    public HdfsResource getHdfsResource() {
+        return hdfsResource;
+    }
+
+    public KafkaResource getKafkaResource() {
+        return kafkaResource;
+    }
+
+    public TorrentId getTorrentId() {
+        return torrentId;
+    }
+
+    public String getPartners() {
+        return partners;
     }
     
     

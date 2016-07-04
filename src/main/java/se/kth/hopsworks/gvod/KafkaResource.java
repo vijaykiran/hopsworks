@@ -5,10 +5,13 @@
  */
 package se.kth.hopsworks.gvod;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author jsvhqr
  */
+@XmlRootElement
 public class KafkaResource {
     
     

@@ -5,7 +5,7 @@
             <div class="col-md-4 text-center">
             </div>
             <div class="col-md-4 text-center">
-                <h2>Contents</h2>
+                <h2>GVoD Library</h2>
             </div>
             <div class="col-md-4 text-center">
             </div>
@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-4 text-center">
             </div>
-            <div class="col-md-4 text-center"> <span class="btn btn-default" ng-click="p2pCtrl.getContents()">
+            <div class="col-md-4 text-center"> <span class="btn btn-default" ng-click="p2pCtrl.getLibraryContents()">
                     <i class="glyphicon glyphicon-refresh"></i>
                 </span>
             </div>
@@ -23,17 +23,38 @@
             </div>
         </div>
     </div>
-    <div ng-repeat="file in p2pCtrl.result.data.contents " style="padding: 15px;">
+    <div ng-repeat="dataset in p2pCtrl.result.data.contents" style="padding: 15px;">
         <div class="container-fluid" style="border-bottom: solid 1px black;">
             <div class="col-md-3">
-                Name: {{file.fileName}}
+                Name: {{dataset.name}}
             </div>
             <div class="col-md-3">
-                ID: {{file.torrentId.val}}
+                ID: {{dataset.identifier}}
             </div>
             <div class="col-md-3">
-                Status: {{file.torrentStatus}}
+                Status: {{dataset.status}}
+            </div>
+            <div class="col-md-3">
+                <i ng-click="p2pCtrl.enlarge(dataset.status, dataset.name, dataset.identifier,$index)" class="glyphicon glyphicon-plus" ng-if="p2pCtrl.showView.length === 0 || !p2pCtrl.showView[$index]"></i>
+                <i ng-click="p2pCtrl.minimize($index)" class="glyphicon glyphicon-minus" ng-if="p2pCtrl.showView.length > 0 && p2pCtrl.showView[$index] === true"></i>
             </div>
         </div>
+        <div class="row" ng-if="p2pCtrl.showView.length > 0 && p2pCtrl.showView[$index] === true" style="border: solid 5px black;">
+            <div ng-if="p2pCtrl.viewToLoad === 'upload'">
+                <div ng-include="'views/partials/upload.html'"></div>
+            </div>
+            <div ng-if="p2pCtrl.viewToLoad === 'download'">
+
+                <div ng-include="'views/partials/download.html'"></div>
+            </div>
+            <div ng-if="p2pCtrl.viewToLoad === 'stop'">
+
+                <div ng-include="'views/partials/stop.html'"></div>
+            </div>
+            
+            <div ng-include="'views/partials/getLibraryElement.html'"> </div>
+            
+        </div>
     </div>
+
 </div>

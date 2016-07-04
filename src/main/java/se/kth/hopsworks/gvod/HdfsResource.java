@@ -14,21 +14,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class HdfsResource {
     
-    private final String hdfsConfigurationXML;
+    private final String hdfsXMLPath;
     private final String dirPath;
     private final String fileName;
     private final String user;
 
-    public HdfsResource(String hdfsConfigurationXML, String dirPath, String fileName, String user) {
-        this.hdfsConfigurationXML = hdfsConfigurationXML;
+    public HdfsResource(String hdfsXMLPath, String dirPath, String fileName, String user) {
+        this.hdfsXMLPath = hdfsXMLPath;
         this.dirPath = dirPath;
         this.fileName = fileName;
         this.user = user;
     }
 
-    public String getHdfsConfigurationXML() {
-        return hdfsConfigurationXML;
+    public String getHdfsXMLPath() {
+        return hdfsXMLPath;
     }
+    
     
     public String getDirPath() {
         return dirPath;

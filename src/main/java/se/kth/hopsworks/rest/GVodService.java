@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.controller.UsersController;
+import se.kth.hopsworks.dataset.DatasetStructure;
 
 import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.gvod.GVodController;
@@ -81,7 +82,7 @@ public class GVodService {
         Users user = userFacade.findByEmail(email);
         String response = gvodController.downloadHdfs(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
                 Integer.parseInt(jsonObject.getString("projectId")),
-                jsonObject.getString("datasetName"),
+                new DatasetStructure(jsonObject.getString("datasetStructure")),
                 hdfsUsersController.getHdfsUserName(project, user),
                 jsonObject.getString("datasetId"),
                 jsonObject.getString("partners"));

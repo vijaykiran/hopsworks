@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
+import se.kth.hopsworks.dataset.DatasetStructure;
 
 /**
  * Represents a JSONifiable version of the elastic hit object
@@ -40,6 +41,8 @@ public class ElasticHit implements Comparator<ElasticHit> {
     private List gvodEndpoints;
 
     private String originalGvodEndpoint;
+    
+    private String datasetStructureJson;
 
     public ElasticHit() {
     }
@@ -74,6 +77,14 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.score = score;
     }
 
+    public String getDatasetStructureJson() {
+        return datasetStructureJson;
+    }
+
+    public void setDatasetStructureJson(String datasetStructureJson) {
+        this.datasetStructureJson = datasetStructureJson;
+    }
+  
     public String getOriginalGvodEndpoint() {
         return originalGvodEndpoint;
     }

@@ -1,5 +1,7 @@
 package se.kth.hopsworks.rest;
 
+import com.owlike.genson.Genson;
+import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -72,6 +74,8 @@ import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import se.kth.hopsworks.controller.DatasetController;
+import se.kth.hopsworks.dataset.DatasetStructure;
 
 /**
  *
@@ -85,6 +89,8 @@ import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 public class ElasticService {
 
     private WebTarget target;
+    
+    private Genson genson = new Genson();
 
     private javax.ws.rs.client.Client rest_client;
 
@@ -108,6 +114,8 @@ public class ElasticService {
 
     @EJB
     ManageGlobalClusterParticipation manageGlobalClusterParticipation;
+    @EJB
+    DatasetController datasetController;
 
     /**
      * Searches for content composed of projects and datasets. Hits two elastic
@@ -210,6 +218,7 @@ public class ElasticService {
                             ElasticHit elasticHit = new ElasticHit(jsonObject.getString("name"), jsonObject.getString("id"), jsonObject.getString("type"), (JSONObject) jsonObject.get("hits"), (float) jsonObject.getDouble("score"));
                             elasticHit.setPublicId(jsonObject.getString("publicId"));
                             elasticHit.appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
+                            elasticHit.setDatasetStructureJson(jsonObject.getString("datasetStructure"));
                             results.put(jsonObject.getString("publicId"), elasticHit);
                         } else {
                             results.get(jsonObject.getString("publicId")).appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
@@ -282,6 +291,10 @@ public class ElasticService {
                         ElasticHit elasticHit = new ElasticHit(hit);
                         elasticHit.setPublicId(ds.getPublicDsId());
                         elasticHit.setOriginalGvodEndpoint(settings.getGVOD_UDP_ENDPOINT());
+                        Project project = projectFacade.findByName(inodeFacade.getProjectNameForInode(i));
+                        String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + ds.getName() + File.separator;
+                        DatasetStructure datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), project);
+                        elasticHit.setDatasetStructureJson(genson.serialize(datasetStructure));
                         elasticHits.add(elasticHit);
                     }
                 }

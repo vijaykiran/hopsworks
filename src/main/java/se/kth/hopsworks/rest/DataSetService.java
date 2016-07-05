@@ -59,6 +59,7 @@ import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.dataset.DatasetRequest;
 import se.kth.hopsworks.dataset.DatasetRequestFacade;
+import se.kth.hopsworks.dataset.DatasetStructure;
 import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.gvod.GVodController;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
@@ -125,8 +126,6 @@ public class DataSetService {
     private UserFacade userFacade;
     @EJB
     private GVodController gvodController;
-    @EJB
-    private DistributedFsService distributedFsService;
 
     private Integer projectId;
     private Project project;
@@ -946,21 +945,15 @@ public class DataSetService {
         
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator + ds.getName() + File.separator; 
         
-        List<String> children = distributedFsService.getChildNames(dsPath);
+        DatasetStructure datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), this.project);
         
-        if(children.size() > 1){
-            json.setErrorMsg("At the moment we only share datasets with one file");
+        if(datasetStructure.getChildredDirs().isEmpty() && datasetStructure.getChildrenFiles().isEmpty()){
+            json.setErrorMsg("There is no reason to share an empty dataset");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
                     json).build();
         }
         
-        if(distributedFsService.getDfsOps().isDir(children.get(0))){
-            json.setErrorMsg("At the moment we only share datasets with one file");
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
-                    json).build();
-        }
-        
-        String result = gvodController.uploadToGVod(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, dsPath , children.get(0), username, publicDsId);
+        String result = gvodController.uploadToGVod(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, dsPath , datasetStructure, username, publicDsId);
         if (result == null) {
             json.setErrorMsg("The Dataset could not be shared with gvod");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(

@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.controller.DatasetController;
+import se.kth.hopsworks.dataset.DatasetStructure;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.users.UserFacade;
 import se.kth.hopsworks.util.Settings;
@@ -45,9 +46,9 @@ public class GVodController {
     private Client rest_client = null;
     private final Genson genson = new Genson();
 
-    public String uploadToGVod(String hdfsXMLPath, String path, String datasetName, String username, String publicDsId) {
+    public String uploadToGVod(String hdfsConfigXMLPath, String path, DatasetStructure datasetStructure, String username, String publicDsId) {
         
-        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsXMLPath,path,datasetName,username), new TorrentId(publicDsId));
+        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigXMLPath,path,datasetStructure.getChildrenFiles().get(0),username), new TorrentId(publicDsId));
         
         String restToSend = genson.serialize(uploadGVoDJson);
         
@@ -68,15 +69,15 @@ public class GVodController {
         return null;
     }
     
-    public String downloadHdfs(String hdfsXMLPath,int projectId, String datasetName, String username, String publicDsId, String partners) throws IOException  {
+    public String downloadHdfs(String hdfsConfigXMLPath,int projectId, DatasetStructure datasetStructure, String username, String publicDsId, String partners) throws IOException  {
         
         Project project = projectFacade.find(projectId);
         
         Users user = userFacade.findByUsername(username);
         
-        String dsPath = datasetController.createDatasetForDownload(user, project, datasetName, datasetName, publicDsId);
+        String dsPath = datasetController.createDatasetForDownload(user, project, datasetStructure.getChildrenFiles().get(0), datasetStructure.getDescription(), publicDsId);
         
-        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsXMLPath, dsPath,datasetName,username),null,new TorrentId(publicDsId), partners);
+        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, dsPath,datasetStructure.getChildrenFiles().get(0),username),null,new TorrentId(publicDsId), partners);
         
         String restToSend = genson.serialize(downloadGVoDJson);
         

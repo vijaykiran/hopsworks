@@ -910,7 +910,7 @@ angular.module('hopsWorksApp')
               },
               
               
-              setupDownload: function(size, projectId ,datasetId, datasetName, partners){
+              setupDownload: function(size, projectId ,datasetId, datasetStructure, datasetName, partners){
                   var modalInstance = $modal.open({
                   templateUrl: 'views/setupDownload.html',
                   controller: 'GVodDownloadController as setupDownloadCtrl',
@@ -938,6 +938,9 @@ angular.module('hopsWorksApp')
                     },
                     partners: function () {
                       return partners;
+                    },
+                    datasetStructure: function(){
+                        return datasetStructure;
                     }
                   }
                 });

@@ -79,7 +79,7 @@ public class GVodService {
         String email = sc.getUserPrincipal().getName();
         Project project = projectFacade.find(Integer.parseInt(jsonObject.getString("projectId")));
         Users user = userFacade.findByEmail(email);
-        String response = gvodController.downloadHdfs(settings.getHadoopConfDir(),
+        String response = gvodController.downloadHdfs(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
                 Integer.parseInt(jsonObject.getString("projectId")),
                 jsonObject.getString("datasetName"),
                 hdfsUsersController.getHdfsUserName(project, user),

@@ -53,7 +53,7 @@ public class GVodController {
         
         rest_client = ClientBuilder.newClient();
         
-        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/upload");
+        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/upload/xml");
         
         Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(restToSend, MediaType.APPLICATION_JSON), Response.class);
         
@@ -82,7 +82,7 @@ public class GVodController {
         
         rest_client = ClientBuilder.newClient();
         
-        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/upload");
+        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/download/xml");
         
         Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(restToSend, MediaType.APPLICATION_JSON), Response.class);
         

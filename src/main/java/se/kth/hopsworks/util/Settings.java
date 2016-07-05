@@ -131,7 +131,7 @@ public class Settings {
 
     }
 
-    public String getCLUSTER_ID() {
+    public synchronized String getCLUSTER_ID() {
         if (CLUSTER_ID != null) {
             return CLUSTER_ID;
         } else {

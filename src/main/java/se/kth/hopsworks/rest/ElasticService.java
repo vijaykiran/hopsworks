@@ -68,12 +68,6 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.dataset.DatasetStructure;
 
@@ -487,11 +481,13 @@ public class ElasticService {
     private QueryBuilder globalSearchQuery(String searchTerm) {
         //FIXME: consider metadata search as well
         QueryBuilder nameDescQuery = getNameDescriptionMetadataQuery(searchTerm);
-        QueryBuilder notPublic = QueryBuilders.termQuery(Settings.META_PUBLIC_FIELD, "false");
+        QueryBuilder descriptionQuery = getDescriptionQuery(searchTerm);
+        QueryBuilder metadataQuery = getMetadataQuery(searchTerm);
 
         QueryBuilder query = boolQuery()
-                .must(nameDescQuery)
-                .must(notPublic);
+                .should(nameDescQuery)
+                .should(descriptionQuery)
+                .should(metadataQuery);
 
         return query;
     }

@@ -963,6 +963,7 @@ public class DataSetService {
             ds.setPublicDsId(publicDsId);
             datasetFacade.merge(ds);
             json.setSuccessMessage("The Dataset is now public.");
+            manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(ds.getName(), datasetStructure, publicDsId, datasetStructure.getChildrenFiles().size(),0,1);
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
                     json).build();
         }

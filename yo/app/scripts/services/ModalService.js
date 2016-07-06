@@ -910,10 +910,10 @@ angular.module('hopsWorksApp')
               },
               
               
-              setupDownload: function(size, projectId ,datasetId, datasetStructure, datasetName, partners){
+              selectDownloadType: function(size){
                   var modalInstance = $modal.open({
-                  templateUrl: 'views/setupDownload.html',
-                  controller: 'GVodDownloadController as setupDownloadCtrl',
+                  templateUrl: 'views/selectDownloadType.html',
+                  controller: 'SelectDownloadTypeCtrl as selectDownloadTypeCtrl',
                   size: size,
                   resolve: {
                     auth: ['$q', '$location', 'AuthService',
@@ -926,22 +926,29 @@ angular.module('hopsWorksApp')
                                   $location.replace();
                                   return $q.reject(err);
                                 });
-                      }],
-                    projectId: function () {
-                      return projectId;
-                    },
-                    datasetId: function () {
-                      return datasetId;
-                    },
-                    datasetName: function () {
-                      return datasetName;
-                    },
-                    partners: function () {
-                      return partners;
-                    },
-                    datasetStructure: function(){
-                        return datasetStructure;
-                    }
+                      }]
+                  }
+                });
+                return modalInstance.result;
+              },
+              
+              selectTopicAndSchema: function(size){
+                  var modalInstance = $modal.open({
+                  templateUrl: 'views/selectTopicAndSchema.html',
+                  controller: 'SelectTopicAndSchemaCtrl as selectTopicAndSchemaCtrl',
+                  size: size,
+                  resolve: {
+                    auth: ['$q', '$location', 'AuthService',
+                      function ($q, $location, AuthService) {
+                        return AuthService.session().then(
+                                function (success) {
+                                },
+                                function (err) {
+                                  $location.path('/login');
+                                  $location.replace();
+                                  return $q.reject(err);
+                                });
+                      }]
                   }
                 });
                 return modalInstance.result;

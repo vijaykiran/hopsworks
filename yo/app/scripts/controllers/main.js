@@ -4,8 +4,8 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams',
-            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams) {
+        .controller('MainCtrl', ['$interval', '$cookies', '$location', '$scope', 'AuthService', 'UtilsService', 'ElasticService', 'md5', 'ModalService', 'ProjectService', 'growl', 'MessageService', '$routeParams', 'GVoDService',
+            function ($interval, $cookies, $location, $scope, AuthService, UtilsService, ElasticService, md5, ModalService, ProjectService, growl, MessageService, $routeParams, GVoDService) {
 
                 var self = this;
                 self.email = $cookies['email'];
@@ -298,15 +298,42 @@ angular.module('hopsWorksApp')
                 });
 
 
-                self.downloadPublicDataset = function (datasetId,datasetStructure,datasetName, partners) {
+                self.downloadPublicDataset = function (datasetId, datasetStructure, datasetName, partners) {
 
                     ModalService.selectProject('md', true, "/[^]*/",
                             "Select a Project as download destination.").then(
                             function (success) {
                                 var destProj = success.projectId;
-                                ModalService.setupDownload('md', destProj, datasetId, datasetStructure, datasetName, partners).then(function () {
-                                    growl.success("Download in progress, check your project p2p service for more info", {title: 'Success', ttl: 1000});
-                                    
+                                ModalService.selectDownloadType('md').then(function (success) {
+                                    var kafkaHdfsSelection = success.DownloadType;
+                                    if (kafkaHdfsSelection === 0) {
+
+                                        var json = {"projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};
+
+                                        GVoDService.downloadHdfs(json).then(function (success) {
+
+                                            growl.success(success, {title: 'Success Hdfs Download', ttl: 1000});
+
+                                        },
+                                                function (error) {
+
+                                                    growl.error(error, {title: 'Error', ttl: 1000});
+
+                                                });
+
+                                    } else if (kafkaHdfsSelection === 1) {
+                                        
+                                        
+
+                                        var json = {"topicName": topic, "schemaName": schemaName, "sessionId": sessionId, "projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};
+
+                                    } else if (kafkaHdfsSelection === 2) {
+                                        
+                                        
+
+                                    } else {
+                                        growl.error("You did not choose a correct downloadType", {title: 'Error', ttl: 1000});
+                                    }
                                 });
 
                             }, function (error) {

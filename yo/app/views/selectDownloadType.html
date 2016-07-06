@@ -7,13 +7,13 @@
         <div class="row">
             <div class="col-md-6">
                 <h3>HDFS Download</h3>
-                <button id="buttonHdfs" class="btn btn-large" ng-click="setupDownloadCtrl.setHdfs()" xng-focus="setupDownloadCtrl.hdfsDownload">
+                <button id="buttonHdfs" class="btn btn-large" ng-click="selectDownloadTypeCtrl.setHdfs()" xng-focus="setupDownloadCtrl.hdfsDownload">
                     <img src="images/hdfs.png" height="150" width="150">
                 </button>
             </div>
             <div class="col-md-6">
                 <h3>KAFKA Download</h3>
-                <button id="buttonKafka" class="btn btn-large" ng-click="setupDownloadCtrl.setKafka()" xng-focus="setupDownloadCtrl.kafkaDownload">
+                <button id="buttonKafka" class="btn btn-large" ng-click="selectDownloadTypeCtrl.setKafka()" xng-focus="setupDownloadCtrl.kafkaDownload">
                     <img src="images/kafka_logo.png" height="150" width="150">
                 </button>
             </div>
@@ -21,10 +21,10 @@
         <hr style="color:black;">
         <div class="row">
             <div>
-                <button class="btn btn-default pull-right" type="button" ng-click="setupDownloadCtrl.close()">
+                <button class="btn btn-default pull-right" type="button" ng-click="selectDownloadTypeCtrl.close()">
                     Cancel
                 </button>
-                <button class="btn btn-default pull-right" ng-click="setupDownloadCtrl.Download()">
+                <button class="btn btn-default pull-right" ng-click="selectDownloadTypeCtrl.Download()">
                     Start Download
                 </button>
             </div>

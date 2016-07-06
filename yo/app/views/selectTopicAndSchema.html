@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h2 class="modal-title">Choose Topic and Schema</h2>
+</div>
+<div class="modal-body">
+
+    <div class="container-fluid">
+        <div class="row">
+            <h3>Choose Topic</h3>
+            <div ng-repeat="topic in selectTopicAndSchema.topics">
+                <label>
+                    topic.name
+                </label>
+                <input class="checkbox pull-right" ng-model="selectTopicAndSchema">
+            </div>
+        </div>
+        <hr style="color:black;">
+        <div class="row">
+            <div>
+                <button class="btn btn-default pull-right" type="button" ng-click="selectDownloadTypeCtrl.close()">
+                    Cancel
+                </button>
+                <button class="btn btn-default pull-right" ng-click="selectDownloadTypeCtrl.chooseTopic()">
+                    Done
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientResponse;
 import org.json.JSONArray;
+import se.kth.hopsworks.dataset.DatasetStructure;
 import se.kth.hopsworks.util.Settings;
 
 @Startup
@@ -134,7 +135,7 @@ public class ManageGlobalClusterParticipation {
         }
 
     }
-
+    
     public JSONArray getRegisteredClusters() {
         return this.registeredClusters;
     }
@@ -150,6 +151,21 @@ public class ManageGlobalClusterParticipation {
         timerConfig.setPersistent(false);
         context.getTimerService().createSingleActionTimer(duration, timerConfig);
 
+    }
+
+    public void notifyHopsSiteAboutNewDataset(String name, DatasetStructure datasetStructure, String publicDsId, int size, int leeches, int seeds) {
+        
+        String dsStrcuture = genson.serialize(datasetStructure);
+        
+        PopularDatasetsJson popularDatasetsJson = new PopularDatasetsJson(name, dsStrcuture, publicDsId, size,leeches, seeds);
+        
+        String json = genson.serialize(popularDatasetsJson);
+        
+        WebTarget resource = webTarget.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{settings.getCLUSTER_ID()}));
+        
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(json, MediaType.APPLICATION_JSON), Response.class);
+        
+        
     }
 
 }

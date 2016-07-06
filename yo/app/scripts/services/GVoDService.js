@@ -4,7 +4,7 @@
  */
 angular.module('hopsWorksApp')
 
-        .factory('GVodService', ['$http', function ($http) {
+        .factory('GVoDService', ['$http', function ($http) {
                 var service = {
                     downloadHdfs: function (json) {
                         return $http({

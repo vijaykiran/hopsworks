@@ -212,7 +212,7 @@ public class ElasticService {
                             ElasticHit elasticHit = new ElasticHit(jsonObject.getString("name"), jsonObject.getString("id"), jsonObject.getString("type"), (JSONObject) jsonObject.get("hits"), (float) jsonObject.getDouble("score"));
                             elasticHit.setPublicId(jsonObject.getString("publicId"));
                             elasticHit.appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
-                            elasticHit.setDatasetStructureJson(jsonObject.getString("datasetStructure"));
+                            elasticHit.setDatasetStructureJson(jsonObject.getString("datasetStructureJson"));
                             results.put(jsonObject.getString("publicId"), elasticHit);
                         } else {
                             results.get(jsonObject.getString("publicId")).appendEndpoint(jsonObject.getString("originalGvodEndpoint"));

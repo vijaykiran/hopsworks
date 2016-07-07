@@ -105,7 +105,7 @@ public class Settings {
 
     public synchronized String getGVOD_UDP_ENDPOINT() {
         checkCache();
-        return GVOD_UDP_ENDPOINT;
+        return this.getGvodEndpoint();
     }
 
     private String ELASTIC_PUBLIC_RESTENDPOINT = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";

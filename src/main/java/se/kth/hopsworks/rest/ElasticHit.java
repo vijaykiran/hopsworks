@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONObject;
@@ -38,7 +40,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
 
     private String publicId;
 
-    private List gvodEndpoints;
+    private List<String> gvodEndpoints;
 
     private String originalGvodEndpoint;
     
@@ -93,7 +95,9 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.originalGvodEndpoint = originalGvodEndpoint;
     }
 
-    public List getGvodEndpoint() {
+    @XmlElementWrapper
+    @XmlElement(name="gvodEndpoints")
+    public List<String> getGvodEndpoints() {
         return gvodEndpoints;
     }
 

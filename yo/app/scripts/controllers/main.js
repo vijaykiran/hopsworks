@@ -305,7 +305,7 @@ angular.module('hopsWorksApp')
                             function (success) {
                                 var destProj = success.projectId;
                                 ModalService.selectDownloadType('md').then(function (success) {
-                                    var kafkaHdfsSelection = success.DownloadType;
+                                    var kafkaHdfsSelection = success;
                                     if (kafkaHdfsSelection === 0) {
 
                                         var json = {"projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};

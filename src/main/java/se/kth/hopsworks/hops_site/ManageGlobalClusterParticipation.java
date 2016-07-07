@@ -20,7 +20,6 @@ import javax.ejb.TimerConfig;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.glassfish.jersey.client.ClientResponse;
 import org.json.JSONArray;
 import se.kth.hopsworks.dataset.DatasetStructure;
 import se.kth.hopsworks.util.Settings;
@@ -108,17 +107,17 @@ public class ManageGlobalClusterParticipation {
 
     }
 
-    private <T> T PingRest(Class<T> responseType, String clusterId) throws ClientErrorException {
+    private <T> T PingRest(Class<T> responseType, String clusterId) {
         WebTarget resource = webTarget.path(java.text.MessageFormat.format("ping/{0}/", new Object[]{clusterId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    private <T> T PopularDatasetsRest(Class<T> responseType, String clusterId) throws ClientErrorException {
+    private <T> T PopularDatasetsRest(Class<T> responseType, String clusterId){
         WebTarget resource = webTarget.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{clusterId}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    private String RegisterRest(String searchEndpoint, String email, String cert, String gvodEndpoint) throws ClientErrorException {
+    private String RegisterRest(String searchEndpoint, String email, String cert, String gvodEndpoint) {
 
         RegisterJson registerJson = new RegisterJson(searchEndpoint, gvodEndpoint, email, cert);
 

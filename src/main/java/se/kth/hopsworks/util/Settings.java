@@ -135,7 +135,7 @@ public class Settings {
         if (CLUSTER_ID != null) {
             return CLUSTER_ID;
         } else {
-            Variables v = findById(VARIABLE_CLUSTER_ID);
+            Variables v = findById(VARIABLE_CLUSTER_ID);    
             if (v != null) {
                 return v.getValue();
             }

@@ -953,7 +953,7 @@ public class DataSetService {
                     json).build();
         }
         
-        String result = gvodController.uploadToGVod(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, dsPath , datasetStructure, username, publicDsId);
+        String result = gvodController.uploadToGVod(project.getId(),settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, dsPath , datasetStructure, username, publicDsId);
         if (result == null) {
             json.setErrorMsg("The Dataset could not be shared with gvod");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(

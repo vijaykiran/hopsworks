@@ -46,9 +46,9 @@ public class GVodController {
     private Client rest_client = null;
     private final Genson genson = new Genson();
 
-    public String uploadToGVod(String hdfsConfigXMLPath, String path, DatasetStructure datasetStructure, String username, String publicDsId) {
+    public String uploadToGVod(int projectId,String hdfsConfigXMLPath, String path, DatasetStructure datasetStructure, String username, String publicDsId) {
         
-        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigXMLPath,path,datasetStructure.getChildrenFiles().get(0),username), new TorrentId(publicDsId));
+        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigXMLPath,path,datasetStructure.getChildrenFiles().get(0),username), new HopsResource(projectId), new TorrentId(publicDsId));
         
         String restToSend = genson.serialize(uploadGVoDJson);
         

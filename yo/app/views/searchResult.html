@@ -86,7 +86,7 @@
                     <div class="about-task">
                         <div class="header">{{result.name}}
                             <small class="muted" ng-show="result.type === 'project' || result.type === 'ds'">
-                                <div ng-click="mainCtrl.view(result.name, result.id, result.type)" class="pull-right btn btn-default btn-sm" >
+                                <div ng-click="mainCtrl.view(result.name, result.id, result.type)" class="pull-right btn btn-default btn-sm" ng-show="result.localDataset">
                                     <i class="glyphicon glyphicon-resize-full"></i>
                                 </div>
                                 <div ng-click="mainCtrl.downloadPublicDataset(result.publicId, result.datasetStructureJson, result.name,result.gvodEndpoints)" class="pull-right btn btn-default btn-sm" >

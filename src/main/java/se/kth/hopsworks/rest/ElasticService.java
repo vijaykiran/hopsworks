@@ -208,10 +208,15 @@ public class ElasticService {
                     for (int index = 0; index < jsonArray.length(); index++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(index);
                         if (!results.containsKey(jsonObject.getString("publicId"))) {
-
                             ElasticHit elasticHit = new ElasticHit(jsonObject.getString("name"), jsonObject.getString("id"), jsonObject.getString("type"), (JSONObject) jsonObject.get("hits"), (float) jsonObject.getDouble("score"));
                             elasticHit.setPublicId(jsonObject.getString("publicId"));
                             elasticHit.appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
+                            if(settings.getGVOD_UDP_ENDPOINT().equals(jsonObject.getString("originalGvodEndpoint"))){
+                                elasticHit.setLocalDataset(true);
+                            }else{
+                                elasticHit.setLocalDataset(false);
+                            }
+                            elasticHit.setOriginalGvodEndpoint(jsonObject.getString("originalGvodEndpoint"));
                             elasticHit.setDatasetStructureJson(jsonObject.getString("datasetStructureJson"));
                             results.put(jsonObject.getString("publicId"), elasticHit);
                         } else {

@@ -45,6 +45,8 @@ public class ElasticHit implements Comparator<ElasticHit> {
     private String originalGvodEndpoint;
     
     private String datasetStructureJson;
+    
+    private boolean localDataset;
 
     public ElasticHit() {
     }
@@ -79,6 +81,16 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.score = score;
     }
 
+    public boolean isLocalDataset() {
+        return localDataset;
+    }
+
+    public void setLocalDataset(boolean localDataset) {
+        this.localDataset = localDataset;
+    }
+
+    
+    
     public String getDatasetStructureJson() {
         return datasetStructureJson;
     }
@@ -94,9 +106,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setOriginalGvodEndpoint(String originalGvodEndpoint) {
         this.originalGvodEndpoint = originalGvodEndpoint;
     }
-
-    @XmlElementWrapper
-    @XmlElement(name="gvodEndpoints")
+    
     public List<String> getGvodEndpoints() {
         return gvodEndpoints;
     }

@@ -12,7 +12,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -79,6 +78,9 @@ public class Settings {
     private static final String VARIABLE_CLUSTER_MAIL = "cluster_mail";
     private static final String VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT = "public_search_endpoint";
     private static final String VARIABLE_CLUSTER_CERT = "certificate";
+    
+    private static final String VARIABLE_DOMAIN = "domain";
+    private static final String VARIABLE_REST_PORT = "rest_port";
 
     private String CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";
 
@@ -272,6 +274,8 @@ public class Settings {
             GVOD_REST_ENDPOINT = setUserVar(VARIABLE_GVOD_REST_ENDPOINT, GVOD_REST_ENDPOINT);
             GVOD_UDP_ENDPOINT = getGvodEndpoint();
             ELASTIC_PUBLIC_RESTENDPOINT = setUserVar(VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT, ELASTIC_PUBLIC_RESTENDPOINT);
+            DOMAIN = setUserVar(VARIABLE_DOMAIN,DOMAIN);
+            REST_PORT = setUserVar(VARIABLE_REST_PORT,REST_PORT);
             cached = true;
         }
     }
@@ -687,6 +691,20 @@ public class Settings {
     // Kafka
     private String KAFKA_IP = "10.0.2.15";
     public static final int KAFKA_PORT = 9091;
+    
+    private static String DOMAIN = "bbc1.sics.se";
+    
+    private static String REST_PORT = "14003";
+    
+    public synchronized String getRestPort(){
+        checkCache();
+        return REST_PORT;
+    }
+    
+    public synchronized String getDOMAIN() {
+        checkCache();
+        return DOMAIN;
+    }
 
     public synchronized String getKafkaConnectStr() {
         checkCache();

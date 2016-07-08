@@ -4,7 +4,7 @@ angular.module('hopsWorksApp').controller('SelectTopicAndSchemaCtrl', ['$modalIn
 
         var self = this;
         
-        self.topics;
+        self.topicName;
         
         self.choosenTopic;
 
@@ -26,8 +26,8 @@ angular.module('hopsWorksApp').controller('SelectTopicAndSchemaCtrl', ['$modalIn
         self.getTopics();
         
         self.chooseTopic = function(){
-          
-            var TopicAndSchema = {"topicName": self.choosenTopic};
+            
+            self.topicName = self.choosenTopic;
             
         };
         

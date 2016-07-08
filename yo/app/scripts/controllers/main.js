@@ -323,9 +323,22 @@ angular.module('hopsWorksApp')
 
                                     } else if (kafkaHdfsSelection === 1) {
                                         
+                                        ModalService.selectTopicAndSchema('md').then(function(success){
+                                            
+                                            var topic = success;
+                                            var json = {"topicName": topic, "projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};
+                                            GVoDService.downloadKafka(json).then(function(success){
+                                                growl.success(success, {title: 'Success Kafka Download', ttl: 1000});
+                                            },
+                                            function(error){
+                                                growl.error(error, {title: 'Error', ttl: 1000});
+                                            });
+                                        },
+                                        function(error){
+                                            
+                                        });
                                         
-
-                                        var json = {"topicName": topic, "schemaName": schemaName, "sessionId": sessionId, "projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};
+                                        
 
                                     } else if (kafkaHdfsSelection === 2) {
                                         

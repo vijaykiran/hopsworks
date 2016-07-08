@@ -71,15 +71,32 @@ public class GVodController {
         }
     }
     
-    public String downloadKafka() {
-        return null;
-    }
-    
     public String downloadHdfs(String hdfsConfigXMLPath,Project project, DatasetStructure datasetStructure, Users user, String publicDsId, JSONArray partners) throws IOException  {
         
         String dsPath = datasetController.createDatasetForDownload(user, project, datasetStructure, publicDsId);
         
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, dsPath,datasetStructure.getChildrenFiles().get(0),hdfsUsersController.getHdfsUserName(project, user)),null, new HopsResource(project.getId()),new TorrentId(publicDsId), partners);
+        
+        String restToSend = genson.serialize(downloadGVoDJson);
+        
+        rest_client = ClientBuilder.newClient();
+        
+        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/download/xml");
+        
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(restToSend, MediaType.APPLICATION_JSON), Response.class);
+        
+        if(r != null && r.getStatus() == 200){
+            return r.readEntity(String.class);
+        }else{
+            return null;
+        }
+    }
+
+    public String downloadKafka(String hdfsConfigXMLPath, Project project ,DatasetStructure datasetStructure,Users user, String publicDsId, JSONArray partners, String sessionId, String topicName, String keyStorePath, String trustStorePath,String brokerEndpoint,String restEndpoint,String domain) throws IOException {
+        
+        String dsPath = datasetController.createDatasetForDownload(user, project, datasetStructure, publicDsId);
+        
+        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, dsPath,datasetStructure.getChildrenFiles().get(0),hdfsUsersController.getHdfsUserName(project, user)),new KafkaResource(brokerEndpoint,restEndpoint,domain,sessionId,String.valueOf(project.getId()),topicName,keyStorePath,trustStorePath), new HopsResource(project.getId()),new TorrentId(publicDsId), partners);
         
         String restToSend = genson.serialize(downloadGVoDJson);
         

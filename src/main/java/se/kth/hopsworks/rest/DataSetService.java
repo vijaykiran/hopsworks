@@ -953,6 +953,12 @@ public class DataSetService {
                     json).build();
         }
         
+        if(datasetStructure.getChildredDirs().size() > 0 || datasetStructure.getChildrenFiles().size() > 1){
+            json.setErrorMsg("Right now only datasets with 1 file is supported, next release will support more");
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
+                    json).build();
+        }
+        
         String result = gvodController.uploadToGVod(project.getId(),settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, dsPath , datasetStructure, username, publicDsId);
         if (result == null) {
             json.setErrorMsg("The Dataset could not be shared with gvod");

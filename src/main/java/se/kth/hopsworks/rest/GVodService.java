@@ -16,6 +16,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
@@ -52,12 +53,8 @@ public class GVodService {
 
     private WebTarget webTarget;
     private Client rest_client;
-    private ProjectFacade projectFacade;
     private Genson genson = new Genson();
-    
-    @EJB
-    private HdfsUsersController hdfsUsersController;
-    
+
     @EJB
     private UserFacade userFacade;
 
@@ -67,8 +64,10 @@ public class GVodService {
     private NoCacheResponse noCacheResponse;
     @EJB
     private GVodController gvodController;
+    @EJB
+    private ProjectFacade projectFacade;
 
-    @GET
+    @PUT
     @Path("downloadhdfs")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -78,14 +77,15 @@ public class GVodService {
 
         JSONObject jsonObject = new JSONObject(json);
         String email = sc.getUserPrincipal().getName();
-        Project project = projectFacade.find(Integer.parseInt(jsonObject.getString("projectId")));
+        int projectId = jsonObject.getInt("projectId");
+        Project project = projectFacade.find(projectId);
         Users user = userFacade.findByEmail(email);
         String response = gvodController.downloadHdfs(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
-                Integer.parseInt(jsonObject.getString("projectId")),
+                project,
                 new DatasetStructure(jsonObject.getString("datasetStructure")),
-                hdfsUsersController.getHdfsUserName(project, user),
+                user,
                 jsonObject.getString("datasetId"),
-                jsonObject.getString("partners"));
+                jsonObject.getJSONArray("partners"));
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
@@ -94,7 +94,7 @@ public class GVodService {
         }
     }
 
-    @GET
+    @PUT
     @Path("downloadkafka")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

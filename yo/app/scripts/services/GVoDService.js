@@ -9,14 +9,14 @@ angular.module('hopsWorksApp')
                     downloadHdfs: function (json) {
                         return $http({
                             method: 'PUT',
-                            url: '/api/download/downloadhdfs',
+                            url: '/api/gvod/downloadhdfs',
                             data: json
                         });
                     },
                     downloadKafka: function (json) {
                         return $http({
                             method: 'PUT',
-                            url: '/api/download/downloadKafka',
+                            url: '/api/gvod/downloadKafka',
                             data: json
                         });
                     }

@@ -107,6 +107,8 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.originalGvodEndpoint = originalGvodEndpoint;
     }
     
+    
+    @XmlElement(name = "partners")
     public List<String> getGvodEndpoints() {
         return gvodEndpoints;
     }

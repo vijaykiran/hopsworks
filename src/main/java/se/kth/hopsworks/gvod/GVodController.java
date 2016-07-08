@@ -15,10 +15,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.json.JSONArray;
 import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.users.UserFacade;
 import se.kth.hopsworks.util.Settings;
@@ -41,6 +43,10 @@ public class GVodController {
     
     @EJB
     UserFacade userFacade;
+    
+    @EJB
+    private HdfsUsersController hdfsUsersController;
+    
     
     private WebTarget webTarget = null;
     private Client rest_client = null;
@@ -69,15 +75,11 @@ public class GVodController {
         return null;
     }
     
-    public String downloadHdfs(String hdfsConfigXMLPath,int projectId, DatasetStructure datasetStructure, String username, String publicDsId, String partners) throws IOException  {
+    public String downloadHdfs(String hdfsConfigXMLPath,Project project, DatasetStructure datasetStructure, Users user, String publicDsId, JSONArray partners) throws IOException  {
         
-        Project project = projectFacade.find(projectId);
+        String dsPath = datasetController.createDatasetForDownload(user, project, datasetStructure, publicDsId);
         
-        Users user = userFacade.findByUsername(username);
-        
-        String dsPath = datasetController.createDatasetForDownload(user, project, datasetStructure.getChildrenFiles().get(0), datasetStructure.getDescription(), publicDsId);
-        
-        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, dsPath,datasetStructure.getChildrenFiles().get(0),username),null,new TorrentId(publicDsId), partners);
+        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, dsPath,datasetStructure.getChildrenFiles().get(0),hdfsUsersController.getHdfsUserName(project, user)),null, new HopsResource(project.getId()),new TorrentId(publicDsId), partners);
         
         String restToSend = genson.serialize(downloadGVoDJson);
         

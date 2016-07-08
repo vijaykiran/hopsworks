@@ -5,7 +5,11 @@
  */
 package se.kth.hopsworks.gvod;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -16,14 +20,16 @@ public class DownloadGVoDJson {
 
     private final HdfsResource hdfsResource;
     private final KafkaResource kafkaResource;
+    private final HopsResource hopsResource;
     private final TorrentId torrentId;
-    private final String partners;
+    private final List<AddressJSON> partners;
 
-    public DownloadGVoDJson(HdfsResource hdfsResource, KafkaResource kafkaResource, TorrentId torrentId, String partners) {
+    public DownloadGVoDJson(HdfsResource hdfsResource, KafkaResource kafkaResource,HopsResource hopsResource, TorrentId torrentId, JSONArray partners) {
         this.hdfsResource = hdfsResource;
-        this.kafkaResource = kafkaResource;        
+        this.kafkaResource = kafkaResource;
+        this.hopsResource = hopsResource;
         this.torrentId = torrentId;
-        this.partners = partners;
+        this.partners = parseJSONArray(partners);
     }
 
     public HdfsResource getHdfsResource() {
@@ -38,8 +44,22 @@ public class DownloadGVoDJson {
         return torrentId;
     }
 
-    public String getPartners() {
+    public List<AddressJSON> getPartners() {
         return partners;
+    }
+
+    public HopsResource getHopsResource() {
+        return hopsResource;
+    }
+
+    private List<AddressJSON> parseJSONArray(JSONArray partners) {
+        
+        List<AddressJSON> listToBuild = new ArrayList<>();
+        for(int i = 0; i< partners.length(); i++){
+            JSONObject jsonObject = new JSONObject(partners.get(i).toString().replaceAll("'\'", ""));
+            listToBuild.add(new AddressJSON(jsonObject.getString("ip"), jsonObject.getInt("port"), jsonObject.getInt("id")));
+        }
+        return listToBuild;
     }
     
     

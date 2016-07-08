@@ -5,8 +5,11 @@
  */
 package se.kth.hopsworks.dataset;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -28,7 +31,13 @@ public class DatasetStructure {
     }
 
     public DatasetStructure(String jsonDatasetStructure) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        JSONObject jsonObject = new JSONObject(jsonDatasetStructure);
+        this.name = jsonObject.getString("name");
+        this.description = jsonObject.getString("description");
+        this.childredDirs = new ArrayList<Directory>(); //TODO
+        this.childrenFiles = parseJSONArrayFiles(jsonObject.getJSONArray("childrenFiles"));
+        
     }
 
     public String getName() {
@@ -45,6 +54,16 @@ public class DatasetStructure {
 
     public List<Directory> getChildredDirs() {
         return childredDirs;
+    }
+
+    private static List<String> parseJSONArrayFiles(JSONArray jsonArray) {
+        
+        ArrayList<String> listToBuild = new ArrayList<>();
+        for (int i=0; i<jsonArray.length(); i++) {
+            listToBuild.add( jsonArray.getString(i) );
+        }
+        
+        return listToBuild;
     }
     
     

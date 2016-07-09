@@ -323,7 +323,7 @@ angular.module('hopsWorksApp')
 
                                     } else if (kafkaHdfsSelection === 1) {
                                         
-                                        ModalService.selectTopicAndSchema('md').then(function(success){
+                                        ModalService.selectTopicAndSchema('md',destProj).then(function(success){
                                             
                                             var topic = success;
                                             var json = {"topicName": topic, "projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};

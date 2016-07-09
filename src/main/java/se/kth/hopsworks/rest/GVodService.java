@@ -121,11 +121,11 @@ public class GVodService {
         Project project = projectFacade.find(projectId);
         String email = sc.getUserPrincipal().getName();
         Users user = userFacade.findByEmail(email);
-        String certPath = getCertificatePaths(user, project);
-        String keyStorePath = certPath + "keystore.jks";
-        String trustStorePath = certPath + "truststore.jks";
+        String certPath = getCertificatePaths(project);
+        String keyStorePath = certPath + "/keystore.jks";
+        String trustStorePath = certPath + "/truststore.jks";
         String brokerEndpoint = settings.getKafkaConnectStr();
-        String restEndpoint = settings.getDOMAIN() + settings.getRestPort() + "api/project/";
+        String restEndpoint = "http://" + settings.getDOMAIN() + ":" + settings.getRestPort();
         String domain = settings.getDOMAIN();
 
         String response = gvodController.downloadKafka(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
@@ -149,8 +149,8 @@ public class GVodService {
         }
     }
 
-    private String getCertificatePaths(Users user, Project project) {
-        UserCerts userCert = userCerts.findUserCert(project.getName(), hdfsUsersBean.getHdfsUserName(project, user));
+    private String getCertificatePaths(Project project) {
+        UserCerts userCert = userCerts.findUserCert(project.getName(), project.getOwner().getUsername());
         //Check if the user certificate was actually retrieved
         if (userCert.getUserCert() != null
                 && userCert.getUserCert().length > 0

@@ -16,7 +16,7 @@ angular.module('hopsWorksApp')
                     downloadKafka: function (json) {
                         return $http({
                             method: 'PUT',
-                            url: '/api/gvod/downloadKafka',
+                            url: '/api/gvod/downloadkafka',
                             data: json
                         });
                     }

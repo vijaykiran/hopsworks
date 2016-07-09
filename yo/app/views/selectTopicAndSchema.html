@@ -7,13 +7,18 @@
         <div class="row">
             <h3>Choose Topic</h3>
             <div ng-repeat="topic in selectTopicAndSchema.topics">
-                <input class="checkbox pull-right" value="{{topic.name}}" ng-checked="selectTopicAndSchema.chooseTopic()">
+                <div>
+                    {{topic.name}}
+                    <button class="btn btn-default pull-right" type="button" ng-click="selectTopicAndSchema.done($index)">
+                        <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <hr style="color:black;">
         <div class="row">
             <div>
-                <button class="btn btn-default pull-right" type="button" ng-click="selectDownloadTypeCtrl.close()">
+                <button class="btn btn-default pull-right" type="button" ng-click="selectTopicAndSchema.close()">
                     Cancel
                 </button>
             </div>

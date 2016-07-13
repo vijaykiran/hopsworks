@@ -947,14 +947,8 @@ public class DataSetService {
         
         DatasetStructure datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), this.project);
         
-        if(datasetStructure.getChildredDirs().isEmpty() && datasetStructure.getChildrenFiles().isEmpty()){
+        if(datasetStructure.getChildrenFiles().isEmpty()){
             json.setErrorMsg("There is no reason to share an empty dataset");
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
-                    json).build();
-        }
-        
-        if(datasetStructure.getChildredDirs().size() > 0 || datasetStructure.getChildrenFiles().size() > 1){
-            json.setErrorMsg("Right now only datasets with 1 file is supported, next release will support more");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
                     json).build();
         }

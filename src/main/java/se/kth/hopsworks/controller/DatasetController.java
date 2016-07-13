@@ -3,7 +3,6 @@ package se.kth.hopsworks.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -20,7 +19,6 @@ import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.dataset.DatasetStructure;
-import se.kth.hopsworks.dataset.Directory;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -428,7 +426,7 @@ public class DatasetController {
 
     public DatasetStructure createDatasetStructure(String dsPath, String description, String name, Project project) {
 
-        return new DatasetStructure(name, description, distributedFsService.getChildNames(dsPath), new ArrayList<Directory>());
+        return new DatasetStructure(name, description, distributedFsService.getChildNames(dsPath));
     }
 
     private boolean createFolderWithoutTemplate(String path, String username, FsPermission fsPermission) throws IOException {

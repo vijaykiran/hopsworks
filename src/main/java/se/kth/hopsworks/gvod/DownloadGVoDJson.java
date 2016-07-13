@@ -7,6 +7,7 @@ package se.kth.hopsworks.gvod;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,19 +19,24 @@ import org.json.JSONObject;
 @XmlRootElement
 public class DownloadGVoDJson {
 
-    private final HdfsResource hdfsResource;
-    private final KafkaResource kafkaResource;
-    private final HopsResource hopsResource;
-    private final TorrentId torrentId;
-    private final List<AddressJSON> partners;
+    private HdfsResource hdfsResource;
+    private KafkaResource kafkaResource;
+    private HopsResource hopsResource;
+    private TorrentId torrentId;
+    private List<String> partners;
 
-    public DownloadGVoDJson(HdfsResource hdfsResource, KafkaResource kafkaResource,HopsResource hopsResource, TorrentId torrentId, JSONArray partners) {
+    public DownloadGVoDJson(HdfsResource hdfsResource, KafkaResource kafkaResource,HopsResource hopsResource, TorrentId torrentId, List<String> partners) {
         this.hdfsResource = hdfsResource;
         this.kafkaResource = kafkaResource;
         this.hopsResource = hopsResource;
         this.torrentId = torrentId;
-        this.partners = parseJSONArray(partners);
+        this.partners = partners;
     }
+
+    public DownloadGVoDJson() {
+    }
+    
+    
 
     public HdfsResource getHdfsResource() {
         return hdfsResource;
@@ -43,8 +49,10 @@ public class DownloadGVoDJson {
     public TorrentId getTorrentId() {
         return torrentId;
     }
-
-    public List<AddressJSON> getPartners() {
+    
+    
+    @XmlElement(name = "partners")
+    public List<String> getPartners() {
         return partners;
     }
 

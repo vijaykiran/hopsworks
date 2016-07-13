@@ -3,45 +3,50 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.hops_site;
+package se.kth.hopsworks.hops_site.popular_datasets;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import se.kth.hopsworks.dataset.DatasetStructure;
 
 /**
  *
  * @author jsvhqr
  */
 @XmlRootElement
-public class PopularDatasetsJson {
+public class AddPopularDatasetJson {
     
-    private final String datasetName;
+    private String datasetName;
     
-    private final String structure;
+    private DatasetStructure structure;
     
-    private final String datasetId;
+    private String datasetId;
     
-    private final int files;
+    private int files;
     
-    private final int leeches;
+    private int leeches;
     
-    private final int seeds;
+    private int seeds;
 
-    PopularDatasetsJson(String name, String datasetStructure, String publicDsId, int files, int leeches, int seeds) {
-        
-        this.datasetName = name;
-        this.structure = datasetStructure;
-        this.datasetId = publicDsId;
+    public AddPopularDatasetJson(String datasetName, DatasetStructure structure, String datasetId, int files, int leeches, int seeds) {
+        this.datasetName = datasetName;
+        this.structure = structure;
+        this.datasetId = datasetId;
         this.files = files;
         this.leeches = leeches;
         this.seeds = seeds;
-        
     }
+    
+
+    public AddPopularDatasetJson() {
+    }
+    
+    
 
     public String getDatasetName() {
         return datasetName;
     }
 
-    public String getStructure() {
+    public DatasetStructure getStructure() {
         return structure;
     }
 

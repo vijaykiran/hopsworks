@@ -88,8 +88,6 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setLocalDataset(boolean localDataset) {
         this.localDataset = localDataset;
     }
-
-    
     
     public String getDatasetStructureJson() {
         return datasetStructureJson;

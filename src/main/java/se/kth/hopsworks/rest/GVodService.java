@@ -5,15 +5,10 @@
  */
 package se.kth.hopsworks.rest;
 
-import com.google.common.io.Files;
 import com.owlike.genson.Genson;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.TransactionAttribute;
@@ -30,20 +25,17 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import org.apache.hadoop.fs.permission.FsAction;
-import org.apache.hadoop.fs.permission.FsPermission;
-import org.apache.hadoop.yarn.api.records.LocalResourceType;
-import org.apache.hadoop.yarn.api.records.LocalResourceVisibility;
 import org.json.JSONObject;
 import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.certificates.UserCerts;
 import se.kth.hopsworks.certificates.UserCertsFacade;
-import se.kth.hopsworks.controller.LocalResourceDTO;
 import se.kth.hopsworks.dataset.DatasetStructure;
 
 import se.kth.hopsworks.filters.AllowedRoles;
+import se.kth.hopsworks.gvod.downloadHdfs.DownloadHdfsJson;
 import se.kth.hopsworks.gvod.GVodController;
+import se.kth.hopsworks.gvod.downloadHdfsKafka.DownloadHdfsKafkaJson;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.users.UserFacade;
@@ -87,19 +79,14 @@ public class GVodService {
     @Consumes(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
     public Response downloadDatasetHdfs(@Context SecurityContext sc,
-            @Context HttpServletRequest req, String json) throws IOException {
-
-        JSONObject jsonObject = new JSONObject(json);
-        String email = sc.getUserPrincipal().getName();
-        int projectId = jsonObject.getInt("projectId");
-        Project project = projectFacade.find(projectId);
-        Users user = userFacade.findByEmail(email);
-        String response = gvodController.downloadHdfs(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
-                project,
-                new DatasetStructure(jsonObject.getString("datasetStructure")),
-                user,
-                jsonObject.getString("datasetId"),
-                jsonObject.getJSONArray("partners"));
+            @Context HttpServletRequest req, DownloadHdfsJson downloadHdfsJson) throws IOException {
+        
+                String response = gvodController.downloadHdfs(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
+                projectFacade.find(downloadHdfsJson.getProjectId()),
+                downloadHdfsJson.getDatasetStructure(),
+                userFacade.findByEmail(sc.getUserPrincipal().getName()),
+                downloadHdfsJson.getDatasetId(),
+                downloadHdfsJson.getPartners());
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
@@ -114,33 +101,24 @@ public class GVodService {
     @Consumes(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
     public Response downloadDatasetKafka(@Context SecurityContext sc,
-            @Context HttpServletRequest req, String json) throws IOException {
-
-        JSONObject jsonObject = new JSONObject(json);
-        int projectId = jsonObject.getInt("projectId");
-        Project project = projectFacade.find(projectId);
-        String email = sc.getUserPrincipal().getName();
-        Users user = userFacade.findByEmail(email);
+            @Context HttpServletRequest req, DownloadHdfsKafkaJson downloadHdfsKafkaJson) throws IOException {
+        
+        Project project = projectFacade.find(downloadHdfsKafkaJson.getProjectId());
         String certPath = getCertificatePaths(project);
-        String keyStorePath = certPath + "/keystore.jks";
-        String trustStorePath = certPath + "/truststore.jks";
-        String brokerEndpoint = settings.getKafkaConnectStr();
-        String restEndpoint = "http://" + settings.getDOMAIN() + ":" + settings.getRestPort();
-        String domain = settings.getDOMAIN();
 
         String response = gvodController.downloadKafka(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
                 project,
-                new DatasetStructure(jsonObject.getString("datasetStructure")),
-                user,
-                jsonObject.getString("datasetId"),
-                jsonObject.getJSONArray("partners"),
+                downloadHdfsKafkaJson.getDatasetStructure(),
+                userFacade.findByEmail(sc.getUserPrincipal().getName()),
+                downloadHdfsKafkaJson.getDatasetId(),
+                downloadHdfsKafkaJson.getPartners(),
                 req.getSession().getId(),
-                jsonObject.getString("topicName"),
-                keyStorePath,
-                trustStorePath,
-                brokerEndpoint,
-                restEndpoint,
-                domain);
+                downloadHdfsKafkaJson.getTopicName(),
+                certPath + "/keystore.jks",
+                certPath + "/truststore.jks",
+                settings.getKafkaConnectStr(),
+                "http://" + settings.getDOMAIN() + ":" + settings.getRestPort(),
+                settings.getDOMAIN());
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();

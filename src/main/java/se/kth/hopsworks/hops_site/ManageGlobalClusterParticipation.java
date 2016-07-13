@@ -5,6 +5,8 @@
  */
 package se.kth.hopsworks.hops_site;
 
+import se.kth.hopsworks.hops_site.register.RegisterJson;
+import se.kth.hopsworks.hops_site.popular_datasets.AddPopularDatasetJson;
 import com.owlike.genson.Genson;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -22,6 +24,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.hops_site.ping.PingJson;
+import se.kth.hopsworks.hops_site.popular_datasets.GetPopularDatasetsJson;
 import se.kth.hopsworks.util.Settings;
 
 @Startup
@@ -32,7 +36,6 @@ public class ManageGlobalClusterParticipation {
     private JSONArray popularDatasets = null;
     private WebTarget webTarget = null;
     private Client client = null;
-    private final Genson genson = new Genson();
 
     @Resource
     private SessionContext context;
@@ -91,8 +94,8 @@ public class ManageGlobalClusterParticipation {
         String pingResponse = null;
         String popularDatasetsResponse = null;
         try {
-            pingResponse = PingRest(String.class, settings.getCLUSTER_ID());
-            popularDatasetsResponse = PopularDatasetsRest(String.class, settings.getCLUSTER_ID());
+            pingResponse = PingRest(settings.getCLUSTER_ID());
+            popularDatasetsResponse = getPopularDatasets(settings.getCLUSTER_ID());
         } catch (ClientErrorException ex) {
 
         } finally {
@@ -107,14 +110,34 @@ public class ManageGlobalClusterParticipation {
 
     }
 
-    private <T> T PingRest(Class<T> responseType, String clusterId) {
-        WebTarget resource = webTarget.path(java.text.MessageFormat.format("ping/{0}/", new Object[]{clusterId}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    private String PingRest(String clusterId) {
+        
+        PingJson pingJson = new PingJson(clusterId);
+
+        WebTarget resource = webTarget.path("ping");
+
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(pingJson, MediaType.APPLICATION_JSON), Response.class);
+
+        if (r != null && r.getStatus() == 200) {
+            return r.readEntity(String.class);
+        } else {
+            return null;
+        }
     }
 
-    private <T> T PopularDatasetsRest(Class<T> responseType, String clusterId){
-        WebTarget resource = webTarget.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{clusterId}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    private String getPopularDatasets(String clusterId){
+        
+        GetPopularDatasetsJson getPopularDatasetsJson = new GetPopularDatasetsJson(clusterId);
+
+        WebTarget resource = webTarget.path("populardatasets");
+
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(getPopularDatasetsJson, MediaType.APPLICATION_JSON), Response.class);
+
+        if (r != null && r.getStatus() == 200) {
+            return r.readEntity(String.class);
+        } else {
+            return null;
+        }
     }
 
     private String RegisterRest(String searchEndpoint, String email, String cert, String gvodEndpoint) {
@@ -123,9 +146,7 @@ public class ManageGlobalClusterParticipation {
 
         WebTarget resource = webTarget.path("register");
 
-        String jsonReqeust = genson.serialize(registerJson);
-
-        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(jsonReqeust, MediaType.APPLICATION_JSON), Response.class);
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(registerJson, MediaType.APPLICATION_JSON), Response.class);
 
         if (r != null && r.getStatus() == 200) {
             return r.readEntity(String.class);
@@ -154,15 +175,11 @@ public class ManageGlobalClusterParticipation {
 
     public void notifyHopsSiteAboutNewDataset(String name, DatasetStructure datasetStructure, String publicDsId, int size, int leeches, int seeds) {
         
-        String dsStrcuture = genson.serialize(datasetStructure);
+        AddPopularDatasetJson addPopularDatasetJson = new AddPopularDatasetJson(name, datasetStructure, publicDsId, size,leeches, seeds);
         
-        PopularDatasetsJson popularDatasetsJson = new PopularDatasetsJson(name, dsStrcuture, publicDsId, size,leeches, seeds);
+        WebTarget resource = webTarget.path("populardatasets");
         
-        String json = genson.serialize(popularDatasetsJson);
-        
-        WebTarget resource = webTarget.path(java.text.MessageFormat.format("populardatasets/{0}/", new Object[]{settings.getCLUSTER_ID()}));
-        
-        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(json, MediaType.APPLICATION_JSON), Response.class);
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(addPopularDatasetJson, MediaType.APPLICATION_JSON), Response.class);
         
         
     }

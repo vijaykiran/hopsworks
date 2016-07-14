@@ -262,7 +262,7 @@ public class YarnRunner {
                 PackagedProgram program = new PackagedProgram(file, classpaths, args);
                 client.setPrintStatusDuringExecution(false);
 
-                JobSubmissionResult res =  client.runDetached(program, parallelism);
+                JobSubmissionResult res =  client.runBlocking(program, parallelism);
                 JobID jobId = res.getJobID();
                 cluster.stopAfterJob(jobId);
             } catch (ProgramInvocationException ex) {

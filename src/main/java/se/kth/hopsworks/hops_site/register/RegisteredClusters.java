@@ -15,22 +15,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RegisteredClusters {
 
        private String clusterId;
+       private String searchEndpoint;
        
        private String email;
        
        private String cert;
        
-       private String searchEndpoint;
-       
        private String gvodEndpoint;
        
-       private int heartbeatsMissed;
+       private long heartbeatsMissed;
        
        private String dateRegistered;
        
        private String dateLastPing;
 
-    public RegisteredClusters(String clusterId, String email, String cert, String gvodEndpoint, int heartbeatsMissed, String dateRegistered, String dateLastPing, String searchEndpoint) {
+    public RegisteredClusters(String clusterId, String email, String cert, String gvodEndpoint, long heartbeatsMissed, String dateRegistered, String dateLastPing, String searchEndpoint) {
         this.clusterId = clusterId;
         this.email = email;
         this.cert = cert;
@@ -65,7 +64,7 @@ public class RegisteredClusters {
         this.gvodEndpoint = gvodEndpoint;
     }
 
-    public void setHeartbeatsMissed(int heartbeatsMissed) {
+    public void setHeartbeatsMissed(long heartbeatsMissed) {
         this.heartbeatsMissed = heartbeatsMissed;
     }
 
@@ -101,7 +100,7 @@ public class RegisteredClusters {
         return gvodEndpoint;
     }
 
-    public int getHeartbeatsMissed() {
+    public long getHeartbeatsMissed() {
         return heartbeatsMissed;
     }
 

@@ -122,7 +122,7 @@ public class ManageGlobalClusterParticipation {
 
         Response r = resource.request().accept(MediaType.APPLICATION_JSON).put(Entity.json(pingJson));
 
-        if (r != null && r.getStatus() == 200 && r.readEntity(SuccessPingJson.class) instanceof SuccessPingJson) {
+        if (r != null && r.getStatus() == 200) {
             return r.readEntity(SuccessPingJson.class).getClusters();
         } else {
             return null;
@@ -137,7 +137,7 @@ public class ManageGlobalClusterParticipation {
 
         Response r = resource.request().accept(MediaType.APPLICATION_JSON).put(Entity.json(getPopularDatasetsJson));
 
-        if (r != null && r.getStatus() == 200 && r.readEntity(SuccessGetPopularDatasetsJson.class) instanceof SuccessGetPopularDatasetsJson) {
+        if (r != null && r.getStatus() == 200) {
             return r.readEntity(SuccessGetPopularDatasetsJson.class).getPopularDatasets();
         } else {
             return null;
@@ -152,7 +152,7 @@ public class ManageGlobalClusterParticipation {
         
         Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.json(registerJson));
 
-        if (r != null && r.getStatus() == 200 && r.readEntity(SuccessRegisterJson.class) instanceof SuccessRegisterJson) {
+        if (r != null && r.getStatus() == 200) {
             return r.readEntity(SuccessRegisterJson.class).getClusterId();
         } else {
             return null;

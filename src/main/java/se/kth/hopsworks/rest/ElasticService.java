@@ -203,17 +203,21 @@ public class ElasticService {
                 if (registeredClusters.get(i).getHeartbeatsMissed() < 5) {
                     rest_client = ClientBuilder.newClient();
                     target = rest_client.target(registeredClusters.get(i).getSearchEndpoint()).path("/" + searchTerm);
-                    ElasticHit response = target.request().accept(MediaType.APPLICATION_JSON).get(ElasticHit.class);
-                        if (!results.containsKey(response.getPublicId())) {
-                            if(settings.getGVOD_UDP_ENDPOINT().equals(response.getOriginalGvodEndpoint())){
-                                response.setLocalDataset(true);
+                    Response response = target.request().accept(MediaType.APPLICATION_JSON).get();
+                    List<ElasticHit> elasticHits = (List<ElasticHit>) response.getEntity();
+                    for(ElasticHit ehit : elasticHits){
+                        if (!results.containsKey(ehit.getPublicId())) {
+                            if(settings.getGVOD_UDP_ENDPOINT().equals(ehit.getOriginalGvodEndpoint())){
+                                ehit.setLocalDataset(true);
                             }else{
-                                response.setLocalDataset(false);
+                                ehit.setLocalDataset(false);
                             }
-                            results.put(response.getPublicId(), response);
+                            results.put(ehit.getPublicId(), ehit);
                         } else {
-                            results.get(response.getPublicId()).appendEndpoint(response.getOriginalGvodEndpoint());
+                            results.get(ehit.getPublicId()).appendEndpoint(ehit.getOriginalGvodEndpoint());
                         }
+                    }
+                        
                 }
 
             }

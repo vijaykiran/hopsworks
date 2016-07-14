@@ -6,8 +6,8 @@
 package se.kth.hopsworks.hops_site;
 
 import se.kth.hopsworks.hops_site.register.RegisterJson;
-import se.kth.hopsworks.hops_site.popular_datasets.AddPopularDatasetJson;
-import com.owlike.genson.Genson;
+import se.kth.hopsworks.hops_site.popular_datasets.PopularDatasetsJson;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -22,18 +22,22 @@ import javax.ejb.TimerConfig;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.json.JSONArray;
 import se.kth.hopsworks.dataset.DatasetStructure;
 import se.kth.hopsworks.hops_site.ping.PingJson;
+import se.kth.hopsworks.hops_site.ping.SuccessPingJson;
 import se.kth.hopsworks.hops_site.popular_datasets.GetPopularDatasetsJson;
+import se.kth.hopsworks.hops_site.popular_datasets.SuccessGetPopularDatasetsJson;
+import se.kth.hopsworks.hops_site.popular_datasets.PopularDatasets;
+import se.kth.hopsworks.hops_site.register.SuccessRegisterJson;
+import se.kth.hopsworks.hops_site.register.RegisteredClusters;
 import se.kth.hopsworks.util.Settings;
 
 @Startup
 @Singleton
 public class ManageGlobalClusterParticipation {
 
-    private JSONArray registeredClusters = null;
-    private JSONArray popularDatasets = null;
+    private List<RegisteredClusters> registeredClusters = null;
+    private List<PopularDatasets> popularDatasets = null;
     private WebTarget webTarget = null;
     private Client client = null;
 
@@ -91,8 +95,8 @@ public class ManageGlobalClusterParticipation {
 
     private void PingAndGetPopularDatasets() {
 
-        String pingResponse = null;
-        String popularDatasetsResponse = null;
+        List<RegisteredClusters> pingResponse = null;
+        List<PopularDatasets> popularDatasetsResponse = null;
         try {
             pingResponse = PingRest(settings.getCLUSTER_ID());
             popularDatasetsResponse = getPopularDatasets(settings.getCLUSTER_ID());
@@ -100,41 +104,41 @@ public class ManageGlobalClusterParticipation {
 
         } finally {
             if (pingResponse != null) {
-                this.registeredClusters = new JSONArray(pingResponse);
+                this.registeredClusters = pingResponse;
             }
             if (popularDatasetsResponse != null) {
-                this.popularDatasets = new JSONArray(popularDatasetsResponse);
+                this.popularDatasets = popularDatasetsResponse;
             }
             DoTimeout();
         }
 
     }
 
-    private String PingRest(String clusterId) {
+    private List<RegisteredClusters> PingRest(String clusterId) {
         
         PingJson pingJson = new PingJson(clusterId);
 
         WebTarget resource = webTarget.path("ping");
 
-        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(pingJson, MediaType.APPLICATION_JSON), Response.class);
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).put(Entity.json(pingJson));
 
-        if (r != null && r.getStatus() == 200) {
-            return r.readEntity(String.class);
+        if (r != null && r.getStatus() == 200 && r.readEntity(SuccessPingJson.class) instanceof SuccessPingJson) {
+            return r.readEntity(SuccessPingJson.class).getClusters();
         } else {
             return null;
         }
     }
 
-    private String getPopularDatasets(String clusterId){
+    private List<PopularDatasets> getPopularDatasets(String clusterId){
         
         GetPopularDatasetsJson getPopularDatasetsJson = new GetPopularDatasetsJson(clusterId);
 
         WebTarget resource = webTarget.path("populardatasets");
 
-        Response r = resource.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(getPopularDatasetsJson, MediaType.APPLICATION_JSON), Response.class);
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).put(Entity.json(getPopularDatasetsJson));
 
-        if (r != null && r.getStatus() == 200) {
-            return r.readEntity(String.class);
+        if (r != null && r.getStatus() == 200 && r.readEntity(SuccessGetPopularDatasetsJson.class) instanceof SuccessGetPopularDatasetsJson) {
+            return r.readEntity(SuccessGetPopularDatasetsJson.class).getPopularDatasets();
         } else {
             return null;
         }
@@ -145,23 +149,15 @@ public class ManageGlobalClusterParticipation {
         RegisterJson registerJson = new RegisterJson(searchEndpoint, gvodEndpoint, email, cert);
 
         WebTarget resource = webTarget.path("register");
+        
+        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.json(registerJson));
 
-        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(registerJson, MediaType.APPLICATION_JSON), Response.class);
-
-        if (r != null && r.getStatus() == 200) {
-            return r.readEntity(String.class);
+        if (r != null && r.getStatus() == 200 && r.readEntity(SuccessRegisterJson.class) instanceof SuccessRegisterJson) {
+            return r.readEntity(SuccessRegisterJson.class).getClusterId();
         } else {
             return null;
         }
 
-    }
-    
-    public JSONArray getRegisteredClusters() {
-        return this.registeredClusters;
-    }
-
-    public JSONArray getPopularDatasets() {
-        return this.popularDatasets;
     }
 
     private void DoTimeout() {
@@ -175,13 +171,23 @@ public class ManageGlobalClusterParticipation {
 
     public void notifyHopsSiteAboutNewDataset(String name, DatasetStructure datasetStructure, String publicDsId, int size, int leeches, int seeds) {
         
-        AddPopularDatasetJson addPopularDatasetJson = new AddPopularDatasetJson(name, datasetStructure, publicDsId, size,leeches, seeds);
+        PopularDatasetsJson addPopularDatasetJson = new PopularDatasetsJson(name, datasetStructure, publicDsId, size,leeches, seeds);
         
         WebTarget resource = webTarget.path("populardatasets");
         
-        Response r = resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(addPopularDatasetJson, MediaType.APPLICATION_JSON), Response.class);
+        resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.json(addPopularDatasetJson));
         
         
     }
+
+    public List<RegisteredClusters> getRegisteredClusters() {
+        return registeredClusters;
+    }
+
+    public List<PopularDatasets> getPopularDatasets() {
+        return popularDatasets;
+    }
+    
+    
 
 }

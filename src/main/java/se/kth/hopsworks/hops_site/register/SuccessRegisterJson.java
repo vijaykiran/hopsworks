@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.hops_site.ping;
+package se.kth.hopsworks.hops_site.register;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,14 +12,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class PingJson {
-
+public class SuccessRegisterJson {
+    
     private String clusterId;
-    public PingJson(String clusterId) {
-        this.clusterId = clusterId;
+    
+    public SuccessRegisterJson(){
+        
     }
-
-    public PingJson() {}
 
     public String getClusterId() {
         return clusterId;
@@ -28,8 +27,5 @@ public class PingJson {
     public void setClusterId(String clusterId) {
         this.clusterId = clusterId;
     }
-    
-    
-    
     
 }

@@ -41,6 +41,19 @@ public class DatasetStructure {
     public List<String> getChildrenFiles() {
         return childrenFiles;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setChildrenFiles(List<String> childrenFiles) {
+        this.childrenFiles = childrenFiles;
+    }
+    
     
     
 }

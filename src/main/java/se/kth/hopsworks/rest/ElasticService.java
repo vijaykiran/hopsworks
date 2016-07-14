@@ -70,6 +70,7 @@ import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.hops_site.register.RegisteredClusters;
 
 /**
  *
@@ -196,33 +197,23 @@ public class ElasticService {
                     "Incomplete request!");
         }
         HashMap<String, ElasticHit> results = new HashMap<>();
-        JSONArray registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
-        if (registeredClusters != null && registeredClusters.length() > 0) {
-            int length = registeredClusters.length();
-            for (int i = 0; i < length; i++) {
-                if (registeredClusters.getJSONObject(i).getLong("heartbeatsMissed") < 5) {
+        List<RegisteredClusters> registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
+        if (registeredClusters != null && registeredClusters.size() > 0) {
+            for (int i = 0; i < registeredClusters.size(); i++) {
+                if (registeredClusters.get(i).getHeartbeatsMissed() < 5) {
                     rest_client = ClientBuilder.newClient();
-                    target = rest_client.target(registeredClusters.getJSONObject(i).getString("searchEndpoint")).path("/" + searchTerm);
-                    String response = target.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int index = 0; index < jsonArray.length(); index++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(index);
-                        if (!results.containsKey(jsonObject.getString("publicId"))) {
-                            ElasticHit elasticHit = new ElasticHit(jsonObject.getString("name"), jsonObject.getString("id"), jsonObject.getString("type"), (JSONObject) jsonObject.get("hits"), (float) jsonObject.getDouble("score"));
-                            elasticHit.setPublicId(jsonObject.getString("publicId"));
-                            elasticHit.appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
-                            if(settings.getGVOD_UDP_ENDPOINT().equals(jsonObject.getString("originalGvodEndpoint"))){
-                                elasticHit.setLocalDataset(true);
+                    target = rest_client.target(registeredClusters.get(i).getSearchEndpoint()).path("/" + searchTerm);
+                    ElasticHit response = target.request().accept(MediaType.APPLICATION_JSON).get(ElasticHit.class);
+                        if (!results.containsKey(response.getPublicId())) {
+                            if(settings.getGVOD_UDP_ENDPOINT().equals(response.getOriginalGvodEndpoint())){
+                                response.setLocalDataset(true);
                             }else{
-                                elasticHit.setLocalDataset(false);
+                                response.setLocalDataset(false);
                             }
-                            elasticHit.setOriginalGvodEndpoint(jsonObject.getString("originalGvodEndpoint"));
-                            elasticHit.setDatasetStructureJson(jsonObject.getString("datasetStructureJson"));
-                            results.put(jsonObject.getString("publicId"), elasticHit);
+                            results.put(response.getPublicId(), response);
                         } else {
-                            results.get(jsonObject.getString("publicId")).appendEndpoint(jsonObject.getString("originalGvodEndpoint"));
+                            results.get(response.getPublicId()).appendEndpoint(response.getOriginalGvodEndpoint());
                         }
-                    }
                 }
 
             }

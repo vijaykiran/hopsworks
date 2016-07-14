@@ -13,7 +13,7 @@ import se.kth.hopsworks.dataset.DatasetStructure;
  * @author jsvhqr
  */
 @XmlRootElement
-public class AddPopularDatasetJson {
+public class PopularDatasetsJson {
     
     private String datasetName;
     
@@ -27,7 +27,7 @@ public class AddPopularDatasetJson {
     
     private int seeds;
 
-    public AddPopularDatasetJson(String datasetName, DatasetStructure structure, String datasetId, int files, int leeches, int seeds) {
+    public PopularDatasetsJson(String datasetName, DatasetStructure structure, String datasetId, int files, int leeches, int seeds) {
         this.datasetName = datasetName;
         this.structure = structure;
         this.datasetId = datasetId;
@@ -37,10 +37,32 @@ public class AddPopularDatasetJson {
     }
     
 
-    public AddPopularDatasetJson() {
+    public PopularDatasetsJson() {
     }
-    
-    
+
+    public void setDatasetName(String datasetName) {
+        this.datasetName = datasetName;
+    }
+
+    public void setStructure(DatasetStructure structure) {
+        this.structure = structure;
+    }
+
+    public void setDatasetId(String datasetId) {
+        this.datasetId = datasetId;
+    }
+
+    public void setFiles(int files) {
+        this.files = files;
+    }
+
+    public void setLeeches(int leeches) {
+        this.leeches = leeches;
+    }
+
+    public void setSeeds(int seeds) {
+        this.seeds = seeds;
+    }
 
     public String getDatasetName() {
         return datasetName;

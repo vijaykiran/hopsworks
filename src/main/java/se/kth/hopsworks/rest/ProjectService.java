@@ -51,6 +51,7 @@ import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.hdfs.fileoperations.HdfsInodeAttributes;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.hops_site.ManageGlobalClusterParticipation;
+import se.kth.hopsworks.hops_site.popular_datasets.PopularDatasets;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.LocalhostServices;
 import se.kth.hopsworks.util.Settings;
@@ -758,7 +759,7 @@ public class ProjectService {
     public Response popularDatasets(@Context SecurityContext sc,
             @Context HttpServletRequest req) throws AppException {
 
-        JSONArray popularDatasets = this.manageGlobalClusterParticipation.getPopularDatasets();
+        List<PopularDatasets> popularDatasets = this.manageGlobalClusterParticipation.getPopularDatasets();
 
         if (popularDatasets != null) {
 

@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class Settings {
 
+
     @PersistenceContext(unitName = "kthfsPU")
     private EntityManager em;
 
@@ -64,113 +65,13 @@ public class Settings {
     private static final String VARIABLE_DRELEPHANT_IP = "drelephant_ip";
     private static final String VARIABLE_DRELEPHANT_DB = "drelephant_db";
     private static final String VARIABLE_DRELEPHANT_PORT = "drelephant_port";
+    private static final String VARIABLE_YARN_WEB_UI_IP = "yarn_ui_ip";
+    private static final String VARIABLE_YARN_WEB_UI_PORT = "yarn_ui_port";
 
     public static final String ERASURE_CODING_CONFIG = "erasure-coding-site.xml";
 
     private static final String VARIABLE_KAFKA_NUM_PARTITIONS = "kafka_num_partitions";
     private static final String VARIABLE_KAFKA_NUM_REPLICAS = "kafka_num_replicas";
-
-    private static final String VARIABLE_CLUSTER_ID = "cluster_id";
-    private Client restClient = null;
-    private WebTarget target = null;
-    private static final String VARIABLE_GVOD_REST_ENDPOINT = "gvod_rest_endpoint";
-    private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_base_uri";
-    private static final String VARIABLE_CLUSTER_MAIL = "cluster_mail";
-    private static final String VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT = "public_search_endpoint";
-    private static final String VARIABLE_CLUSTER_CERT = "certificate";
-    
-    private static final String VARIABLE_DOMAIN = "domain";
-    private static final String VARIABLE_REST_PORT = "rest_port";
-
-    private String CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";
-
-    public synchronized String getCLUSTER_CERT() {
-        checkCache();
-        return CLUSTER_CERT;
-    }
-
-    private String BASE_URI_HOPS_SITE = "http://bbc1.sics.se:14003/hops-site/webresources";
-
-    public synchronized String getBASE_URI_HOPS_SITE() {
-        checkCache();
-        return BASE_URI_HOPS_SITE;
-    }
-
-    private String CLUSTER_MAIL = "johsn@kth.se";
-
-    public synchronized String getCLUSTER_MAIL() {
-        checkCache();
-        return CLUSTER_MAIL;
-    }
-
-    private String GVOD_UDP_ENDPOINT = null;
-
-    public synchronized String getGVOD_UDP_ENDPOINT() {
-        checkCache();
-        return this.getGvodEndpoint();
-    }
-
-    private String ELASTIC_PUBLIC_RESTENDPOINT = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
-
-    public synchronized String getELASTIC_PUBLIC_RESTENDPOINT() {
-        checkCache();
-        return ELASTIC_PUBLIC_RESTENDPOINT;
-    }
-
-    private String GVOD_REST_ENDPOINT = "http://bbc1.sics.se:19303";
-
-    public synchronized String getGVOD_REST_ENDPOINT() {
-        checkCache();
-        return GVOD_REST_ENDPOINT;
-    }
-
-    private String CLUSTER_ID = null;
-
-    public void setCLUSTER_ID(String id) {
-
-        em.persist(new Variables("cluster_id", id));
-        CLUSTER_ID = id;
-
-    }
-
-    public synchronized String getCLUSTER_ID() {
-        if (CLUSTER_ID != null) {
-            return CLUSTER_ID;
-        } else {
-            Variables v = findById(VARIABLE_CLUSTER_ID);    
-            if (v != null) {
-                return v.getValue();
-            }
-            return null;
-        }
-    }
-
-    private String getGvodEndpoint() {
-
-        if (GVOD_UDP_ENDPOINT != null) {
-
-            return GVOD_UDP_ENDPOINT;
-
-        } else {
-            Response response = null;
-            if (restClient == null || target == null) {
-                restClient = ClientBuilder.newClient();
-                target = restClient.target(GVOD_REST_ENDPOINT).path("/vod/endpoint");
-            }
-            try {
-                response = target.request().accept(MediaType.APPLICATION_JSON).get();
-            } catch (Exception e) {
-
-            } finally {
-                if (response != null && response.getStatus() == 200) {
-                    return response.readEntity(String.class);
-                } else {
-                    return null;
-                }
-            }
-        }
-
-    }
 
     private String setUserVar(String varName, String defaultValue) {
         Variables userName = findById(varName);
@@ -266,6 +167,8 @@ public class Settings {
             CHARON_DIR = setDirVar(VARIABLE_CHARON_DIR, CHARON_DIR);
             HIWAY_DIR = setDirVar(VARIABLE_HIWAY_DIR, HIWAY_DIR);
             YARN_DEFAULT_QUOTA = setDirVar(VARIABLE_YARN_DEFAULT_QUOTA, YARN_DEFAULT_QUOTA);
+            YARN_WEB_UI_IP = setIpVar(VARIABLE_YARN_WEB_UI_IP, YARN_WEB_UI_IP);
+            YARN_WEB_UI_PORT = setIntVar(VARIABLE_YARN_WEB_UI_PORT, YARN_WEB_UI_PORT);
             HDFS_DEFAULT_QUOTA_MBs = setDirVar(VARIABLE_HDFS_DEFAULT_QUOTA, HDFS_DEFAULT_QUOTA_MBs);
             MAX_NUM_PROJ_PER_USER = setDirVar(VARIABLE_MAX_NUM_PROJ_PER_USER, MAX_NUM_PROJ_PER_USER);
             BASE_URI_HOPS_SITE = setUserVar(VARIABLE_BASE_URI_HOPS_SITE, BASE_URI_HOPS_SITE);
@@ -323,7 +226,12 @@ public class Settings {
     public static final String HOPS_VERSION = "2.4.0";
 
     public static final String SPARK_HISTORY_SERVER_ENV = "spark.yarn.historyServer.address";
-    public static final String SPARK_NUMBER_EXECUTORS = "spark.executor.instances";
+    public static final String SPARK_NUMBER_EXECUTORS_ENV = "spark.executor.instances";
+    public static final String SPARK_DYNAMIC_ALLOC_ENV = "spark.dynamicAllocation.enabled";
+    public static final String SPARK_DYNAMIC_ALLOC_MIN_EXECS_ENV = "spark.dynamicAllocation.minExecutors";
+    public static final String SPARK_DYNAMIC_ALLOC_MAX_EXECS_ENV = "spark.dynamicAllocation.maxExecutors";
+    public static final String SPARK_DYNAMIC_ALLOC_INIT_EXECS_ENV = "spark.dynamicAllocation.initialExecutors";
+    public static final String SPARK_SHUFFLE_SERVICE = "spark.shuffle.service.enabled";
 
     public synchronized String getSparkDir() {
         checkCache();
@@ -443,6 +351,14 @@ public class Settings {
         return YARN_DEFAULT_QUOTA;
     }
 
+    private String YARN_WEB_UI_IP = "127.0.0.1";
+    private int YARN_WEB_UI_PORT = 8088;
+
+    public synchronized String getYarnWebUIAddress() {
+        checkCache();
+        return YARN_WEB_UI_IP + ":" + YARN_WEB_UI_PORT;
+    }
+
     private String HDFS_DEFAULT_QUOTA_MBs = "200000";
 
     public synchronized long getHdfsDefaultQuotaInMBs() {
@@ -505,6 +421,7 @@ public class Settings {
     public static final String YARN_DEFAULT_OUTPUT_PATH = "Logs/Yarn/";
     public static final String HADOOP_COMMON_HOME_KEY = "HADOOP_COMMON_HOME";
     public static final String HADOOP_HOME_KEY = "HADOOP_HOME";
+//  private static String HADOOP_COMMON_HOME_VALUE = HADOOP_DIR;
     public static final String HADOOP_HDFS_HOME_KEY = "HADOOP_HDFS_HOME";
 //  private static final String HADOOP_HDFS_HOME_VALUE = HADOOP_DIR;
     public static final String HADOOP_YARN_HOME_KEY = "HADOOP_YARN_HOME";
@@ -521,7 +438,10 @@ public class Settings {
     public static final String SPARK_LOCRSC_APP_JAR = "__app__.jar";
     public static final String SPARK_AM_MAIN = "org.apache.spark.deploy.yarn.ApplicationMaster";
     public static final String SPARK_DEFAULT_OUTPUT_PATH = "Logs/Spark/";
-
+    public static final String SPARK_CONFIG_FILE = "conf/spark-defaults.conf";
+    public static final int SPARK_MIN_EXECS = 1;
+    public static final int SPARK_MAX_EXECS = 300;
+    public static final int SPARK_INIT_EXECS = 1;
     //Flink constants
     public static final String FLINK_DEFAULT_OUTPUT_PATH = "Logs/Flink/";
     public static final String FLINK_DEFAULT_CONF_FILE = "flink-conf.yaml";
@@ -530,6 +450,7 @@ public class Settings {
     public static final String FLINK_LOCRSC_FLINK_JAR = "flink.jar";
     public static final String FLINK_LOCRSC_APP_JAR = "app.jar";
     public static final String FLINK_AM_MAIN = "org.apache.flink.yarn.ApplicationMaster";
+    public static final int FLINK_APP_MASTER_MEMORY = 768;
 
     public synchronized String getLocalFlinkJarPath() {
         return getFlinkDir() + "/flink.jar";
@@ -580,6 +501,7 @@ public class Settings {
     }
 
     private static String sparkDefaultClasspath(String sparkDir) {
+//    return sparkDir + "/conf:" + sparkDir + "/lib/*";
         return sparkDir + "/lib/*";
     }
 
@@ -597,12 +519,13 @@ public class Settings {
      */
 //ADAM constants
     public static final String ADAM_MAINCLASS = "org.bdgenomics.adam.cli.ADAMMain";
+//  public static final String ADAM_DEFAULT_JAR_HDFS_PATH = "hdfs:///user/adam/repo/adam-cli.jar";
     //Or: "adam-cli/target/appassembler/repo/org/bdgenomics/adam/adam-cli/0.15.1-SNAPSHOT/adam-cli-0.15.1-SNAPSHOT.jar"
     public static final String ADAM_DEFAULT_OUTPUT_PATH = "Logs/Adam/";
     public static final String ADAM_DEFAULT_HDFS_REPO = "/user/adam/repo/";
 
     public String getAdamJarHdfsPath() {
-        return "hdfs:///user/" + getAdamUser() + "/repo/adam-cli.jar";
+        return "hdfs:///user/" + getAdamUser() + "/adam-cli.jar";
     }
 
     //Directory names in HDFS
@@ -692,7 +615,7 @@ public class Settings {
     private String KAFKA_IP = "10.0.2.15";
     public static final int KAFKA_PORT = 9091;
     
-    private static String DOMAIN = "bbc1.sics.se";
+        private static String DOMAIN = "bbc1.sics.se";
     
     private static String REST_PORT = "14003";
     
@@ -774,7 +697,7 @@ public class Settings {
     public static final int MAX_USERNAME_SUFFIX = 99;
     public static final int MAX_RETRIES = 500;
     public static final String META_NAME_FIELD = "name";
-    public static final String META_PUBLIC_FIELD = "public_ds";
+    public static String META_PUBLIC_FIELD = "public_ds";
     public static final String META_DESCRIPTION_FIELD = "description";
     public static final String META_INDEX = "projects";
     public static final String META_PROJECT_TYPE = "proj";
@@ -803,9 +726,113 @@ public class Settings {
     public static final String KAFKA_BROKERADDR_ENV_VAR = "kafka.brokeraddress";
 //  public static final String KAFKA_K_CERTIFICATE_ENV_VAR = "kafka.key.certificate";
 //  public static final String KAFKA_T_CERTIFICATE_ENV_VAR = "kafka.trusted.certificate";
+    
+    
+
+    private static final String VARIABLE_CLUSTER_ID = "cluster_id";
+    private Client restClient = null;
+    private WebTarget target = null;
+    private static final String VARIABLE_GVOD_REST_ENDPOINT = "gvod_rest_endpoint";
+    private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_base_uri";
+    private static final String VARIABLE_CLUSTER_MAIL = "cluster_mail";
+    private static final String VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT = "public_search_endpoint";
+    private static final String VARIABLE_CLUSTER_CERT = "certificate";
+
+    private static final String VARIABLE_DOMAIN = "domain";
+    private static final String VARIABLE_REST_PORT = "rest_port";
 //  
     // QUOTA
     public static final float DEFAULT_YARN_PRICE = 1.0f;
+
+    private String ELASTIC_PUBLIC_RESTENDPOINT = "http://bbc1.sics.se:14003/hopsworks/api/elastic/publicdatasets/";
+
+    public synchronized String getELASTIC_PUBLIC_RESTENDPOINT() {
+        checkCache();
+        return ELASTIC_PUBLIC_RESTENDPOINT;
+    }
+
+    private String CLUSTER_MAIL = "johsn@kth.se";
+
+    public synchronized String getCLUSTER_MAIL() {
+        checkCache();
+        return CLUSTER_MAIL;
+    }
+
+    private String CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";
+
+    public synchronized String getCLUSTER_CERT() {
+        checkCache();
+        return CLUSTER_CERT;
+    }
+
+    private String BASE_URI_HOPS_SITE = "http://bbc1.sics.se:14003/hops-site/webresources";
+
+    public synchronized String getBASE_URI_HOPS_SITE() {
+        checkCache();
+        return BASE_URI_HOPS_SITE;
+    }
+
+    private String CLUSTER_ID = null;
+
+    public void setCLUSTER_ID(String id) {
+
+        em.persist(new Variables("cluster_id", id));
+        CLUSTER_ID = id;
+
+    }
+
+    public synchronized String getCLUSTER_ID() {
+        if (CLUSTER_ID != null) {
+            return CLUSTER_ID;
+        } else {
+            Variables v = findById(VARIABLE_CLUSTER_ID);
+            if (v != null) {
+                return v.getValue();
+            }
+            return null;
+        }
+    }
+    
+    private String GVOD_REST_ENDPOINT = "http://bbc1.sics.se:19303";
+
+    public synchronized String getGVOD_REST_ENDPOINT() {
+        checkCache();
+        return GVOD_REST_ENDPOINT;
+    }
+
+    private String GVOD_UDP_ENDPOINT = null;
+
+    public synchronized String getGVOD_UDP_ENDPOINT() {
+        checkCache();
+        return this.getGvodEndpoint();
+    }
+
+    private String getGvodEndpoint() {
+
+        if (GVOD_UDP_ENDPOINT != null) {
+
+            return GVOD_UDP_ENDPOINT;
+
+        } else {
+            Response response = null;
+            if (restClient == null || target == null) {
+                restClient = ClientBuilder.newClient();
+                target = restClient.target(GVOD_REST_ENDPOINT).path("/vod/endpoint");
+            }
+            try {
+                response = target.request().accept(MediaType.APPLICATION_JSON).get();
+            } catch (Exception e) {
+
+            } finally {
+                if (response != null && response.getStatus() == 200) {
+                    return response.readEntity(String.class);
+                } else {
+                    return null;
+                }
+            }
+        }
+
+    }
 
     //Project creation: default datasets
     public static enum DefaultDataset {
@@ -839,7 +866,8 @@ public class Settings {
      * @param id
      * @return The user with given email, or null if no such user exists.
      */
-    public Variables findById(String id) {
+    public Variables
+            findById(String id) {
         try {
             return em.createNamedQuery("Variables.findById", Variables.class
             ).setParameter("id", id).getSingleResult();

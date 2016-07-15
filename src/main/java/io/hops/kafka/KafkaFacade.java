@@ -34,12 +34,14 @@ import org.apache.zookeeper.ZooKeeper;
 import kafka.utils.ZKStringSerializer$;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkConnection;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import se.kth.hopsworks.user.model.Users;
 
 @Stateless
 public class KafkaFacade {
 
-    private final static Logger logger = Logger.getLogger(KafkaFacade.class.
+    private final static Logger LOGGER = Logger.getLogger(KafkaFacade.class.
             getName());
 
     @PersistenceContext(unitName = "kthfsPU")
@@ -58,15 +60,17 @@ public class KafkaFacade {
 
     public static final String DLIMITER = "[\"]";
 
-    String CLIENT_ID = "list_topics";
+    public String CLIENT_ID = "list_topics";
 
-    final int TIMEOUT = 10 * 1000;// 10 seconds
+    public final int connectionTimeout = 30 * 1000;// 30 seconds
 
-    final int BUFFER_SIZE = 20 * 1000;
+    public final int BUFFER_SIZE = 20 * 1000;
 
-    private Set<String> zkBrokerList;
+    public Set<String> zkBrokerList;
 
-    private Set<String> topicList;
+    public Set<String> topicList;
+
+    public int sessionTimeoutMs = 30 * 1000;//30 seconds
 
     protected EntityManager getEntityManager() {
         return em;
@@ -167,7 +171,7 @@ public class KafkaFacade {
                 projects.add(p);
             }
         }
-
+        
         if (projects.isEmpty()) {
             throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
                     "No project found for this Kafka topic.");
@@ -191,17 +195,17 @@ public class KafkaFacade {
                     "Kafka topic already exists. Pick a different topic name.");
         }
 
-        //check if the replication factor is not greater that than the 
+        //check if the replication factor is not greater than the 
         //number of running borkers
-        Set<String> brokers = getBrokerList();
-        if (brokers.size() < topicDto.getNumOfReplicas()) {
+        Set<String> brokerEndpoints = getBrokerEndpoints();
+        if (brokerEndpoints.size() < topicDto.getNumOfReplicas()) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
-                    "Topic replication factor can be maximum of" + brokers.size());
+                    "Topic replication factor can be maximum of" + brokerEndpoints.size());
         }
 
         // create the topic in kafka 
         ZkClient zkClient = new ZkClient(getIp(settings.getZkConnectStr()).getHostName(),
-                10 * 1000, 29 * 1000, ZKStringSerializer$.MODULE$);
+                sessionTimeoutMs, connectionTimeout, ZKStringSerializer$.MODULE$);
         ZkConnection zkConnection = new ZkConnection(settings.getZkConnectStr());
         ZkUtils zkUtils = new ZkUtils(zkClient, zkConnection, false);
 
@@ -217,6 +221,11 @@ public class KafkaFacade {
                     "Kafka topic already exists. Pick a different topic name.");
         } finally {
             zkClient.close();
+            try {
+                zkConnection.close();
+            } catch (InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, null, ex.getMessage());
+            }
         }
 
         //if schema is empty, select a default schema
@@ -230,6 +239,16 @@ public class KafkaFacade {
                     "topic has not schema");
         }
 
+        /*
+        What is the possibility of the program failing here? The topic is created on
+        zookeeper, but not persisted onto db. User cannot access the topic, cannot
+        create a topic of the same name. In such scenario, the zk timer should
+        remove the topic from zk.
+        
+        One possibility is: schema has a global name space, it is not project specific.
+        While the schema is selected by this topic, it could be deleted by another 
+        user. Hence the above schema query will be empty. 
+         */
         ProjectTopics pt = new ProjectTopics(topicName, projectId, schema);
 
         em.merge(pt);
@@ -250,9 +269,19 @@ public class KafkaFacade {
 
         //remove from database
         em.remove(pt);
+        /*
+        What is the possibility of the program failing below? The topic is removed from
+        db, but not yet from zk. 
+        
+        Possibilities:
+            1. ZkClient is unable to establish a connection, maybe due to timeouts.
+            2. In case delete.topic.enable is not set to true in the Kafka server 
+               configuration, delete topic marks a topic for deletion. Subsequent 
+               topic (with the same name) create operation fails. 
+         */
         //remove from zookeeper
-        ZkClient zkClient = new ZkClient(getIp(settings.getZkConnectStr())
-                .getHostName(), 10 * 1000, 29 * 1000, ZKStringSerializer$.MODULE$);
+        ZkClient zkClient = new ZkClient(getIp(settings.getZkConnectStr()).getHostName(),
+                sessionTimeoutMs, connectionTimeout, ZKStringSerializer$.MODULE$);
         ZkConnection zkConnection = new ZkConnection(settings.getZkConnectStr());
         ZkUtils zkUtils = new ZkUtils(zkClient, zkConnection, false);
 
@@ -268,7 +297,7 @@ public class KafkaFacade {
 
     public TopicDefaultValueDTO topicDefaultValues() throws AppException {
 
-        Set<String> brokers = getBrokerList();
+        Set<String> brokers = getBrokerEndpoints();
 
         TopicDefaultValueDTO valueDto = new TopicDefaultValueDTO(
                 settings.getKafkaDefaultNumReplicas(),
@@ -546,7 +575,7 @@ public class KafkaFacade {
 
     //if schema exists, increment it if not start version from 1
     public void addSchemaForTopics(SchemaDTO schemaDto) {
-        
+
         int maxVersion = 1;
 
         TypedQuery<SchemaTopics> query = em.createNamedQuery(
@@ -555,18 +584,18 @@ public class KafkaFacade {
 
         List<SchemaTopics> schemaTopics = query.getResultList();
 
-        SchemaTopics schema=null;
-        if (schemaTopics != null && !schemaTopics.isEmpty() ) {
+        SchemaTopics schema = null;
+        if (schemaTopics != null && !schemaTopics.isEmpty()) {
             for (SchemaTopics schemaTopic : schemaTopics) {
 
                 int schemaVersion = schemaTopic.getSchemaTopicsPK().getVersion();
-                if (maxVersion < schemaVersion){
+                if (maxVersion < schemaVersion) {
                     maxVersion = schemaVersion;
                 }
             }
             maxVersion++;
         }
-        if(schema == null){
+        if (schema == null) {
             schema = new SchemaTopics(schemaDto.getName(), maxVersion,
                     schemaDto.getContents(), new Date());
         }
@@ -598,7 +627,7 @@ public class KafkaFacade {
             throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
                     "topic has not schema");
         }
-        
+
         SchemaDTO schemaDto = new SchemaDTO(schema.getContents());
 
         return schemaDto;
@@ -656,17 +685,22 @@ public class KafkaFacade {
                     "Schema: " + schemaName + " not found in database");
         }
 
-        em.remove(schema);
+        try {
+            em.remove(schema);
+        } catch (Exception ex) {
+            throw new AppException(Response.Status.FORBIDDEN.getStatusCode(),
+                    ex.getMessage());
+        }
     }
 
-    public Set<String> getBrokerList() throws AppException {
+    public Set<String> getBrokerEndpoints() throws AppException {
 
-        int sessionTimeoutMs = 10 * 1000;//10 seconds
         Set<String> brokerList = new HashSet<>();
-
+        ZooKeeper zk = null;
         try {
-            ZooKeeper zk = new ZooKeeper(settings.getZkConnectStr(),
-                    sessionTimeoutMs, null);
+            zk = new ZooKeeper(settings.getZkConnectStr(),
+                    sessionTimeoutMs, new ZookeeperWatcher());
+
             List<String> ids = zk.getChildren("/brokers/ids", false);
             for (String id : ids) {
                 String brokerInfo = new String(zk.getData("/brokers/ids/" + id,
@@ -684,6 +718,14 @@ public class KafkaFacade {
         } catch (KeeperException | InterruptedException ex) {
             throw new AppException(Response.Status.NOT_FOUND.getStatusCode(),
                     "Unable to retrieve seed brokers from the kafka cluster: " + ex);
+        } finally {
+            if (zk != null) {
+                try {
+                    zk.close();
+                } catch (InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, null, ex.getMessage());
+                }
+            }
         }
 
         return brokerList;
@@ -693,14 +735,14 @@ public class KafkaFacade {
 
         CLIENT_ID = "list_topics";
 
-        zkBrokerList = getBrokerList();
+        zkBrokerList = getBrokerEndpoints();
 
         for (String seed : zkBrokerList) {
             kafka.javaapi.consumer.SimpleConsumer simpleConsumer = null;
             try {
                 simpleConsumer = new SimpleConsumer(getBrokerIp(seed)
                         .getHostAddress(),
-                        getBrokerPort(seed), TIMEOUT, BUFFER_SIZE, CLIENT_ID);
+                        getBrokerPort(seed), connectionTimeout, BUFFER_SIZE, CLIENT_ID);
 
                 //add ssl certificate to the consumer here
                 List<String> topics = new ArrayList<>();
@@ -722,6 +764,7 @@ public class KafkaFacade {
             }
         }
 
+        //val allTopics = zkUtils.getAllTopics()
         return topicList;
     }
 
@@ -730,7 +773,7 @@ public class KafkaFacade {
 
         CLIENT_ID = "topic_detail";
 
-        zkBrokerList = getBrokerList();
+        zkBrokerList = getBrokerEndpoints();
 
         Map<Integer, List<String>> replicas = new HashMap<>();
         Map<Integer, List<String>> inSyncReplicas = new HashMap<>();
@@ -754,7 +797,7 @@ public class KafkaFacade {
             try {
                 simpleConsumer = new SimpleConsumer(getBrokerIp(seed)
                         .getHostAddress(),
-                        getBrokerPort(seed), TIMEOUT, BUFFER_SIZE, CLIENT_ID);
+                        getBrokerPort(seed), connectionTimeout, BUFFER_SIZE, CLIENT_ID);
 
                 //add ssl certificate to the consumer here
                 List<String> topics = new ArrayList<>();
@@ -823,4 +866,10 @@ public class KafkaFacade {
 
     }
 
+    class ZookeeperWatcher implements Watcher {
+
+        @Override
+        public void process(WatchedEvent we) {
+        }
+    }
 }

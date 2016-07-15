@@ -10,6 +10,7 @@ import se.kth.bbc.jobs.AsynchronousJobExecutor;
 import se.kth.bbc.jobs.model.description.JobDescription;
 import se.kth.bbc.jobs.yarn.YarnJob;
 import se.kth.bbc.lims.Utils;
+import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.Settings;
 
@@ -25,7 +26,7 @@ public final class SparkJob extends YarnJob {
 
   private final SparkJobConfiguration jobconfig; //Just for convenience
   private final String sparkDir;
-  private final String sparkUser;
+  private final String sparkUser; //must be glassfish
 
   /**
    *
@@ -36,13 +37,14 @@ public final class SparkJob extends YarnJob {
    * @param sparkDir
    * @param nameNodeIpPort
    * @param sparkUser
+   * @param jobUser
    * @param kafkaAddress
    */
   public SparkJob(JobDescription job, AsynchronousJobExecutor services,
       Users user, final String hadoopDir,
       final String sparkDir, final String nameNodeIpPort, String sparkUser,
-      String kafkaAddress) {
-    super(job, services, user, hadoopDir, nameNodeIpPort, kafkaAddress);
+      String jobUser, String kafkaAddress) {
+    super(job, services, user, jobUser, hadoopDir, nameNodeIpPort, kafkaAddress);
     if (!(job.getJobConfig() instanceof SparkJobConfiguration)) {
       throw new IllegalArgumentException(
           "JobDescription must contain a SparkJobConfiguration object. Received: "
@@ -54,8 +56,8 @@ public final class SparkJob extends YarnJob {
   }
 
   @Override
-  protected boolean setupJob() {
-    super.setupJob();
+  protected boolean setupJob(DistributedFileSystemOps dfso) {
+    super.setupJob(dfso);
     //Then: actually get to running.
     if (jobconfig.getAppName() == null || jobconfig.getAppName().isEmpty()) {
       jobconfig.setAppName("Untitled Spark Job");
@@ -72,6 +74,12 @@ public final class SparkJob extends YarnJob {
     runnerbuilder.setExecutorCores(jobconfig.getExecutorCores());
     runnerbuilder.setExecutorMemory("" + jobconfig.getExecutorMemory() + "m");
     runnerbuilder.setNumberOfExecutors(jobconfig.getNumberOfExecutors());
+    if(jobconfig.isDynamicExecutors()){
+      runnerbuilder.setDynamicExecutors(jobconfig.isDynamicExecutors());
+      runnerbuilder.setNumberOfExecutorsMin(jobconfig.getSelectedMinExecutors());
+      runnerbuilder.setNumberOfExecutorsMax(jobconfig.getSelectedMaxExecutors());
+      runnerbuilder.setNumberOfExecutorsInit(jobconfig.getNumberOfExecutorsInit());
+    }
     //Set Yarn running options
     runnerbuilder.setDriverMemoryMB(jobconfig.getAmMemory());
     runnerbuilder.setDriverCores(jobconfig.getAmVCores());
@@ -91,7 +99,7 @@ public final class SparkJob extends YarnJob {
     try {
       runner = runnerbuilder.
           getYarnRunner(jobDescription.getProject().getName(),
-              sparkUser, hadoopDir, sparkDir, nameNodeIpPort);
+              sparkUser, jobUser, hadoopDir, sparkDir, nameNodeIpPort);
 
     } catch (IOException e) {
       logger.log(Level.SEVERE,

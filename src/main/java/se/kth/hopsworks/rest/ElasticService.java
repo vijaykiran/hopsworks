@@ -1,6 +1,5 @@
 package se.kth.hopsworks.rest;
 
-import com.owlike.genson.Genson;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -61,16 +60,14 @@ import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import se.kth.hopsworks.hops_site.ManageGlobalClusterParticipation;
+import se.kth.hopsworks.hopssite.ManageGlobalClusterParticipation;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.dataset.DatasetStructure;
-import se.kth.hopsworks.hops_site.register.RegisteredClusters;
+import se.kth.hopsworks.hopssite.registerjsons.RegisteredClusters;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 /**
  *
@@ -84,8 +81,6 @@ import se.kth.hopsworks.hops_site.register.RegisteredClusters;
 public class ElasticService {
 
     private WebTarget target;
-    
-    private Genson genson = new Genson();
 
     private javax.ws.rs.client.Client rest_client;
 
@@ -294,7 +289,7 @@ public class ElasticService {
                         Project project = projectFacade.findByName(inodeFacade.getProjectNameForInode(i));
                         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + ds.getName() + File.separator;
                         DatasetStructure datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), project);
-                        elasticHit.setDatasetStructureJson(genson.serialize(datasetStructure));
+                        elasticHit.setDatasetStructure(datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), project));
                         elasticHits.add(elasticHit);
                     }
                 }

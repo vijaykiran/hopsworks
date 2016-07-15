@@ -44,7 +44,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
 
     private String originalGvodEndpoint;
     
-    private String datasetStructureJson;
+    private DatasetStructure datasetStructure;
     
     private boolean localDataset;
 
@@ -88,14 +88,24 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setLocalDataset(boolean localDataset) {
         this.localDataset = localDataset;
     }
-    
-    public String getDatasetStructureJson() {
-        return datasetStructureJson;
+
+    public Map<String, Object> getMap() {
+        return map;
     }
 
-    public void setDatasetStructureJson(String datasetStructureJson) {
-        this.datasetStructureJson = datasetStructureJson;
+    public void setMap(Map<String, Object> map) {
+        this.map = map;
     }
+
+    public DatasetStructure getDatasetStructure() {
+        return datasetStructure;
+    }
+
+    public void setDatasetStructure(DatasetStructure datasetStructure) {
+        this.datasetStructure = datasetStructure;
+    }
+    
+    
   
     public String getOriginalGvodEndpoint() {
         return originalGvodEndpoint;

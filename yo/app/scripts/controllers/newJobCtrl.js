@@ -22,8 +22,7 @@ angular.module('hopsWorksApp')
                 //Set services as attributes 
                 this.ModalService = ModalService;
                 this.growl = growl;
-
-
+            
             //Set some (semi-)constants
             this.selectFileRegexes = {
               "SPARK": /.jar\b/,
@@ -49,6 +48,30 @@ angular.module('hopsWorksApp')
            
             this.phase = 0; //The phase of creation we are in.
             this.runConfig; //Will hold the job configuration
+            self.sliderOptions = {
+                from: 1,
+                to: 500,      
+                floor: true,
+                step: 1,
+                vertical: false
+//                callback: function(value, elt) {
+//                    this.runConfig.numberOfExecutorsMin = value.split(";")[0];
+//                    this.runConfig.numberOfExecutorsMax = value.split(";")[1];
+//                }				
+            };
+            self.sliderValue = self.sliderOptions.from +";"+ 10;
+            this.setInitExecs = function() {
+              if(self.sliderValue.split(";")[0] >
+                      self.runConfig.numberOfExecutorsInit){
+                self.runConfig.numberOfExecutorsInit = 
+                        parseInt(self.sliderValue.split(";")[0]);
+              } else if(self.sliderValue.split(";")[1] <
+                      self.runConfig.numberOfExecutorsInit){
+                self.runConfig.numberOfExecutorsInit = 
+                        parseInt(self.sliderValue.split(";")[1]);
+              }
+            };
+            
             this.sparkState = {//Will hold spark-specific state
               "selectedJar": null //The path to the selected jar
             };
@@ -236,6 +259,8 @@ angular.module('hopsWorksApp')
                 this.createJob = function () {
                     self.runConfig.appName = self.jobname;
                     self.runConfig.localResources = self.localResources;
+                    self.runConfig.selectedMinExecutors = self.sliderValue.split(";")[0];
+                    self.runConfig.selectedMaxExecutors = self.sliderValue.split(";")[1];
                     if(self.tourService.currentStep_TourFour > -1){
                                     self.tourService.resetTours();
                                     self.tourService.currentStep_TourThree = 2;
@@ -395,6 +420,17 @@ angular.module('hopsWorksApp')
                   SparkService.inspectJar(self.projectId, path).then(
                           function (success) {
                             self.runConfig = success.data;
+                            //Update the min/max spark executors based on 
+                            //backend configuration 
+                            if(typeof runConfig != 'undefined'){
+                              self.sliderOptions.from = self.runConfig.
+                                      minExecutors;
+                              self.sliderOptions.to = self.runConfig.
+                                      maxExecutors;  
+                            } else {
+                              self.sliderOptions.from = 1;
+                              self.sliderOptions.to = 300;  
+                            }
                             self.mainFileSelected(filename);
                             if (self.tourService.currentStep_TourFour > -1) {
                                   self.tourService.currentStep_TourFour = 6;
@@ -425,6 +461,15 @@ angular.module('hopsWorksApp')
                   break;
                 case "ADAM":
                   self.adamState.processparameter.value = path;
+                  if(typeof runConfig != 'undefined'){
+                  self.sliderOptions.from = self.runConfig.
+                    minExecutors;
+                    self.sliderOptions.to = self.runConfig.
+                    maxExecutors;  
+                  } else {
+                    self.sliderOptions.from = 1;
+                    self.sliderOptions.to = 300;  
+                  }
                   break;
                 case "FLINK":
                   self.flinkState.selectedJar = filename;
@@ -526,13 +571,16 @@ angular.module('hopsWorksApp')
                         self.phase = stored.phase;
                         self.runConfig = stored.runConfig;
                         self.runConfig.schedule = null;
+                        self.sliderOptions.from = self.runConfig.minExecutors;
+                        self.sliderOptions.to = self.runConfig.maxExecutors;
+                        self.sliderValue = self.runConfig.selectedMinExecutors + ";" +self.runConfig.selectedMaxExecutors;
                         if (self.jobtype === 1) {
                             self.sparkState = stored.sparkState;
                         } else if (self.jobtype === 2) {
                             self.adamState = stored.adamState;
-			} else  if (self.jobtype === 3) {
-			    self.flinkState = stored.flinkState;
-			}
+                        } else  if (self.jobtype === 3) {
+                            self.flinkState = stored.flinkState;
+                        }
                         //GUI state
                         self.accordion1 = stored.accordion1;
                         self.accordion2 = stored.accordion2;

@@ -195,6 +195,12 @@ public class ElasticService {
         if (searchTerm == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     "Incomplete request!");
+        }else if(settings.getCLUSTER_ID() == null){
+         throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.NOT_REGISTERD_WITH_HOPS_SITE);
+        }else if(settings.getGVOD_UDP_ENDPOINT() == null){
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.GVOD_OFFLINE);
         }
         HashMap<String, ElasticHit> results = new HashMap<>();
         List<RegisteredClusters> registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
@@ -204,7 +210,7 @@ public class ElasticService {
                     rest_client = ClientBuilder.newClient();
                     target = rest_client.target(registeredClusters.get(i).getSearchEndpoint()).path("/" + searchTerm);
                     Response response = target.request().accept(MediaType.APPLICATION_JSON).get();
-                    List<ElasticHit> elasticHits = (List<ElasticHit>) response.getEntity();
+                    List<ElasticHit> elasticHits = response.readEntity(ElasticHits.class).getElasticHits();
                     for(ElasticHit ehit : elasticHits){
                         if (!results.containsKey(ehit.getPublicId())) {
                             if(settings.getGVOD_UDP_ENDPOINT().equals(ehit.getOriginalGvodEndpoint())){
@@ -295,11 +301,9 @@ public class ElasticService {
             }
 
             this.clientShutdown(client);
-            GenericEntity<List<ElasticHit>> searchResults
-                    = new GenericEntity<List<ElasticHit>>(elasticHits) {
-            };
+            ElasticHits eHits = new ElasticHits(elasticHits);
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
-                    entity(searchResults).build();
+                    entity(eHits).build();
         }
         logger.log(Level.WARNING, "Elasticsearch error code: {0}", response.status().getStatus());
         //something went wrong so throw an exception

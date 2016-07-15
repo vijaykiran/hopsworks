@@ -935,6 +935,10 @@ public class DataSetService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.NOT_REGISTERD_WITH_HOPS_SITE);
         }
+        if(settings.getGVOD_UDP_ENDPOINT() == null){
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.GVOD_OFFLINE);
+        }
         
         String publicDsId = settings.getCLUSTER_ID() + "_" + this.project.getName() + "_" + ds.getName();
 

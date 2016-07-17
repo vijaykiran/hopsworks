@@ -5,13 +5,9 @@
  */
 package se.kth.hopsworks.gvod.downloadjsons;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import se.kth.hopsworks.gvod.resources.items.AddressJSON;
 import se.kth.hopsworks.gvod.resources.HdfsResource;
 import se.kth.hopsworks.gvod.resources.HopsResource;
 import se.kth.hopsworks.gvod.resources.KafkaResource;

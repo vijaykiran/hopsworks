@@ -25,6 +25,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -64,7 +65,6 @@ import se.kth.hopsworks.hopssite.ManageGlobalClusterParticipation;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.controller.DatasetController;
-import se.kth.hopsworks.dataset.DatasetStructure;
 import se.kth.hopsworks.hopssite.registerjsons.RegisteredClusters;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
@@ -190,35 +190,37 @@ public class ElasticService {
         if (searchTerm == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     "Incomplete request!");
-        }else if(settings.getCLUSTER_ID() == null){
-         throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+        } else if (settings.getCLUSTER_ID() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.NOT_REGISTERD_WITH_HOPS_SITE);
-        }else if(settings.getGVOD_UDP_ENDPOINT() == null){
+        } else if (settings.getGVOD_UDP_ENDPOINT() == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.GVOD_OFFLINE);
         }
         HashMap<String, ElasticHit> results = new HashMap<>();
         List<RegisteredClusters> registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
         if (registeredClusters != null && registeredClusters.size() > 0) {
+            rest_client = ClientBuilder.newClient();
             for (int i = 0; i < registeredClusters.size(); i++) {
                 if (registeredClusters.get(i).getHeartbeatsMissed() < 5) {
-                    rest_client = ClientBuilder.newClient();
                     target = rest_client.target(registeredClusters.get(i).getSearchEndpoint()).path("/" + searchTerm);
                     Response response = target.request().accept(MediaType.APPLICATION_JSON).get();
-                    List<ElasticHit> elasticHits = response.readEntity(ElasticHits.class).getElasticHits();
-                    for(ElasticHit ehit : elasticHits){
-                        if (!results.containsKey(ehit.getPublicId())) {
-                            if(settings.getGVOD_UDP_ENDPOINT().equals(ehit.getOriginalGvodEndpoint())){
-                                ehit.setLocalDataset(true);
-                            }else{
-                                ehit.setLocalDataset(false);
+                    if (response.getStatus() == 200 && response.hasEntity()) {
+                        List<ElasticHit> elasticHits = response.readEntity(new GenericType<List<ElasticHit>>(){});
+                        for (ElasticHit ehit : elasticHits) {
+                            if (!results.containsKey(ehit.getPublicId())) {
+                                if (settings.getGVOD_UDP_ENDPOINT().equals(ehit.getOriginalGvodEndpoint())) {
+                                    ehit.setLocalDataset(true);
+                                } else {
+                                    ehit.setLocalDataset(false);
+                                }
+                                results.put(ehit.getPublicId(), ehit);
+                            } else {
+                                results.get(ehit.getPublicId()).appendEndpoint(ehit.getOriginalGvodEndpoint());
                             }
-                            results.put(ehit.getPublicId(), ehit);
-                        } else {
-                            results.get(ehit.getPublicId()).appendEndpoint(ehit.getOriginalGvodEndpoint());
                         }
                     }
-                        
+
                 }
 
             }
@@ -288,7 +290,6 @@ public class ElasticService {
                         elasticHit.setOriginalGvodEndpoint(settings.getGVOD_UDP_ENDPOINT());
                         Project project = projectFacade.findByName(inodeFacade.getProjectNameForInode(i));
                         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + ds.getName() + File.separator;
-                        DatasetStructure datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), project);
                         elasticHit.setDatasetStructure(datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), project));
                         elasticHits.add(elasticHit);
                     }
@@ -296,9 +297,11 @@ public class ElasticService {
             }
 
             this.clientShutdown(client);
-            ElasticHits eHits = new ElasticHits(elasticHits);
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).
-                    entity(eHits).build();
+            GenericEntity<List<ElasticHit>> searchResults
+                    = new GenericEntity<List<ElasticHit>>(elasticHits) {
+            };
+            
+            return Response.status(Response.Status.OK).entity(searchResults).build();
         }
         logger.log(Level.WARNING, "Elasticsearch error code: {0}", response.status().getStatus());
         //something went wrong so throw an exception

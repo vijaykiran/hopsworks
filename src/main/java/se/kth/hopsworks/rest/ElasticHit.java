@@ -1,7 +1,5 @@
 package se.kth.hopsworks.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,10 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.elasticsearch.search.SearchHit;
-import org.json.JSONObject;
 import se.kth.hopsworks.dataset.DatasetStructure;
 
 /**
@@ -69,17 +65,8 @@ public class ElasticHit implements Comparator<ElasticHit> {
         }
         this.gvodEndpoints = new ArrayList<>();
     }
-
-    public ElasticHit(String name, String id, String type, JSONObject json, float score) {
-
-        Map<String, Object> source = new Gson().fromJson(json.toString(), new TypeToken<HashMap<String, Object>>() {
-        }.getType());
-        this.name = name;
-        this.id = id;
-        this.type = type;
-        this.setHits(source);
-        this.score = score;
-    }
+    
+    
 
     public boolean isLocalDataset() {
         return localDataset;
@@ -96,7 +83,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setMap(Map<String, Object> map) {
         this.map = map;
     }
-
+    
     public DatasetStructure getDatasetStructure() {
         return datasetStructure;
     }
@@ -104,8 +91,6 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setDatasetStructure(DatasetStructure datasetStructure) {
         this.datasetStructure = datasetStructure;
     }
-    
-    
   
     public String getOriginalGvodEndpoint() {
         return originalGvodEndpoint;
@@ -114,7 +99,6 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setOriginalGvodEndpoint(String originalGvodEndpoint) {
         this.originalGvodEndpoint = originalGvodEndpoint;
     }
-    
     
     @XmlElement(name = "partners")
     public List<String> getGvodEndpoints() {

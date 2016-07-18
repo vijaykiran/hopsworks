@@ -6,7 +6,6 @@
 package se.kth.hopsworks.hopssite.pingjsons;
 
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
 import se.kth.hopsworks.hopssite.registerjsons.RegisteredClusters;
 
 /**
@@ -20,7 +19,6 @@ public class SuccessPingJson {
         
     }
     
-    @XmlElement(name = "clusters")
     public List<RegisteredClusters> getClusters() {
         return clusters;
     }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.elasticsearch.search.SearchHit;
 import se.kth.hopsworks.dataset.DatasetStructure;
@@ -39,9 +38,9 @@ public class ElasticHit implements Comparator<ElasticHit> {
     private List<String> gvodEndpoints;
 
     private String originalGvodEndpoint;
-    
+
     private DatasetStructure datasetStructure;
-    
+
     private boolean localDataset;
 
     public ElasticHit() {
@@ -65,8 +64,6 @@ public class ElasticHit implements Comparator<ElasticHit> {
         }
         this.gvodEndpoints = new ArrayList<>();
     }
-    
-    
 
     public boolean isLocalDataset() {
         return localDataset;
@@ -76,14 +73,6 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.localDataset = localDataset;
     }
 
-    public Map<String, Object> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<String, Object> map) {
-        this.map = map;
-    }
-    
     public DatasetStructure getDatasetStructure() {
         return datasetStructure;
     }
@@ -91,7 +80,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setDatasetStructure(DatasetStructure datasetStructure) {
         this.datasetStructure = datasetStructure;
     }
-  
+
     public String getOriginalGvodEndpoint() {
         return originalGvodEndpoint;
     }
@@ -99,8 +88,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setOriginalGvodEndpoint(String originalGvodEndpoint) {
         this.originalGvodEndpoint = originalGvodEndpoint;
     }
-    
-    @XmlElement(name = "partners")
+
     public List<String> getGvodEndpoints() {
         return gvodEndpoints;
     }
@@ -108,7 +96,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void appendEndpoint(String gvod_endpoint) {
         if (this.gvodEndpoints != null) {
             this.gvodEndpoints.add(gvod_endpoint);
-        }else{
+        } else {
             this.gvodEndpoints = new ArrayList<>();
             this.gvodEndpoints.add(gvod_endpoint);
         }
@@ -154,19 +142,21 @@ public class ElasticHit implements Comparator<ElasticHit> {
         return this.type;
     }
 
-    public void setHits(Map<String, Object> source) {
+    public void setMap(Map<String, Object> source) {
         this.map = new HashMap<>(source);
     }
 
-    public Map<String, String> getHits() {
+    public Map<String, String> getMap() {
         //flatten hits (remove nested json objects) to make it more readable
         Map<String, String> refined = new HashMap<>();
 
-        for (Entry<String, Object> entry : this.map.entrySet()) {
-            //convert value to string
-            String value = (entry.getValue() == null) ? "null" : entry.getValue().
-                    toString();
-            refined.put(entry.getKey(), value);
+        if (this.map != null) {
+            for (Entry<String, Object> entry : this.map.entrySet()) {
+                //convert value to string
+                String value = (entry.getValue() == null) ? "null" : entry.getValue().
+                        toString();
+                refined.put(entry.getKey(), value);
+            }
         }
 
         return refined;

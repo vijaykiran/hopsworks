@@ -301,7 +301,7 @@ public class ElasticService {
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
             };
             
-            return Response.status(Response.Status.OK).entity(searchResults).build();
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(searchResults).build();
         }
         logger.log(Level.WARNING, "Elasticsearch error code: {0}", response.status().getStatus());
         //something went wrong so throw an exception

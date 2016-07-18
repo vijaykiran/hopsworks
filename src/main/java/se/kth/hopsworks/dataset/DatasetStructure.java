@@ -6,7 +6,6 @@
 package se.kth.hopsworks.dataset;
 
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -20,15 +19,18 @@ public class DatasetStructure {
     private String description;
     private List<String> childrenFiles;
 
+    
+    
+    public DatasetStructure() {
+    }
+    
+    
     public DatasetStructure(String name, String description, List<String> childrenFiles) {
         this.name = name;
         this.description = description;
         this.childrenFiles = childrenFiles;
     }
 
-    public DatasetStructure() {
-    }
-    
     public String getName() {
         return name;
     }
@@ -36,8 +38,7 @@ public class DatasetStructure {
     public String getDescription() {
         return description;
     }
-
-    @XmlElement(name = "childrenFiles")
+    
     public List<String> getChildrenFiles() {
         return childrenFiles;
     }

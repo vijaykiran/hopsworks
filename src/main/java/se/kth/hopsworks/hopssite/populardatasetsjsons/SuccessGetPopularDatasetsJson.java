@@ -6,7 +6,6 @@
 package se.kth.hopsworks.hopssite.populardatasetsjsons;
 
 import java.util.List;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -21,7 +20,6 @@ public class SuccessGetPopularDatasetsJson {
     public SuccessGetPopularDatasetsJson() {
     }
 
-    @XmlElement(name = "popular_datasets")
     public List<PopularDatasets> getPopularDatasets() {
         return popularDatasets;
     }

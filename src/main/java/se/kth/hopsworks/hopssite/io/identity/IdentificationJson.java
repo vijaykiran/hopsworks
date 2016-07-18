@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.hopssite.registerjsons;
+package se.kth.hopsworks.hopssite.io.identity;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,11 +12,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class SuccessRegisterJson {
+public class IdentificationJson {
     
     private String clusterId;
+
+    public IdentificationJson(String clusterId) {
+        this.clusterId = clusterId;
+    }
     
-    public SuccessRegisterJson(){
+    public IdentificationJson(){
         
     }
 

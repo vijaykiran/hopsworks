@@ -30,9 +30,9 @@ import se.kth.hopsworks.controller.KafkaController;
 import se.kth.hopsworks.controller.ResponseMessages;
 
 import se.kth.hopsworks.filters.AllowedRoles;
-import se.kth.hopsworks.gvod.downloadjsons.FrontentJsonForHdfsDownload;
+import se.kth.hopsworks.gvod.download.FrontentJsonForHdfsDownload;
 import se.kth.hopsworks.controller.GVodController;
-import se.kth.hopsworks.gvod.downloadjsons.FrontendJsonForHdfsKafkaDownload;
+import se.kth.hopsworks.gvod.download.FrontendJsonForHdfsKafkaDownload;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.users.UserFacade;
 import se.kth.hopsworks.util.Settings;

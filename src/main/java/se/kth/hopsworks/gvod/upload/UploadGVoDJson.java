@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.gvod.uploadjsons;
+package se.kth.hopsworks.gvod.upload;
 
 import se.kth.hopsworks.gvod.resources.items.TorrentId;
 import javax.xml.bind.annotation.XmlRootElement;

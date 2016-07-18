@@ -17,7 +17,7 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.dataset.DatasetStructureJson;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -371,8 +371,9 @@ public class DatasetController {
         return success;
     }
 
-    public DatasetStructure createDatasetStructure(String dsPath, String description, String name, Project project) {
-        
-        return new DatasetStructure(name, description, distributedFsService.getChildNames(dsPath));
+    public DatasetStructureJson createDatasetStructure(String dsPath, String description, String name, Project project) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    
 }

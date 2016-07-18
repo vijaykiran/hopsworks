@@ -57,13 +57,13 @@ import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.dataset.DatasetRequest;
 import se.kth.hopsworks.dataset.DatasetRequestFacade;
-import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.dataset.DatasetStructureJson;
 import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.MoveDTO;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
-import se.kth.hopsworks.hopssite.ManageGlobalClusterParticipation;
+import se.kth.hopsworks.hopssite.restCommunication.ManageGlobalClusterParticipation;
 import se.kth.hopsworks.meta.db.TemplateFacade;
 import se.kth.hopsworks.meta.entity.Template;
 import se.kth.hopsworks.meta.exception.DatabaseException;
@@ -978,7 +978,7 @@ public class DataSetService {
 
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator + ds.getName() + File.separator;
 
-        DatasetStructure datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), this.project);
+        DatasetStructureJson datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), this.project);
 
         if (datasetStructure.getChildrenFiles().isEmpty()) {
             json.setErrorMsg("There is no reason to share an empty dataset");

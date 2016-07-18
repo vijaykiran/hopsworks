@@ -1,5 +1,5 @@
-angular.module('hopsWorksApp').controller('SelectTopicAndSchemaCtrl', ['$modalInstance','KafkaService','growl','projectId',
-    function ($modalInstance,KafkaService,growl,projectId) {
+angular.module('hopsWorksApp').controller('TopicAndSchemaCtrl', ['$modalInstance','KafkaService','growl','projectId','datasetName',
+    function ($modalInstance,KafkaService,growl,projectId, datasetName) {
 
 
         var self = this;

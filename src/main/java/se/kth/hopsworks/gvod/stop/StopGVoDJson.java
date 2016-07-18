@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.gvod.stopjson;
+package se.kth.hopsworks.gvod.stop;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import se.kth.hopsworks.gvod.resources.items.TorrentId;

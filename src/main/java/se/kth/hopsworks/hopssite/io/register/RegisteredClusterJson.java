@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.hopssite.registerjsons;
+package se.kth.hopsworks.hopssite.io.register;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,9 +12,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class RegisteredClusters {
+public class RegisteredClusterJson {
 
        private String clusterId;
+       
        private String searchEndpoint;
        
        private String email;
@@ -29,7 +30,7 @@ public class RegisteredClusters {
        
        private String dateLastPing;
 
-    public RegisteredClusters(String clusterId, String email, String cert, String gvodEndpoint, long heartbeatsMissed, String dateRegistered, String dateLastPing, String searchEndpoint) {
+    public RegisteredClusterJson(String clusterId, String email, String cert, String gvodEndpoint, long heartbeatsMissed, String dateRegistered, String dateLastPing, String searchEndpoint) {
         this.clusterId = clusterId;
         this.email = email;
         this.cert = cert;
@@ -41,7 +42,7 @@ public class RegisteredClusters {
     }
     
     
-    public RegisteredClusters() {
+    public RegisteredClusterJson() {
     }
 
     public void setClusterId(String clusterId) {

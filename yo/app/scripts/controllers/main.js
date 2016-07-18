@@ -323,7 +323,7 @@ angular.module('hopsWorksApp')
 
                                     } else if (kafkaHdfsSelection === 1) {
                                         
-                                        ModalService.selectTopicAndSchema('md',destProj).then(function(success){
+                                        ModalService.TopicAndSchema('md',destProj).then(function(success){
                                             
                                             var topic = success;
                                             var json = {"topicName": topic, "projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};
@@ -338,12 +338,6 @@ angular.module('hopsWorksApp')
                                             
                                         });
                                         
-                                        
-
-                                    } else if (kafkaHdfsSelection === 2) {
-                                        
-                                        
-
                                     } else {
                                         growl.error("You did not choose a correct downloadType", {title: 'Error', ttl: 1000});
                                     }

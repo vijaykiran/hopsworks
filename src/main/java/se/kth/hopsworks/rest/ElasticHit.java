@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.elasticsearch.search.SearchHit;
-import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.dataset.DatasetStructureJson;
 
 /**
  * Represents a JSONifiable version of the elastic hit object
@@ -39,7 +40,7 @@ public class ElasticHit implements Comparator<ElasticHit> {
 
     private String originalGvodEndpoint;
 
-    private DatasetStructure datasetStructure;
+    private DatasetStructureJson datasetStructure;
 
     private boolean localDataset;
 
@@ -73,11 +74,11 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.localDataset = localDataset;
     }
 
-    public DatasetStructure getDatasetStructure() {
+    public DatasetStructureJson getDatasetStructure() {
         return datasetStructure;
     }
 
-    public void setDatasetStructure(DatasetStructure datasetStructure) {
+    public void setDatasetStructure(DatasetStructureJson datasetStructure) {
         this.datasetStructure = datasetStructure;
     }
 
@@ -88,7 +89,8 @@ public class ElasticHit implements Comparator<ElasticHit> {
     public void setOriginalGvodEndpoint(String originalGvodEndpoint) {
         this.originalGvodEndpoint = originalGvodEndpoint;
     }
-
+    
+    @XmlElement(name = "partners")
     public List<String> getGvodEndpoints() {
         return gvodEndpoints;
     }

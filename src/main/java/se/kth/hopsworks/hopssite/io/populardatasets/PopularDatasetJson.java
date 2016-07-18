@@ -3,21 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.hopssite.populardatasetsjsons;
+package se.kth.hopsworks.hopssite.io.populardatasets;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.dataset.DatasetStructureJson;
 
 /**
  *
  * @author jsvhqr
  */
 @XmlRootElement
-public class PopularDatasetsJson {
+public class PopularDatasetJson {
     
     private String datasetName;
     
-    private DatasetStructure structure;
+    private DatasetStructureJson structure;
     
     private String datasetId;
     
@@ -27,7 +27,7 @@ public class PopularDatasetsJson {
     
     private int seeds;
 
-    public PopularDatasetsJson(String datasetName, DatasetStructure structure, String datasetId, int files, int leeches, int seeds) {
+    public PopularDatasetJson(String datasetName, DatasetStructureJson structure, String datasetId, int files, int leeches, int seeds) {
         this.datasetName = datasetName;
         this.structure = structure;
         this.datasetId = datasetId;
@@ -37,14 +37,14 @@ public class PopularDatasetsJson {
     }
     
 
-    public PopularDatasetsJson() {
+    public PopularDatasetJson() {
     }
 
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
     }
 
-    public void setStructure(DatasetStructure structure) {
+    public void setStructure(DatasetStructureJson structure) {
         this.structure = structure;
     }
 
@@ -68,7 +68,7 @@ public class PopularDatasetsJson {
         return datasetName;
     }
 
-    public DatasetStructure getStructure() {
+    public DatasetStructureJson getStructure() {
         return structure;
     }
 

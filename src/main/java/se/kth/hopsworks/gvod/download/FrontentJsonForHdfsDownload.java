@@ -3,39 +3,36 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.gvod.downloadjsons;
+package se.kth.hopsworks.gvod.download;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import se.kth.hopsworks.dataset.DatasetStructure;
+import se.kth.hopsworks.dataset.DatasetStructureJson;
 
 /**
  *
  * @author jsvhqr
  */
 @XmlRootElement
-public class FrontendJsonForHdfsKafkaDownload {
-    
+public class FrontentJsonForHdfsDownload {
     
     private int projectId;
     
-    private DatasetStructure datasetStructure;
+    private DatasetStructureJson datasetStructure;
     
     private String datasetId;
     
     private List<String> partners;
-    
-    private String topicName;
 
-    public FrontendJsonForHdfsKafkaDownload() {
+    public FrontentJsonForHdfsDownload() {
     }
 
     public int getProjectId() {
         return projectId;
     }
 
-    public DatasetStructure getDatasetStructure() {
+    public DatasetStructureJson getDatasetStructure() {
         return datasetStructure;
     }
 
@@ -43,15 +40,13 @@ public class FrontendJsonForHdfsKafkaDownload {
         return datasetId;
     }
     
-    @XmlElement(name = "partner")
+    @XmlElement(name = "partners")
     public List<String> getPartners() {
         return partners;
     }
-
-    public String getTopicName() {
-        return topicName;
-    }
-     
     
-      
+    
+    
+    
+    
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.gvod.downloadjsons;
+package se.kth.hopsworks.gvod.download;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;

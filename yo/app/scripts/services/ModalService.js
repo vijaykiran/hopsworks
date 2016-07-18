@@ -932,10 +932,10 @@ angular.module('hopsWorksApp')
                 return modalInstance.result;
               },
               
-              selectTopicAndSchema: function(size, projectId){
+                TopicAndSchema: function(size, projectId){
                   var modalInstance = $modal.open({
-                  templateUrl: 'views/selectTopicAndSchema.html',
-                  controller: 'SelectTopicAndSchemaCtrl as selectTopicAndSchema',
+                  templateUrl: 'views/topicAndSchema.html',
+                  controller: 'TopicAndSchemaCtrl as topicAndSchema',
                   size: size,
                   resolve: {
                     projectId : function(){

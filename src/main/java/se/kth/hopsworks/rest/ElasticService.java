@@ -61,11 +61,25 @@ import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import se.kth.hopsworks.hopssite.ManageGlobalClusterParticipation;
+import se.kth.hopsworks.hopssite.restCommunication.ManageGlobalClusterParticipation;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.controller.DatasetController;
-import se.kth.hopsworks.hopssite.registerjsons.RegisteredClusters;
+import se.kth.hopsworks.hopssite.io.register.RegisteredClusterJson;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
@@ -198,7 +212,7 @@ public class ElasticService {
                     ResponseMessages.GVOD_OFFLINE);
         }
         HashMap<String, ElasticHit> results = new HashMap<>();
-        List<RegisteredClusters> registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
+        List<RegisteredClusterJson> registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
         if (registeredClusters != null && registeredClusters.size() > 0) {
             rest_client = ClientBuilder.newClient();
             for (int i = 0; i < registeredClusters.size(); i++) {

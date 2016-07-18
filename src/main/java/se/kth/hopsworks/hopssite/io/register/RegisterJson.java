@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.hopssite.registerjsons;
+package se.kth.hopsworks.hopssite.io.register;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

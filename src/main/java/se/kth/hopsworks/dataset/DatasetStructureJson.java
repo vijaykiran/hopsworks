@@ -5,7 +5,7 @@
  */
 package se.kth.hopsworks.dataset;
 
-import java.util.List;
+import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -13,48 +13,42 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class DatasetStructure {
+public class DatasetStructureJson {
     
     private String name;
     private String description;
-    private List<String> childrenFiles;
+    private Map<String,KafkaInfo> childrenFiles;
 
-    
-    
-    public DatasetStructure() {
+    public DatasetStructureJson() {
     }
-    
-    
-    public DatasetStructure(String name, String description, List<String> childrenFiles) {
+
+    public DatasetStructureJson(String name, String description, Map<String, KafkaInfo> files) {
         this.name = name;
         this.description = description;
-        this.childrenFiles = childrenFiles;
+        this.childrenFiles = files;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-    
-    public List<String> getChildrenFiles() {
-        return childrenFiles;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setChildrenFiles(List<String> childrenFiles) {
+    public Map<String, KafkaInfo> getChildrenFiles() {
+        return childrenFiles;
+    }
+
+    public void setChildrenFiles(Map<String, KafkaInfo> childrenFiles) {
         this.childrenFiles = childrenFiles;
     }
-    
-    
-    
 }

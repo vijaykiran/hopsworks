@@ -18,15 +18,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
-import se.kth.hopsworks.controller.DatasetController;
-import se.kth.hopsworks.dataset.DatasetStructure;
-import se.kth.hopsworks.gvod.downloadjsons.DownloadGVoDJson;
+import se.kth.hopsworks.dataset.DatasetStructureJson;
+import se.kth.hopsworks.gvod.download.DownloadGVoDJson;
 import se.kth.hopsworks.gvod.resources.HdfsResource;
 import se.kth.hopsworks.gvod.resources.HopsResource;
 import se.kth.hopsworks.gvod.resources.KafkaResource;
-import se.kth.hopsworks.gvod.resources.items.TorrentId;
-import se.kth.hopsworks.gvod.stopjson.StopGVoDJson;
-import se.kth.hopsworks.gvod.uploadjsons.UploadGVoDJson;
+import se.kth.hopsworks.gvod.stop.StopGVoDJson;
+import se.kth.hopsworks.gvod.upload.UploadGVoDJson;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -66,9 +64,9 @@ public class GVodController {
     private WebTarget webTarget = null;
     private Client rest_client = null;
 
-    public String uploadToGVod(int projectId, String hdfsConfigXMLPath, String path, DatasetStructure datasetStructure, String username, String publicDsId) {
+    public String uploadToGVod(int projectId, String hdfsConfigXMLPath, String path, DatasetStructureJson datasetStructure, String username, String publicDsId) {
 
-        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigXMLPath, path, datasetStructure.getChildrenFiles().get(0), username), new HopsResource(projectId), new TorrentId(publicDsId));
+        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigXMLPath, path, null, username), new HopsResource(projectId), new TorrentId(publicDsId));
 
         rest_client = ClientBuilder.newClient();
 
@@ -83,7 +81,7 @@ public class GVodController {
         }
     }
 
-    public String downloadHdfs(String hdfsConfigXMLPath, Project project, DatasetStructure datasetStructure, Users user, String publicDsId, List<String> partners) throws IOException, AppException {
+    public String downloadHdfs(String hdfsConfigXMLPath, Project project, DatasetStructureJson datasetStructure, Users user, String publicDsId, List<String> partners) throws IOException, AppException {
 
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;
@@ -133,7 +131,7 @@ public class GVodController {
         }
     }
 
-    public String downloadKafka(String hdfsConfigXMLPath, Project project, DatasetStructure datasetStructure, Users user, String publicDsId, List<String> partners, String sessionId, String topicName, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain) throws IOException, AppException {
+    public String downloadKafka(String hdfsConfigXMLPath, Project project, DatasetStructureJson datasetStructure, Users user, String publicDsId, List<String> partners, String sessionId, String topicName, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain) throws IOException, AppException {
 
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;

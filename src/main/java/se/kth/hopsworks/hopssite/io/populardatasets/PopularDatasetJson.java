@@ -6,7 +6,7 @@
 package se.kth.hopsworks.hopssite.io.populardatasets;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import se.kth.hopsworks.dataset.DatasetStructureJson;
+import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 
 /**
  *
@@ -15,23 +15,17 @@ import se.kth.hopsworks.dataset.DatasetStructureJson;
 @XmlRootElement
 public class PopularDatasetJson {
     
-    private String datasetName;
-    
-    private DatasetStructureJson structure;
+    private ManifestJson manifestJson;
     
     private String datasetId;
-    
-    private int files;
     
     private int leeches;
     
     private int seeds;
 
-    public PopularDatasetJson(String datasetName, DatasetStructureJson structure, String datasetId, int files, int leeches, int seeds) {
-        this.datasetName = datasetName;
-        this.structure = structure;
+    public PopularDatasetJson(ManifestJson manifestJson, String datasetId, int leeches, int seeds) {
+        this.manifestJson = manifestJson;
         this.datasetId = datasetId;
-        this.files = files;
         this.leeches = leeches;
         this.seeds = seeds;
     }
@@ -40,20 +34,8 @@ public class PopularDatasetJson {
     public PopularDatasetJson() {
     }
 
-    public void setDatasetName(String datasetName) {
-        this.datasetName = datasetName;
-    }
-
-    public void setStructure(DatasetStructureJson structure) {
-        this.structure = structure;
-    }
-
     public void setDatasetId(String datasetId) {
         this.datasetId = datasetId;
-    }
-
-    public void setFiles(int files) {
-        this.files = files;
     }
 
     public void setLeeches(int leeches) {
@@ -64,20 +46,16 @@ public class PopularDatasetJson {
         this.seeds = seeds;
     }
 
-    public String getDatasetName() {
-        return datasetName;
+    public ManifestJson getManifestJson() {
+        return manifestJson;
     }
 
-    public DatasetStructureJson getStructure() {
-        return structure;
+    public void setManifestJson(ManifestJson manifestJson) {
+        this.manifestJson = manifestJson;
     }
 
     public String getDatasetId() {
         return datasetId;
-    }
-
-    public int getFiles() {
-        return files;
     }
 
     public int getLeeches() {
@@ -87,4 +65,6 @@ public class PopularDatasetJson {
     public int getSeeds() {
         return seeds;
     }
+    
+    
 }

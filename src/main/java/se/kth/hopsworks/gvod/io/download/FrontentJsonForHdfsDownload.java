@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.gvod.download;
+package se.kth.hopsworks.gvod.io.download;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import se.kth.hopsworks.dataset.DatasetStructureJson;
+import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 
 /**
  *
@@ -19,7 +19,7 @@ public class FrontentJsonForHdfsDownload {
     
     private int projectId;
     
-    private DatasetStructureJson datasetStructure;
+    private ManifestJson manifestJson;
     
     private String datasetId;
     
@@ -32,10 +32,6 @@ public class FrontentJsonForHdfsDownload {
         return projectId;
     }
 
-    public DatasetStructureJson getDatasetStructure() {
-        return datasetStructure;
-    }
-
     public String getDatasetId() {
         return datasetId;
     }
@@ -43,6 +39,14 @@ public class FrontentJsonForHdfsDownload {
     @XmlElement(name = "partners")
     public List<String> getPartners() {
         return partners;
+    }
+
+    public ManifestJson getManifestJson() {
+        return manifestJson;
+    }
+
+    public void setManifestJson(ManifestJson manifestJson) {
+        this.manifestJson = manifestJson;
     }
     
     

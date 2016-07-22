@@ -30,9 +30,9 @@ import se.kth.hopsworks.controller.KafkaController;
 import se.kth.hopsworks.controller.ResponseMessages;
 
 import se.kth.hopsworks.filters.AllowedRoles;
-import se.kth.hopsworks.gvod.download.FrontentJsonForHdfsDownload;
+import se.kth.hopsworks.gvod.io.download.FrontentJsonForHdfsDownload;
 import se.kth.hopsworks.controller.GVodController;
-import se.kth.hopsworks.gvod.download.FrontendJsonForHdfsKafkaDownload;
+import se.kth.hopsworks.gvod.io.download.FrontendJsonForHdfsKafkaDownload;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.users.UserFacade;
 import se.kth.hopsworks.util.Settings;
@@ -89,7 +89,7 @@ public class GVodService {
 
         String response = gvodController.downloadHdfs(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
                 projectFacade.find(downloadHdfsJson.getProjectId()),
-                downloadHdfsJson.getDatasetStructure(),
+                downloadHdfsJson.getManifestJson(),
                 userFacade.findByEmail(sc.getUserPrincipal().getName()),
                 downloadHdfsJson.getDatasetId(),
                 downloadHdfsJson.getPartners());
@@ -123,7 +123,7 @@ public class GVodService {
 
         String response = gvodController.downloadKafka(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
                 project,
-                downloadHdfsKafkaJson.getDatasetStructure(),
+                downloadHdfsKafkaJson.getManifestJson(),
                 userFacade.findByEmail(sc.getUserPrincipal().getName()),
                 downloadHdfsKafkaJson.getDatasetId(),
                 downloadHdfsKafkaJson.getPartners(),

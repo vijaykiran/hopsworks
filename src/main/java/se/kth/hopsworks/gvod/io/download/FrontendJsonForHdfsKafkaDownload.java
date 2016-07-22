@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.gvod.download;
+package se.kth.hopsworks.gvod.io.download;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import se.kth.hopsworks.dataset.DatasetStructureJson;
+import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 
 /**
  *
@@ -20,7 +20,7 @@ public class FrontendJsonForHdfsKafkaDownload {
     
     private int projectId;
     
-    private DatasetStructureJson datasetStructure;
+    private ManifestJson manifestJson;
     
     private String datasetId;
     
@@ -35,10 +35,6 @@ public class FrontendJsonForHdfsKafkaDownload {
         return projectId;
     }
 
-    public DatasetStructureJson getDatasetStructure() {
-        return datasetStructure;
-    }
-
     public String getDatasetId() {
         return datasetId;
     }
@@ -50,6 +46,14 @@ public class FrontendJsonForHdfsKafkaDownload {
 
     public String getTopicName() {
         return topicName;
+    }
+
+    public ManifestJson getManifestJson() {
+        return manifestJson;
+    }
+
+    public void setManifestJson(ManifestJson manifestJson) {
+        this.manifestJson = manifestJson;
     }
      
     

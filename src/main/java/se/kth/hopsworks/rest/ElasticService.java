@@ -1,6 +1,5 @@
 package se.kth.hopsworks.rest;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -66,20 +65,6 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.hopssite.io.register.RegisteredClusterJson;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
@@ -302,9 +287,6 @@ public class ElasticService {
                         ElasticHit elasticHit = new ElasticHit(hit);
                         elasticHit.setPublicId(ds.getPublicDsId());
                         elasticHit.setOriginalGvodEndpoint(settings.getGVOD_UDP_ENDPOINT());
-                        Project project = projectFacade.findByName(inodeFacade.getProjectNameForInode(i));
-                        String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + ds.getName() + File.separator;
-                        elasticHit.setDatasetStructure(datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), project));
                         elasticHits.add(elasticHit);
                     }
                 }

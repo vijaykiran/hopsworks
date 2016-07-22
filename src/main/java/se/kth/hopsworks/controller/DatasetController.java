@@ -1,15 +1,22 @@
 package se.kth.hopsworks.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.validation.ValidationException;
+import javax.ws.rs.core.Response;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.security.AccessControlException;
+import org.json.JSONObject;
 import se.kth.bbc.activity.ActivityFacade;
 import se.kth.bbc.fileoperations.FileOperations;
 import se.kth.bbc.project.Project;
@@ -17,8 +24,8 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import se.kth.hopsworks.dataset.DatasetStructureJson;
-import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
+import se.kth.hopsworks.gvod.io.resources.items.FileInfo;
+import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.meta.db.InodeBasicMetadataFacade;
@@ -26,6 +33,7 @@ import se.kth.hopsworks.meta.db.TemplateFacade;
 import se.kth.hopsworks.meta.entity.InodeBasicMetadata;
 import se.kth.hopsworks.meta.entity.Template;
 import se.kth.hopsworks.meta.exception.DatabaseException;
+import se.kth.hopsworks.rest.AppException;
 import se.kth.hopsworks.util.Settings;
 import se.kth.hopsworks.user.model.Users;
 
@@ -39,6 +47,7 @@ public class DatasetController {
 
     private static final Logger logger = Logger.getLogger(DatasetController.class.
             getName());
+    
     @EJB
     private InodeFacade inodes;
     @EJB
@@ -54,9 +63,7 @@ public class DatasetController {
     @EJB
     private HdfsUsersController hdfsUsersBean;
     @EJB
-    private DistributedFsService dfsSingleton;
-    @EJB
-    private DistributedFsService distributedFsService;
+    private InodeFacade inodeFacade;
 
 
     /**
@@ -371,8 +378,48 @@ public class DatasetController {
         return success;
     }
 
-    public DatasetStructureJson createDatasetStructure(String dsPath, String description, String name, Project project) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ManifestJson createManifestJson(String dsPath, String description, String name, Project project) throws JsonProcessingException, AppException {
+        
+        
+        ManifestJson manifestJson = new ManifestJson();
+        manifestJson.setDatasetName(name);
+        manifestJson.setDatasetDescription(description);
+        manifestJson.setFileInfos(new LinkedList<FileInfo>());
+        Inode inode = inodeFacade.getInodeAtPath(dsPath);
+        List<Inode> inodekids = inodeFacade.getChildren(inode);
+        List<String> childrenOfDataset = new ArrayList<>(inodekids.size());
+        for (Inode i : inodekids) {
+            if (!i.isDir()) {
+                childrenOfDataset.add(i.getInodePK().getName());
+            }else{
+                throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.ONLY_SINGLE_LEVEL_PUBLIC_DATASETS);
+            }
+        }
+        for(String child : childrenOfDataset){
+            FileInfo fileInfo = new FileInfo();
+            if(childrenOfDataset.contains(child + ".avro")){
+                fileInfo.setFileName(child);
+                fileInfo.setSchema(child + ".avro");
+            }else if(childrenOfDataset.contains(child + ".csv")){
+                fileInfo.setFileName(child);
+                fileInfo.setSchema(child + ".csv");
+            }else{
+                fileInfo.setFileName(child);
+                fileInfo.setSchema("");
+            }
+            manifestJson.getFileInfos().add(fileInfo);
+        }
+        //TODO other schemas
+        manifestJson.setMetaDataJsons(new LinkedList<String>());
+        JSONObject jsonObject = new JSONObject(manifestJson);
+        try (FileWriter file = new FileWriter(dsPath + File.separator + "Manifest.json")) {
+            file.write(jsonObject.toString());
+	}catch(IOException e){
+                    
+        }
+        
+        return manifestJson;
     }
 
     

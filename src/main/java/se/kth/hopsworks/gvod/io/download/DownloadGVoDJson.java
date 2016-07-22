@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package se.kth.hopsworks.gvod.download;
+package se.kth.hopsworks.gvod.io.download;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import se.kth.hopsworks.gvod.resources.HdfsResource;
-import se.kth.hopsworks.gvod.resources.HopsResource;
-import se.kth.hopsworks.gvod.resources.KafkaResource;
-import se.kth.hopsworks.gvod.resources.items.TorrentId;
+import se.kth.hopsworks.gvod.io.resources.HdfsResource;
+import se.kth.hopsworks.gvod.io.resources.HopsResource;
+import se.kth.hopsworks.gvod.io.resources.KafkaResource;
+import se.kth.hopsworks.gvod.io.resources.items.TorrentId;
 
 /**
  *

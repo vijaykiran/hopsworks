@@ -1,5 +1,6 @@
 package se.kth.hopsworks.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.hops.hdfs.HdfsLeDescriptorsFacade;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,8 +58,8 @@ import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.dataset.DatasetRequest;
 import se.kth.hopsworks.dataset.DatasetRequestFacade;
-import se.kth.hopsworks.dataset.DatasetStructureJson;
 import se.kth.hopsworks.filters.AllowedRoles;
+import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.MoveDTO;
@@ -942,7 +943,7 @@ public class DataSetService {
     @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
     public Response makePublic(@PathParam("inodeId") Integer inodeId,
             @Context SecurityContext sc,
-            @Context HttpServletRequest req) throws AppException {
+            @Context HttpServletRequest req) throws AppException, JsonProcessingException {
         JsonResponse json = new JsonResponse();
         if (inodeId == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -978,16 +979,16 @@ public class DataSetService {
 
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator + ds.getName() + File.separator;
 
-        DatasetStructureJson datasetStructure = datasetController.createDatasetStructure(dsPath, ds.getDescription(), ds.getName(), this.project);
+        ManifestJson manifestJson = datasetController.createManifestJson(dsPath, ds.getDescription(), ds.getName(), this.project);
 
-        if (datasetStructure.getChildrenFiles().isEmpty()) {
+        if (manifestJson.getFileInfos().isEmpty()) {
             json.setErrorMsg("There is no reason to share an empty dataset");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
                     json).build();
         }
 
         String result = gvodController.uploadToGVod(project.getId(), settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
-                dsPath, datasetStructure, username, publicDsId);
+                dsPath, manifestJson, username, publicDsId);
 
         if (result == null) {
             json.setErrorMsg("The Dataset could not be shared with gvod");
@@ -999,7 +1000,7 @@ public class DataSetService {
             ds.setEditable(false);
             datasetFacade.merge(ds);
             json.setSuccessMessage("The Dataset is now public.");
-            manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(ds.getName(), datasetStructure, publicDsId, datasetStructure.getChildrenFiles().size(), 0, 1);
+            manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, publicDsId, 0, 1);
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
                     json).build();
         }

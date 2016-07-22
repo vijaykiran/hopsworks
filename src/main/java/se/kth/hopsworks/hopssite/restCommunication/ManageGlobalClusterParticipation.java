@@ -23,7 +23,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import se.kth.hopsworks.dataset.DatasetStructureJson;
+import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 import se.kth.hopsworks.hopssite.io.identity.IdentificationJson;
 import se.kth.hopsworks.hopssite.io.ping.PingedJson;
 import se.kth.hopsworks.hopssite.io.register.RegisteredJson;
@@ -159,13 +159,11 @@ public class ManageGlobalClusterParticipation {
 
     }
 
-    public void notifyHopsSiteAboutNewDataset(String name, DatasetStructureJson datasetStructure, String publicDsId, int size, int leeches, int seeds) {
-        
-        PopularDatasetJson addPopularDatasetJson = new PopularDatasetJson(name, datasetStructure, publicDsId, size,leeches, seeds);
+    public void notifyHopsSiteAboutNewDataset(ManifestJson manifestJson, String publicDsId,int leeches, int seeds) {
         
         WebTarget resource = webTarget.path("populardatasets");
         
-        resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.json(addPopularDatasetJson));
+        resource.request().accept(MediaType.APPLICATION_JSON).post(Entity.json(new PopularDatasetJson(manifestJson, publicDsId,leeches, seeds)));
         
         
     }

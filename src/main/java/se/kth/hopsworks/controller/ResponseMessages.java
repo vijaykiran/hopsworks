@@ -3,6 +3,7 @@ package se.kth.hopsworks.controller;
 public class ResponseMessages {
 
   //response for validation error
+  public final static String ONLY_SINGLE_LEVEL_PUBLIC_DATASETS = "Directories in public datasets not supported yet";
   public final static String NOT_REGISTERD_WITH_HOPS_SITE = "Not registered with hops-site";
   public final static String GVOD_OFFLINE = "Seems GVoD is offline";
   public final static String USER_DOES_NOT_EXIST = "User does not exist.";

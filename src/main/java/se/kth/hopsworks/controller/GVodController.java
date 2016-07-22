@@ -18,13 +18,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
-import se.kth.hopsworks.dataset.DatasetStructureJson;
-import se.kth.hopsworks.gvod.download.DownloadGVoDJson;
-import se.kth.hopsworks.gvod.resources.HdfsResource;
-import se.kth.hopsworks.gvod.resources.HopsResource;
-import se.kth.hopsworks.gvod.resources.KafkaResource;
-import se.kth.hopsworks.gvod.stop.StopGVoDJson;
-import se.kth.hopsworks.gvod.upload.UploadGVoDJson;
+import se.kth.hopsworks.gvod.io.download.DownloadGVoDJson;
+import se.kth.hopsworks.gvod.io.resources.HdfsResource;
+import se.kth.hopsworks.gvod.io.resources.HopsResource;
+import se.kth.hopsworks.gvod.io.resources.KafkaResource;
+import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
+import se.kth.hopsworks.gvod.io.resources.items.TorrentId;
+import se.kth.hopsworks.gvod.io.stop.StopGVoDJson;
+import se.kth.hopsworks.gvod.io.upload.UploadGVoDJson;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -64,9 +65,9 @@ public class GVodController {
     private WebTarget webTarget = null;
     private Client rest_client = null;
 
-    public String uploadToGVod(int projectId, String hdfsConfigXMLPath, String path, DatasetStructureJson datasetStructure, String username, String publicDsId) {
+    public String uploadToGVod(int projectId, String hdfsConfigXMLPath, String path, ManifestJson manifestJson, String username, String publicDsId) {
 
-        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigXMLPath, path, null, username), new HopsResource(projectId), new TorrentId(publicDsId));
+        UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(new HdfsResource(hdfsConfigXMLPath, path, manifestJson, username), new HopsResource(projectId), new TorrentId(publicDsId));
 
         rest_client = ClientBuilder.newClient();
 
@@ -81,7 +82,7 @@ public class GVodController {
         }
     }
 
-    public String downloadHdfs(String hdfsConfigXMLPath, Project project, DatasetStructureJson datasetStructure, Users user, String publicDsId, List<String> partners) throws IOException, AppException {
+    public String downloadHdfs(String hdfsConfigXMLPath, Project project, ManifestJson manifestJson, Users user, String publicDsId, List<String> partners) throws IOException, AppException {
 
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;
@@ -91,7 +92,7 @@ public class GVodController {
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-            datasetController.createDataset(user, project, datasetStructure.getName(), datasetStructure.getDescription(), -1, true, false, dfso, udfso, true, publicDsId);
+            datasetController.createDataset(user, project, manifestJson.getDatasetName(), manifestJson.getDatasetDescription(), -1, true, false, dfso, udfso, true, publicDsId);
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
                     getLocalizedMessage());
@@ -113,10 +114,10 @@ public class GVodController {
         
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator
                 + project.getName();
-        dsPath = dsPath + File.separator + datasetStructure.getName();
+        dsPath = dsPath + File.separator + manifestJson.getDatasetName();
         
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, 
-                dsPath, datasetStructure.getChildrenFiles().get(0), hdfsUsersController.getHdfsUserName(project, user)), null, new HopsResource(project.getId()), new TorrentId(publicDsId), partners);
+                dsPath, manifestJson, hdfsUsersController.getHdfsUserName(project, user)), null, new HopsResource(project.getId()), new TorrentId(publicDsId), partners);
 
         rest_client = ClientBuilder.newClient();
 
@@ -131,7 +132,7 @@ public class GVodController {
         }
     }
 
-    public String downloadKafka(String hdfsConfigXMLPath, Project project, DatasetStructureJson datasetStructure, Users user, String publicDsId, List<String> partners, String sessionId, String topicName, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain) throws IOException, AppException {
+    public String downloadKafka(String hdfsConfigXMLPath, Project project, ManifestJson manifestJson, Users user, String publicDsId, List<String> partners, String sessionId, String topicName, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain) throws IOException, AppException {
 
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;
@@ -141,7 +142,7 @@ public class GVodController {
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-            datasetController.createDataset(user, project, datasetStructure.getName(), datasetStructure.getDescription(), -1, true, false, dfso, udfso, true, publicDsId);
+            datasetController.createDataset(user, project, manifestJson.getDatasetName(), manifestJson.getDatasetDescription(), -1, true, false, dfso, udfso, true, publicDsId);
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
                     getLocalizedMessage());
@@ -163,9 +164,9 @@ public class GVodController {
         
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator
                 + project.getName();
-        dsPath = dsPath + File.separator + datasetStructure.getName();
+        dsPath = dsPath + File.separator + manifestJson.getDatasetName();
 
-        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, dsPath, datasetStructure.getChildrenFiles().get(0), hdfsUsersController.getHdfsUserName(project, user)), new KafkaResource(brokerEndpoint, restEndpoint, domain, sessionId, String.valueOf(project.getId()), topicName, keyStorePath, trustStorePath), new HopsResource(project.getId()), new TorrentId(publicDsId), partners);
+        DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(new HdfsResource(hdfsConfigXMLPath, dsPath, manifestJson, hdfsUsersController.getHdfsUserName(project, user)), new KafkaResource(brokerEndpoint, restEndpoint, domain, sessionId, String.valueOf(project.getId()), topicName, keyStorePath, trustStorePath), new HopsResource(project.getId()), new TorrentId(publicDsId), partners);
 
         rest_client = ClientBuilder.newClient();
 

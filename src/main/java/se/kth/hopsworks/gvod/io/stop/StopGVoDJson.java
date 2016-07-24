@@ -15,23 +15,15 @@ import se.kth.hopsworks.gvod.io.resources.items.TorrentId;
 @XmlRootElement
 public class StopGVoDJson {
     
-      private String fileName;
       private TorrentId torrentId;
+      private String manifestJsonPath;
 
     public StopGVoDJson() {
     }
 
-    public StopGVoDJson(String fileName, TorrentId torrentId) {
-        this.fileName = fileName;
+    public StopGVoDJson(String manifestJsonPath, TorrentId torrentId) {
         this.torrentId = torrentId;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+        this.manifestJsonPath = manifestJsonPath;
     }
 
     public TorrentId getTorrentId() {
@@ -40,6 +32,14 @@ public class StopGVoDJson {
 
     public void setTorrentId(TorrentId torrentId) {
         this.torrentId = torrentId;
+    }
+
+    public String getManifestJsonPath() {
+        return manifestJsonPath;
+    }
+
+    public void setManifestJsonPath(String manifestJsonPath) {
+        this.manifestJsonPath = manifestJsonPath;
     }
       
       

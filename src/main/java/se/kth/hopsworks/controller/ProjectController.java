@@ -228,7 +228,7 @@ public class ProjectController {
         boolean globallyVisible = (ds.equals(Settings.DefaultDataset.RESOURCES)
                 || ds.equals(Settings.DefaultDataset.LOGS));
         datasetController.createDataset(user, project, ds.getName(), ds.
-                getDescription(), -1, false, globallyVisible, dfso, udfso, true, null);
+                getDescription(), -1, false, globallyVisible, dfso, udfso);
       }
     } catch (IOException | EJBException e) {
       throw new ProjectInternalFoldersFailedException(
@@ -245,7 +245,7 @@ public class ProjectController {
 
     try {
       datasetController.createDataset(user, project, "consents",
-              "Biobanking consent forms", -1, false, false, dfso, udfso, true, null);
+              "Biobanking consent forms", -1, false, false, dfso, udfso);
     } catch (IOException | EJBException e) {
       throw new ProjectInternalFoldersFailedException(
               "Could not create project consents folder ", e);
@@ -893,7 +893,7 @@ public class ProjectController {
     Users user = userBean.getUserByEmail(username);
     try {
       datasetController.createDataset(user, project, "TestJob",
-              "jar file to calculate pi", -1, false, true, dfso, udfso, false, null);
+              "jar file to calculate pi", -1, false, true, dfso, udfso);
     } catch (IOException ex) {
       Logger.getLogger(ProjectController.class.getName()).
               log(Level.SEVERE, null, ex);

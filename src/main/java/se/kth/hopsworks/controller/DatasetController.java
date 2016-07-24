@@ -27,6 +27,7 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.gvod.io.resources.items.FileInfo;
 import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
+import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.meta.db.InodeBasicMetadataFacade;
 import se.kth.hopsworks.meta.db.TemplateFacade;
@@ -64,7 +65,8 @@ public class DatasetController {
     private HdfsUsersController hdfsUsersBean;
     @EJB
     private InodeFacade inodeFacade;
-
+    @EJB
+    private DistributedFsService dfs;
 
     /**
      * Create a new DataSet. This is, a folder right under the project home
@@ -88,16 +90,17 @@ public class DatasetController {
      * purpose or not
      * @param publicDsId If this dataset is created for a download purpose then
      * it needs a publicId
+     * @return 
      * @throws NullPointerException If any of the given parameters is null.
      * @throws IllegalArgumentException If the given DataSetDTO contains invalid
      * folder names, or the folder already exists.
      * @throws IOException if the creation of the dataset failed.
      * @see FolderNameValidator.java
      */
-    public void createDataset(Users user, Project project, String dataSetName,
+    public Dataset createDataset(Users user, Project project, String dataSetName,
             String datasetDescription, int templateId, boolean searchable,
             boolean globallyVisible, DistributedFileSystemOps dfso,
-            DistributedFileSystemOps udfso, boolean download, String publicDsId)
+            DistributedFileSystemOps udfso)
             throws IOException {
         //Parameter checking.
         if (user == null) {
@@ -152,15 +155,11 @@ public class DatasetController {
                 if (datasetDescription != null) {
                     newDS.setDescription(datasetDescription);
                 }
-                if (download) {
-                    newDS.setPublicDs(true);
-                    newDS.setPublicDsId(publicDsId);
-                    newDS.setEditable(false);
-                }
                 datasetFacade.persistDataset(newDS);
                 activityFacade.persistActivity(ActivityFacade.NEW_DATA + dataSetName, project, user);
                 // creates a dataset and adds user as owner.
                 hdfsUsersBean.addDatasetUsersGroups(user, project, newDS, dfso);
+                return newDS;
             } catch (Exception e) {
                 IOException failed = new IOException("Failed to create dataset at path "
                         + dsPath + ".", e);
@@ -296,11 +295,12 @@ public class DatasetController {
      * @param path
      * @param user
      * @param project
+     * @param udfso
      * @return
      * @throws java.io.IOException
      */
     public boolean deleteDataset(String path, Users user, Project project,
-            DistributedFileSystemOps udfso) throws
+            DistributedFileSystemOps udfso) throws 
             IOException {
         boolean success;
         Path location = new Path(path);
@@ -378,7 +378,7 @@ public class DatasetController {
         return success;
     }
 
-    public ManifestJson createManifestJson(String dsPath, String description, String name, Project project) throws JsonProcessingException, AppException {
+    public ManifestJson createAndPersistManifestJson(String dsPath, String description, String name, Project project) throws JsonProcessingException, AppException {
         
         
         ManifestJson manifestJson = new ManifestJson();
@@ -413,8 +413,12 @@ public class DatasetController {
         //TODO other schemas
         manifestJson.setMetaDataJsons(new LinkedList<String>());
         JSONObject jsonObject = new JSONObject(manifestJson);
-        try (FileWriter file = new FileWriter(dsPath + File.separator + "Manifest.json")) {
+        try (FileWriter file = new FileWriter("/tmp/out/"+ project.getName() +"/Manifest.json")) {
             file.write(jsonObject.toString());
+            file.close();
+            DistributedFileSystemOps dfso = dfs.getDfsOps();
+            dfso.copyToHDFSFromLocal(true,"/tmp/out/"+ project.getName() +"/Manifest.json", dsPath + "Manifest.json");
+            
 	}catch(IOException e){
                     
         }

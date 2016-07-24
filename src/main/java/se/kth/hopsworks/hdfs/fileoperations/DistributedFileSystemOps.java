@@ -91,6 +91,11 @@ public class DistributedFileSystemOps {
     Path path = new Path(file);
     return cat(path);
   }
+  
+  public void copyFromHDFSToLocal(String src, String dest) throws IOException{
+      dfs.copyToLocalFile(new Path(src), new Path(dest));
+  }
+  
 
   /**
    * Create a new folder on the given path only if the parent folders exist

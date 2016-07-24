@@ -25,20 +25,29 @@ public class DownloadGVoDJson {
     private HopsResource hopsResource;
     private TorrentId torrentId;
     private List<String> partners;
+    private String datasetPath;
 
-    public DownloadGVoDJson(HdfsResource hdfsResource, KafkaResource kafkaResource,HopsResource hopsResource, TorrentId torrentId, List<String> partners) {
+    public DownloadGVoDJson(HdfsResource hdfsResource, KafkaResource kafkaResource,HopsResource hopsResource, TorrentId torrentId, List<String> partners, String datasetPath) {
         this.hdfsResource = hdfsResource;
         this.kafkaResource = kafkaResource;
         this.hopsResource = hopsResource;
         this.torrentId = torrentId;
         this.partners = partners;
+        this.datasetPath = datasetPath;
     }
 
     public DownloadGVoDJson() {
     }
-    
-    
 
+    public String getDatasetPath() {
+        return datasetPath;
+    }
+
+    public void setDatasetPath(String datasetPath) {
+        this.datasetPath = datasetPath;
+    }
+    
+    
     public HdfsResource getHdfsResource() {
         return hdfsResource;
     }

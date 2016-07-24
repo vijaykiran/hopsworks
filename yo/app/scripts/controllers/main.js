@@ -298,53 +298,36 @@ angular.module('hopsWorksApp')
                 });
 
 
-                self.downloadPublicDataset = function (datasetId, datasetStructure, datasetName, partners) {
+                self.downloadPublicDataset = function (datasetId, datasetName, partners) {
 
                     ModalService.selectProject('md', true, "/[^]*/",
                             "Select a Project as download destination.").then(
                             function (success) {
                                 var destProj = success.projectId;
-                                ModalService.selectDownloadType('md').then(function (success) {
-                                    var kafkaHdfsSelection = success;
-                                    if (kafkaHdfsSelection === 0) {
-
-                                        var json = {"projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};
-
-                                        GVoDService.downloadHdfs(json).then(function (success) {
-
-                                            growl.success(success, {title: 'Success Hdfs Download', ttl: 1000});
-
-                                        },
-                                                function (error) {
-
-                                                    growl.error(error, {title: 'Error', ttl: 1000});
-
-                                                });
-
-                                    } else if (kafkaHdfsSelection === 1) {
+                                var manifestJson;
+                                
+                                GVoDService.getManifestJson(datasetId, destProj).then(function(success){
+                                    manifestJson = success;
+                                    ModalService.selectDonwloads(datasetId, datasetName, partners, manifestJson, destProj).then(function(downloadJson){
                                         
-                                        ModalService.TopicAndSchema('md',destProj).then(function(success){
-                                            
-                                            var topic = success;
-                                            var json = {"topicName": topic, "projectId": destProj, "datasetName": datasetName, "datasetId": datasetId, "datasetStructure": datasetStructure, "partners": partners};
-                                            GVoDService.downloadKafka(json).then(function(success){
-                                                growl.success(success, {title: 'Success Kafka Download', ttl: 1000});
-                                            },
-                                            function(error){
-                                                growl.error(error, {title: 'Error', ttl: 1000});
-                                            });
+                                        GVoDService.Download(downloadJson).then(function(done){
+                                            growl.success(done, {title: 'Success', ttl: 1000});
                                         },
                                         function(error){
-                                            
+                                            growl.error(error, {title: 'Error', ttl: 1000});
                                         });
                                         
-                                    } else {
-                                        growl.error("You did not choose a correct downloadType", {title: 'Error', ttl: 1000});
-                                    }
+                                    },function(error){
+                                        growl.error(error, {title: 'Error', ttl: 1000});
+                                    });
+                                    
+                                },
+                                function(error){
+                                    growl.error(error, {title: 'Error', ttl: 1000});
                                 });
 
                             }, function (error) {
-                        growl.error("Problem with project selection", {title: 'Error', ttl: 1000});
+                        growl.error(error, {title: 'Error', ttl: 1000});
                     });
 
                 };

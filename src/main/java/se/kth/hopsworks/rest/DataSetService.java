@@ -399,7 +399,7 @@ public class DataSetService {
             }
             datasetController.createDataset(user, project, dataSet.getName(), dataSet.
                     getDescription(), dataSet.getTemplate(), dataSet.isSearchable(),
-                    false, dfso, udfso, false, null);
+                    false, dfso, udfso);
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
                     getLocalizedMessage());
@@ -944,6 +944,7 @@ public class DataSetService {
     public Response makePublic(@PathParam("inodeId") Integer inodeId,
             @Context SecurityContext sc,
             @Context HttpServletRequest req) throws AppException, JsonProcessingException {
+        
         JsonResponse json = new JsonResponse();
         if (inodeId == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -954,13 +955,17 @@ public class DataSetService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);
         }
-
-        Dataset ds = datasetFacade.findByProjectAndInode(this.project, inode);
-        if (ds == null) {
+        
+        if(inodes.getChildren(inode).isEmpty()){
+            json.setErrorMsg("There is no reason to share an empty dataset");
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
+                    json).build();
+        }
+        if (dataset == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);
         }
-        if (ds.isPublicDs()) {
+        if (dataset.isPublicDs()) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_ALREADY_PUBLIC);
         }
@@ -972,37 +977,37 @@ public class DataSetService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.GVOD_OFFLINE);
         }
+        
+        String datasetPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + dataset.getName() + File.separator;
+        
+        ManifestJson manifestJson = datasetController.createAndPersistManifestJson(
+                datasetPath, 
+                dataset.getDescription(), 
+                dataset.getName(), 
+                project);
+        
+        String manifestJsonPath = datasetPath + "Manifest.json";
+        
+        String response = gvodController.uploadToGVod(
+                project,
+                dataset,
+                hdfsUsersController.getHdfsUserName(project, userFacade.findByEmail(sc.getUserPrincipal().getName())),
+                datasetPath,
+                manifestJsonPath);
 
-        String publicDsId = settings.getCLUSTER_ID() + "_" + this.project.getName() + "_" + ds.getName();
-
-        String username = hdfsUsersController.getHdfsUserName(project, userFacade.findByEmail(sc.getUserPrincipal().getName()));
-
-        String dsPath = File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator + ds.getName() + File.separator;
-
-        ManifestJson manifestJson = datasetController.createManifestJson(dsPath, ds.getDescription(), ds.getName(), this.project);
-
-        if (manifestJson.getFileInfos().isEmpty()) {
-            json.setErrorMsg("There is no reason to share an empty dataset");
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
-                    json).build();
-        }
-
-        String result = gvodController.uploadToGVod(project.getId(), settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
-                dsPath, manifestJson, username, publicDsId);
-
-        if (result == null) {
+        if (response == null) {
             json.setErrorMsg("The Dataset could not be shared with gvod");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
                     json).build();
         } else {
-            ds.setPublicDs(true);
-            ds.setPublicDsId(publicDsId);
-            ds.setEditable(false);
-            datasetFacade.merge(ds);
+            dataset.setPublicDs(true);
+            dataset.setPublicDsId(settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataset.getName());
+            dataset.setEditable(false);
+            datasetFacade.merge(dataset);
             json.setSuccessMessage("The Dataset is now public.");
-            manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, publicDsId, 0, 1);
+            manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataset.getName(), 0, 1);
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
-                    json).build();
+                    response).build();
         }
     }
 
@@ -1023,27 +1028,27 @@ public class DataSetService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);
         }
-
-        Dataset ds = datasetFacade.findByProjectAndInode(this.project, inode);
-        if (ds == null) {
+        if (dataset == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);
         }
-        if (ds.isPublicDs() == false) {
+        if (dataset.isPublicDs() == false) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_PUBLIC);
         }
 
-        String result = gvodController.removeUpload(ds.getName(),ds.getPublicDsId());
+        String result = gvodController.removeUpload(
+                File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator + dataset.getName() + File.separator,
+                dataset.getPublicDsId());
 
         if (result == null) {
             json.setErrorMsg("GVoD could not remove upload at this time");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
                     json).build();
         } else {
-            ds.setPublicDs(false);
-            ds.setEditable(true);
-            datasetFacade.merge(ds);
+            dataset.setPublicDs(false);
+            dataset.setEditable(true);
+            datasetFacade.merge(dataset);
             json.setSuccessMessage("The Dataset is no longer public.");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
                     json).build();

@@ -11,17 +11,17 @@ import se.kth.hopsworks.gvod.io.resources.HdfsResource;
  *
  * @author jsvhqr
  */
-public class ManifestFromGVoDJson {
+public class DownloadRequest {
     
     
     private HdfsResource hdfsResource;
     private String publicDatasetId;
     private String datasetPath;
 
-    public ManifestFromGVoDJson() {
+    public DownloadRequest() {
     }
 
-    public ManifestFromGVoDJson(HdfsResource hdfsResource, String publicDatasetId, String datasetPath) {
+    public DownloadRequest(HdfsResource hdfsResource, String publicDatasetId, String datasetPath) {
         this.hdfsResource = hdfsResource;
         this.publicDatasetId = publicDatasetId;
         this.datasetPath = datasetPath;

@@ -23,7 +23,7 @@ import org.json.JSONObject;
 import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.gvod.io.download.DownloadGVoDJson;
-import se.kth.hopsworks.gvod.io.requestmanifest.ManifestFromGVoDJson;
+import se.kth.hopsworks.gvod.io.requestmanifest.DownloadRequest;
 import se.kth.hopsworks.gvod.io.resources.HdfsResource;
 import se.kth.hopsworks.gvod.io.resources.HopsResource;
 import se.kth.hopsworks.gvod.io.resources.KafkaResource;
@@ -74,13 +74,12 @@ public class GVodController {
     private WebTarget webTarget = null;
     private Client rest_client = null;
 
-    public String uploadToGVod(Project project, Dataset dataset, String username, String datasetPath, String manifestJsonPath) throws JsonProcessingException, AppException {
+    public String uploadToGVod(Project project, Dataset dataset, String username, String datasetPath) throws JsonProcessingException, AppException {
 
         UploadGVoDJson uploadGVoDJson = new UploadGVoDJson(
                 new HdfsResource(File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + dataset.getName() + File.separator, username), 
                 new HopsResource(project.getId()), 
-                new TorrentId(settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataset.getName()), 
-                manifestJsonPath,
+                new TorrentId(settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataset.getName()),
                 datasetPath);
 
         rest_client = ClientBuilder.newClient();
@@ -96,7 +95,7 @@ public class GVodController {
         }
     }
 
-    public ManifestJson Download(String publicDsId, String hdfsConfigXMLPath, Users user, Project project, String datasetName) throws IOException, ParseException, AppException {
+    public ManifestJson downloadRequest(String publicDsId, String hdfsConfigXMLPath, Users user, Project project, String datasetName) throws IOException, ParseException, AppException {
         
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;
@@ -130,7 +129,7 @@ public class GVodController {
             }
         }
         
-        ManifestFromGVoDJson manifestFromGVoDJson = new ManifestFromGVoDJson(
+        DownloadRequest downloadRequest = new DownloadRequest(
                 new HdfsResource(hdfsConfigXMLPath, hdfsUsersController.getHdfsUserName(project, user)),
                 publicDsId,
                 Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator);
@@ -139,7 +138,7 @@ public class GVodController {
 
         webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/manifest/xml");
 
-        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(manifestFromGVoDJson, MediaType.APPLICATION_JSON), Response.class);
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(downloadRequest, MediaType.APPLICATION_JSON), Response.class);
 
         String pathToManifest = null;
         
@@ -153,8 +152,8 @@ public class GVodController {
             
             dfso = dfs.getDfsOps();
             JSONParser parser = new JSONParser();
-            dfso.copyFromHDFSToLocal(pathToManifest, "/tmp/in/" + project.getName() + "/Manifest.json");
-            Object obj = parser.parse(new FileReader("/tmp/in/" + project.getName() + "/Manifest.json"));
+            dfso.copyFromHDFSToLocal(pathToManifest, "/tmp/in/" + project.getName() + "/manifest.json");
+            Object obj = parser.parse(new FileReader("/tmp/in/" + project.getName() + "/manifest.json"));
             JSONObject jsonObject = (JSONObject)obj;
             String jsonString = new Gson().toJson(jsonObject);
             ManifestJson manifestJson = new Gson().fromJson(jsonString, ManifestJson.class);
@@ -168,9 +167,9 @@ public class GVodController {
         
     }
 
-    public String downloadHdfs(String hdfsConfigXMLPath, Project project, ManifestJson manifestJson, Users user, String publicDsId, List<String> partners) throws IOException, AppException {
+    public String downloadHdfs(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String datasetName) throws IOException, AppException {
 
-        String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + manifestJson.getDatasetName() + File.separator;
+        String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator;
 
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(
                 new HdfsResource(hdfsConfigXMLPath,
@@ -194,9 +193,9 @@ public class GVodController {
         }
     }
 
-    public String downloadKafka(String hdfsConfigXMLPath, Project project, ManifestJson manifestJson, Users user, String publicDsId, List<String> partners, String sessionId, String topicName, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain) throws IOException, AppException {
+    public String downloadKafka(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String sessionId, String topicName, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain, String datasetName) throws IOException, AppException {
 
-        String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + manifestJson.getDatasetName() + File.separator;
+        String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator;
 
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(
                 new HdfsResource(hdfsConfigXMLPath,hdfsUsersController.getHdfsUserName(project, user)), 
@@ -221,7 +220,7 @@ public class GVodController {
 
     public String removeUpload(String dsPath, String publicDsId) {
 
-        StopGVoDJson stopGvodJson = new StopGVoDJson(dsPath + "Manifest.json",new TorrentId(publicDsId));
+        StopGVoDJson stopGvodJson = new StopGVoDJson(dsPath, new TorrentId(publicDsId));
 
         rest_client = ClientBuilder.newClient();
 

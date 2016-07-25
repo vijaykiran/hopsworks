@@ -413,11 +413,11 @@ public class DatasetController {
         //TODO other schemas
         manifestJson.setMetaDataJsons(new LinkedList<String>());
         JSONObject jsonObject = new JSONObject(manifestJson);
-        try (FileWriter file = new FileWriter("/tmp/out/"+ project.getName() +"/Manifest.json")) {
+        try (FileWriter file = new FileWriter("/tmp/out/"+ project.getName() +"/manifest.json")) {
             file.write(jsonObject.toString());
             file.close();
             DistributedFileSystemOps dfso = dfs.getDfsOps();
-            dfso.copyToHDFSFromLocal(true,"/tmp/out/"+ project.getName() +"/Manifest.json", dsPath + "Manifest.json");
+            dfso.copyToHDFSFromLocal(true,"/tmp/out/"+ project.getName() +"/manifest.json", dsPath + "manifest.json");
             
 	}catch(IOException e){
                     

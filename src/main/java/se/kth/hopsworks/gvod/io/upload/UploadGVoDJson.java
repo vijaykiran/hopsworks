@@ -21,14 +21,12 @@ public class UploadGVoDJson {
     private HdfsResource hdfsResource;
     private HopsResource hopsResource;
     private TorrentId torrentId;
-    private String manifestJsonPath;
     private String datasetPath;
 
-    public UploadGVoDJson(HdfsResource hdfsResource,HopsResource hopsResource , TorrentId torrentId, String manifestJsonPath, String datasetPath) {
+    public UploadGVoDJson(HdfsResource hdfsResource,HopsResource hopsResource , TorrentId torrentId, String datasetPath) {
         this.hdfsResource = hdfsResource;
         this.hopsResource = hopsResource;
         this.torrentId = torrentId;
-        this.manifestJsonPath = manifestJsonPath;
         this.datasetPath = datasetPath;
     }  
 
@@ -57,14 +55,6 @@ public class UploadGVoDJson {
 
     public void setTorrentId(TorrentId torrentId) {
         this.torrentId = torrentId;
-    }
-
-    public String getManifestJsonPath() {
-        return manifestJsonPath;
-    }
-
-    public void setManifestJsonPath(String manifestJsonPath) {
-        this.manifestJsonPath = manifestJsonPath;
     }
 
     public String getDatasetPath() {

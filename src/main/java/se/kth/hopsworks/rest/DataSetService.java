@@ -978,22 +978,17 @@ public class DataSetService {
                     ResponseMessages.GVOD_OFFLINE);
         }
         
-        String datasetPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + dataset.getName() + File.separator;
-        
         ManifestJson manifestJson = datasetController.createAndPersistManifestJson(
-                datasetPath, 
+                path + dataset.getName() + File.separator, 
                 dataset.getDescription(), 
                 dataset.getName(), 
                 project);
-        
-        String manifestJsonPath = datasetPath + "Manifest.json";
         
         String response = gvodController.uploadToGVod(
                 project,
                 dataset,
                 hdfsUsersController.getHdfsUserName(project, userFacade.findByEmail(sc.getUserPrincipal().getName())),
-                datasetPath,
-                manifestJsonPath);
+                path + dataset.getName() + File.separator);
 
         if (response == null) {
             json.setErrorMsg("The Dataset could not be shared with gvod");
@@ -1036,9 +1031,13 @@ public class DataSetService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_PUBLIC);
         }
+        if (settings.getGVOD_UDP_ENDPOINT() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.GVOD_OFFLINE);
+        }
 
         String result = gvodController.removeUpload(
-                File.separator + Settings.DIR_ROOT + File.separator + this.project.getName() + File.separator + dataset.getName() + File.separator,
+                path + dataset.getName() + File.separator,
                 dataset.getPublicDsId());
 
         if (result == null) {

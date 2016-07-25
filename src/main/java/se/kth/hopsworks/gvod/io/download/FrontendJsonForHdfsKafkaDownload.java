@@ -8,7 +8,6 @@ package se.kth.hopsworks.gvod.io.download;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
 
 /**
  *
@@ -20,13 +19,13 @@ public class FrontendJsonForHdfsKafkaDownload {
     
     private int projectId;
     
-    private ManifestJson manifestJson;
-    
     private String datasetId;
     
     private List<String> partners;
     
     private String topicName;
+    
+    private String datasetName;
 
     public FrontendJsonForHdfsKafkaDownload() {
     }
@@ -48,12 +47,12 @@ public class FrontendJsonForHdfsKafkaDownload {
         return topicName;
     }
 
-    public ManifestJson getManifestJson() {
-        return manifestJson;
+    public String getDatasetName() {
+        return datasetName;
     }
 
-    public void setManifestJson(ManifestJson manifestJson) {
-        this.manifestJson = manifestJson;
+    public void setDatasetName(String datasetName) {
+        this.datasetName = datasetName;
     }
      
     

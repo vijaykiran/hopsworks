@@ -16,14 +16,14 @@ import se.kth.hopsworks.gvod.io.resources.items.TorrentId;
 public class StopGVoDJson {
     
       private TorrentId torrentId;
-      private String manifestJsonPath;
+      private String datasetPath;
 
     public StopGVoDJson() {
     }
 
-    public StopGVoDJson(String manifestJsonPath, TorrentId torrentId) {
+    public StopGVoDJson(String datasetPath, TorrentId torrentId) {
         this.torrentId = torrentId;
-        this.manifestJsonPath = manifestJsonPath;
+        this.datasetPath = datasetPath;
     }
 
     public TorrentId getTorrentId() {
@@ -34,12 +34,12 @@ public class StopGVoDJson {
         this.torrentId = torrentId;
     }
 
-    public String getManifestJsonPath() {
-        return manifestJsonPath;
+    public String getDatasetPath() {
+        return datasetPath;
     }
 
-    public void setManifestJsonPath(String manifestJsonPath) {
-        this.manifestJsonPath = manifestJsonPath;
+    public void setDatasetPath(String datasetPath) {
+        this.datasetPath = datasetPath;
     }
       
       

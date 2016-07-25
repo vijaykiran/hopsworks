@@ -23,6 +23,11 @@ angular.module('hopsWorksApp')
                 getContents: function (relativePath) {
                   return $http.get('/api/project/' + id + '/dataset/' + relativePath);
                 },
+                
+                checkIfDatasetExists: function (name) {
+                  return $http.get('/api/project/' + id + '/dataset/' + name);
+                },
+                
                 /**
                  * Checks the existence of a file. Should be caled before fileDownload.
                  * @param {type} fileName is a path relative to the current ds to the file

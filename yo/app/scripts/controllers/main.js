@@ -298,33 +298,18 @@ angular.module('hopsWorksApp')
                 });
 
 
-                self.downloadPublicDataset = function (datasetId, datasetName, partners) {
+                self.downloadPublicDataset = function (datasetId, defaultDatasetName, partners) {
 
                     ModalService.selectProject('md', true, "/[^]*/",
                             "Select a Project as download destination.").then(
                             function (success) {
                                 var destProj = success.projectId;
-                                var manifestJson;
-                                
-                                GVoDService.getManifestJson(datasetId, destProj).then(function(success){
-                                    manifestJson = success;
-                                    ModalService.selectDonwloads(datasetId, datasetName, partners, manifestJson, destProj).then(function(downloadJson){
-                                        
-                                        GVoDService.Download(downloadJson).then(function(done){
-                                            growl.success(done, {title: 'Success', ttl: 1000});
-                                        },
-                                        function(error){
-                                            growl.error(error, {title: 'Error', ttl: 1000});
-                                        });
-                                        
-                                    },function(error){
-                                        growl.error(error, {title: 'Error', ttl: 1000});
-                                    });
+                                ModalService.setupDownload('md', destProj, datasetId, defaultDatasetName, partners).then(function(success){
                                     
-                                },
-                                function(error){
-                                    growl.error(error, {title: 'Error', ttl: 1000});
+                                    
+                                    
                                 });
+                                
 
                             }, function (error) {
                         growl.error(error, {title: 'Error', ttl: 1000});

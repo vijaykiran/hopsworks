@@ -910,47 +910,35 @@ angular.module('hopsWorksApp')
               },
               
               
-              selectDownloadType: function(size){
-                  var modalInstance = $modal.open({
-                  templateUrl: 'views/selectDownloadType.html',
-                  controller: 'SelectDownloadTypeCtrl as selectDownloadTypeCtrl',
+              setupDownload: function (size, projectId, datasetId, defaultDatasetName, partners) {
+                var modalInstance = $modal.open({
+                  templateUrl: 'views/setupDownload.html',
+                  controller: 'SetupDownloadCtrl as setupDownloadCtrl',
                   size: size,
                   resolve: {
-                    auth: ['$q', '$location', 'AuthService',
-                      function ($q, $location, AuthService) {
-                        return AuthService.session().then(
-                                function (success) {
-                                },
-                                function (err) {
-                                  $location.path('/login');
-                                  $location.replace();
-                                  return $q.reject(err);
-                                });
-                      }]
-                  }
-                });
-                return modalInstance.result;
-              },
-              
-                TopicAndSchema: function(size, projectId){
-                  var modalInstance = $modal.open({
-                  templateUrl: 'views/topicAndSchema.html',
-                  controller: 'TopicAndSchemaCtrl as topicAndSchema',
-                  size: size,
-                  resolve: {
+                    
                     projectId : function(){
-                      return projectId;
-                    },  
+                        return projectId;
+                    },
+                    datasetId : function(){
+                        return datasetId;
+                    },
+                    defaultDatasetName : function(){
+                        return defaultDatasetName;
+                    },
+                    partners : function(){
+                        return partners;
+                    },
                     auth: ['$q', '$location', 'AuthService',
                       function ($q, $location, AuthService) {
                         return AuthService.session().then(
-                                function (success) {
-                                },
-                                function (err) {
-                                  $location.path('/login');
-                                  $location.replace();
-                                  return $q.reject(err);
-                                });
+                            function (success) {
+                            },
+                            function (err) {
+                              $location.path('/login');
+                              $location.replace();
+                              return $q.reject(err);
+                            });
                       }]
                   }
                 });

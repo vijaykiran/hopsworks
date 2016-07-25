@@ -1054,5 +1054,41 @@ public class DataSetService {
         }
 
     }
+    
+    
+    @GET
+    @Path("checkifdatasetexists/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
+    public Response datasetExists(@PathParam("name") String name,
+            @Context SecurityContext sc,
+            @Context HttpServletRequest req) throws AppException {
+        
+        Response.ResponseBuilder response = null;
+        Users user = userBean.getUserByEmail(sc.getUserPrincipal().getName());
+        String username = hdfsUsersBean.getHdfsUserName(project, user);
+        
+        DistributedFileSystemOps udfso = null;
+        try {
+            udfso = dfs.getDfsOps(username);
+            boolean exists = this.fileOps.exists(path + name);
+            
+            if (!exists) {
+                response =  Response.status(Response.Status.NOT_FOUND);
+            }else{
+                response = Response.status(Response.Status.OK);
+            }
+        } catch (IOException ex) {
+            
+        } finally {
+            if(udfso != null)
+                udfso.close();
+        }
+        if(response != null){
+            return response.build();
+        }else{
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
 
 }

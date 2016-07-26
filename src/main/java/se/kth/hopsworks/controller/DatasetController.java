@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -378,12 +381,13 @@ public class DatasetController {
         return success;
     }
 
-    public ManifestJson createAndPersistManifestJson(String dsPath, String description, String name, Project project) throws JsonProcessingException, AppException {
+    public ManifestJson createAndPersistManifestJson(String dsPath, String description, String name, String email, Project project) throws JsonProcessingException, AppException {
         
         
         ManifestJson manifestJson = new ManifestJson();
         manifestJson.setDatasetName(name);
         manifestJson.setDatasetDescription(description);
+        manifestJson.setKafkaSupport(false);
         manifestJson.setFileInfos(new LinkedList<FileInfo>());
         Inode inode = inodeFacade.getInodeAtPath(dsPath);
         List<Inode> inodekids = inodeFacade.getChildren(inode);
@@ -410,6 +414,18 @@ public class DatasetController {
             }
             manifestJson.getFileInfos().add(fileInfo);
         }
+        for(FileInfo f : manifestJson.getFileInfos()){
+            if(f.getSchema() != null){
+                manifestJson.setKafkaSupport(true);
+                break;
+            }
+        }
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        manifestJson.setCreatorDate(dateFormat.format(date));
+        manifestJson.setCreatorEmail(email);
+        
         //TODO other schemas
         manifestJson.setMetaDataJsons(new LinkedList<String>());
         JSONObject jsonObject = new JSONObject(manifestJson);

@@ -14,7 +14,7 @@ angular.module('hopsWorksApp')
             
             self.manifestAvailable = false;
             self.manifestKafka = false;
-            
+            self.manifest;
             
             self.isNameOk = function(){
               
@@ -37,5 +37,21 @@ angular.module('hopsWorksApp')
             };
             
             self.datasetNameOk = self.isNameOk();
+            
+            
+            self.DownloadRequest = function(){
+              
+                var json = {"projectId": self.projectId, "datasetId": self.datasetId, "datasetName": self.datasetName};
+                GVoDService.DownloadRequest(json).then(function(success){
+                    self.manifest = success;
+                    self.manifestAvailable = true;
+                }, 
+                function(error){
+                    
+                });
+                    
+                
+                
+            };
             
         }]);

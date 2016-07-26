@@ -981,7 +981,8 @@ public class DataSetService {
         ManifestJson manifestJson = datasetController.createAndPersistManifestJson(
                 path + dataset.getName() + File.separator, 
                 dataset.getDescription(), 
-                dataset.getName(), 
+                dataset.getName(),
+                sc.getUserPrincipal().getName(), 
                 project);
         
         String response = gvodController.uploadToGVod(

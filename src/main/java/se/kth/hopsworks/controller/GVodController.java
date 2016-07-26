@@ -41,6 +41,7 @@ import se.kth.hopsworks.util.Settings;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import se.kth.hopsworks.dataset.Dataset;
+import java.util.Map;
 
 /**
  *
@@ -193,13 +194,13 @@ public class GVodController {
         }
     }
 
-    public String downloadKafka(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String sessionId, String topicName, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain, String datasetName) throws IOException, AppException {
+    public String downloadKafka(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String sessionId, Map topics, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain, String datasetName) throws IOException, AppException {
 
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator;
 
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(
                 new HdfsResource(hdfsConfigXMLPath,hdfsUsersController.getHdfsUserName(project, user)), 
-                new KafkaResource(brokerEndpoint, restEndpoint, domain, sessionId, String.valueOf(project.getId()), topicName, keyStorePath, trustStorePath), 
+                new KafkaResource(brokerEndpoint, restEndpoint, domain, sessionId, String.valueOf(project.getId()), topics, keyStorePath, trustStorePath), 
                 new HopsResource(project.getId()), 
                 new TorrentId(publicDsId), 
                 partners,

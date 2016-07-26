@@ -5,6 +5,7 @@
  */
 package se.kth.hopsworks.gvod.io.resources;
 
+import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -14,23 +15,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class KafkaResource {
     
-    private final String brokerEndpoint;
-    private final String restEndpoint;
-    private final String domain;
-    private final String sessionId;
-    private final String projectId;
-    private final String topicName;
-    private final String keyStore;
-    private final String trustStore;
+    private String brokerEndpoint;
+    private String restEndpoint;
+    private String domain;
+    private String sessionId;
+    private String projectId;
+    private Map topics;
+    private String keyStore;
+    private String trustStore;
 
     public KafkaResource(String brokerEndpoint, String restEndpoint, String domain, String sessionId,
-            String projectId, String topicName, String keyStore, String trustStore) {
+            String projectId, Map topics, String keyStore, String trustStore) {
         this.brokerEndpoint = brokerEndpoint;
         this.restEndpoint = restEndpoint;
         this.domain = domain;
         this.sessionId = sessionId;
         this.projectId = projectId;
-        this.topicName = topicName;
+        this.topics = topics;
         this.keyStore = keyStore;
         this.trustStore = trustStore;
     }
@@ -55,16 +56,48 @@ public class KafkaResource {
         return projectId;
     }
 
-    public String getTopicName() {
-        return topicName;
-    }
-
     public String getKeyStore() {
         return keyStore;
     }
 
     public String getTrustStore() {
         return trustStore;
+    }
+
+    public Map getTopics() {
+        return topics;
+    }
+
+    public void setBrokerEndpoint(String brokerEndpoint) {
+        this.brokerEndpoint = brokerEndpoint;
+    }
+
+    public void setRestEndpoint(String restEndpoint) {
+        this.restEndpoint = restEndpoint;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setTopics(Map topics) {
+        this.topics = topics;
+    }
+
+    public void setKeyStore(String keyStore) {
+        this.keyStore = keyStore;
+    }
+
+    public void setTrustStore(String trustStore) {
+        this.trustStore = trustStore;
     }
     
     

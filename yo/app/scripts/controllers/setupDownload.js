@@ -3,29 +3,39 @@ angular.module('hopsWorksApp')
         function ($modalInstance, DataSetService, KafkaService, GVoDService, growl, defaultDatasetName, projectId, datasetId, partners) {
 
             var self = this;
-            self.defaultDatasetName = defaultDatasetName;
             self.projectId = projectId;
             self.datasetId = datasetId;
             self.partners = partners;
             
-            self.datasetName = self.defaultDatasetName;
-            self.datasetNameOk = true;
+            self.datasetName = defaultDatasetName;
+            
+            var dataSetService = DataSetService(self.projectId);
+            
+            
+            self.manifestAvailable = false;
+            self.manifestKafka = false;
             
             
             self.isNameOk = function(){
               
-                DataSetService.checkFileExist(self.datasetName).then(function(success){
-                   
-                    if(success.status === 200){
-                        self.datasetNameOk = false;
-                    }else{
-                        self.datasetNameOk = true;
+                dataSetService.getAllDatasets().then(function(success){
+                 
+                    var data = success.data;
+                    for(var i = 0; i<data.length; i++){
+                        if(data[i].name === self.datasetName){
+                            self.datasetNameOk = false;
+                            return;
+                        }
                     }
                     
+                    self.datasetNameOk = true;
+                 
                 },function(error){
                     
                 });
                 
             };
+            
+            self.datasetNameOk = self.isNameOk();
             
         }]);

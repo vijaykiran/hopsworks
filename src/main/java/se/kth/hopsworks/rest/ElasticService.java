@@ -213,6 +213,7 @@ public class ElasticService {
                                 } else {
                                     ehit.setLocalDataset(false);
                                 }
+                                ehit.appendEndpoint(ehit.getOriginalGvodEndpoint());
                                 results.put(ehit.getPublicId(), ehit);
                             } else {
                                 results.get(ehit.getPublicId()).appendEndpoint(ehit.getOriginalGvodEndpoint());

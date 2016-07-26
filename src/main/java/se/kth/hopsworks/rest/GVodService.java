@@ -150,7 +150,7 @@ public class GVodService {
                 frontendJsonForHdfsKafkaDownload.getDatasetId(),
                 frontendJsonForHdfsKafkaDownload.getPartners(),
                 req.getSession().getId(),
-                frontendJsonForHdfsKafkaDownload.getTopicName(),
+                frontendJsonForHdfsKafkaDownload.getTopics(),
                 certPath + "/keystore.jks",
                 certPath + "/truststore.jks",
                 settings.getKafkaConnectStr(),

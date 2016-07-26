@@ -6,6 +6,7 @@
 package se.kth.hopsworks.gvod.io.download;
 
 import java.util.List;
+import java.util.Map;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,7 +24,7 @@ public class FrontendJsonForHdfsKafkaDownload {
     
     private List<String> partners;
     
-    private String topicName;
+    private Map topics;
     
     private String datasetName;
 
@@ -43,16 +44,20 @@ public class FrontendJsonForHdfsKafkaDownload {
         return partners;
     }
 
-    public String getTopicName() {
-        return topicName;
-    }
-
     public String getDatasetName() {
         return datasetName;
     }
 
     public void setDatasetName(String datasetName) {
         this.datasetName = datasetName;
+    }
+
+    public Map getTopics() {
+        return topics;
+    }
+
+    public void setTopics(Map topics) {
+        this.topics = topics;
     }
      
     

@@ -42,6 +42,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import se.kth.hopsworks.dataset.Dataset;
 import java.util.Map;
+import se.kth.hopsworks.gvod.io.status.StatusGVoDJson;
 
 /**
  *
@@ -235,6 +236,23 @@ public class GVodController {
             return null;
         }
 
+    }
+    
+    public String getStatusOfDataset(String dsPath, String publicDsId){
+        
+        StatusGVoDJson statusGVoDJson = new StatusGVoDJson(dsPath, new TorrentId(publicDsId));
+
+        rest_client = ClientBuilder.newClient();
+
+        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/stop");
+
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(statusGVoDJson, MediaType.APPLICATION_JSON), Response.class);
+
+        if (r != null && r.getStatus() == 200) {
+            return r.readEntity(String.class);
+        } else {
+            return null;
+        }
     }
 
 }

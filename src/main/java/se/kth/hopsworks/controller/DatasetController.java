@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -405,9 +406,11 @@ public class DatasetController {
             if(childrenOfDataset.contains(child + ".avro")){
                 fileInfo.setFileName(child);
                 fileInfo.setSchema(child + ".avro");
+                childrenOfDataset.remove(child);
             }else if(childrenOfDataset.contains(child + ".csv")){
                 fileInfo.setFileName(child);
                 fileInfo.setSchema(child + ".csv");
+                childrenOfDataset.remove(child);
             }else{
                 fileInfo.setFileName(child);
                 fileInfo.setSchema("");
@@ -415,7 +418,7 @@ public class DatasetController {
             manifestJson.getFileInfos().add(fileInfo);
         }
         for(FileInfo f : manifestJson.getFileInfos()){
-            if(f.getSchema() != null){
+            if(!f.getSchema().equals("")){
                 manifestJson.setKafkaSupport(true);
                 break;
             }
@@ -429,14 +432,20 @@ public class DatasetController {
         //TODO other schemas
         manifestJson.setMetaDataJsons(new LinkedList<String>());
         JSONObject jsonObject = new JSONObject(manifestJson);
-        try (FileWriter file = new FileWriter("/tmp/out/"+ project.getName() +"/manifest.json")) {
-            file.write(jsonObject.toString());
-            file.close();
+        try{
+            File file = new File("/tmp/out/"+ project.getName() +"/manifest.json");
+            file.getParentFile().mkdirs();
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(jsonObject.toString());
+            fileWriter.close();
             DistributedFileSystemOps dfso = dfs.getDfsOps();
             dfso.copyToHDFSFromLocal(true,"/tmp/out/"+ project.getName() +"/manifest.json", dsPath + "manifest.json");
             
 	}catch(IOException e){
-                    
+            
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    e.getLocalizedMessage());
+            
         }
         
         return manifestJson;

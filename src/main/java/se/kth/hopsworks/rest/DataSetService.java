@@ -951,6 +951,7 @@ public class DataSetService {
                     "Incomplete request!");
         }
         Inode inode = inodes.findById(inodeId);
+        this.dataset = datasetFacade.findByProjectAndInode(this.project, inode);
         if (inode == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);

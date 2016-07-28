@@ -41,27 +41,27 @@
                         <div class="container-fluid" ng-show="setupDownloadCtrl.manifestAvailable">
                             <div class="row">
                                 <div class="col-md-2" style="width: 20%">
-                                    <label class="control-label">Name :</label>
-                                    <label class="control-label">Made public at :</label>
-                                    <label class="control-label">Contact :</label>
-                                    <label class="control-label">Description :</label>
+                                    <label class="control-label">Name:</label>
+                                    <label class="control-label">Date:</label>
+                                    <label class="control-label">Contact:</label>
+                                    <label class="control-label">Description:</label>
                                 </div>
                                 <div class="col-md-10" style="width: 80%">
                                     <label class="control-label text-muted">{{setupDownloadCtrl.manifest.datasetName}}</label><br>
                                     <label class="control-label text-muted">{{setupDownloadCtrl.manifest.creatorDate}}</label><br>
-                                    <label class="control-label text-muted">{{setupDownloadCtrl.manifest.email}}</label><br>
-                                    <label class="control-label text-muted">{{setupDownloadCtrl.manifest.description}}</label>
+                                    <label class="control-label text-muted">{{setupDownloadCtrl.manifest.creatorEmail}}</label><br>
+                                    <label class="control-label text-muted">{{setupDownloadCtrl.manifest.datasetDescription}}</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <h3>Files in Dataset</h3>
-                                <div ng-repeat="file in setupDownload.manifest.fileInfos" ng-show="setupDownload.manifestKafka">
+                                <div ng-repeat="file in setupDownload.manifest.fileInfos" ng-show="setupDownload.manifest.kafkaSupport">
                                     <label>{{file.name}}</label>
                                     <button class="btn btn-default" ng-click="setupDownload.showSchema(file.schema)">Show Schema
                                         <i class="glyphicon glyphicon-resize-full"></i>
                                     </button>
                                 </div>
-                                <div ng-repeat="file in setupDownload.manifest.fileInfos" ng-show="!setupDownload.manifestKafka">
+                                <div ng-repeat="file in setupDownload.manifest.fileInfos" ng-show="!setupDownload.manifest.kafkaSupport">
                                     <label>{{file.name}}</label>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                     </button>
                                 </div>
                                 <div class="col-md-6">
-                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-disabled="!setupDownload.manifestKafka" ng-click="setupDownload.downloadTypeKafkaHdfs()">
+                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-disabled="!setupDownload.manifest.kafkaSupport" ng-click="setupDownload.downloadTypeKafkaHdfs()">
                                         Kafka and HDFS Download
                                     </button>
                                 </div>

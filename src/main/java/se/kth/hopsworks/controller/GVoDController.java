@@ -41,6 +41,9 @@ import se.kth.hopsworks.dataset.Dataset;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import se.kth.bbc.project.fb.Inode;
+import se.kth.bbc.project.fb.InodeFacade;
+import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.gvod.io.status.StatusGVoDJson;
 
 /**
@@ -48,7 +51,7 @@ import se.kth.hopsworks.gvod.io.status.StatusGVoDJson;
  * @author jsvhqr
  */
 @Stateless
-public class GVodController {
+public class GVoDController {
 
     @EJB
     Settings settings;
@@ -64,6 +67,12 @@ public class GVodController {
 
     @EJB
     private HdfsUsersController hdfsUsersBean;
+    
+    @EJB
+    private DatasetFacade datasetFacade;
+    
+    @EJB
+    private InodeFacade inodeFacade;
 
     private WebTarget webTarget = null;
     private Client rest_client = null;
@@ -100,7 +109,7 @@ public class GVodController {
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-        ds = datasetController.createDataset(user, project, datasetName, "", -1, true, false, dfso, udfso);
+        datasetController.createDataset(user, project, datasetName, "", -1, true, false, dfso, udfso);
 
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
@@ -119,11 +128,6 @@ public class GVodController {
             }
             if (udfso != null) {
                 udfso.close();
-            }
-            if(ds != null){
-                ds.setPublicDs(true);
-                ds.setPublicDsId(publicDsId);
-                ds.setEditable(false);
             }
         }
         
@@ -158,7 +162,7 @@ public class GVodController {
                 String jsonString = new Gson().toJson(jsonObject);
                 manifestJson = new Gson().fromJson(jsonString, ManifestJson.class);
             } catch (IOException | ParseException ex) {
-                Logger.getLogger(GVodController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(GVoDController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } else {
@@ -184,6 +188,14 @@ public class GVodController {
     public String downloadHdfs(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String datasetName) throws AppException {
 
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator;
+        
+        Inode inode = inodeFacade.getInodeAtPath(dsPath);
+        
+        Dataset ds = datasetFacade.findByProjectAndInode(project, inode);
+        
+        ds.setPublicDs(true);
+        ds.setPublicDsId(publicDsId);
+        ds.setEditable(false);
 
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(
                 new HdfsResource(hdfsConfigXMLPath,hdfsUsersController.getHdfsUserName(project, user)),
@@ -209,6 +221,14 @@ public class GVodController {
     public String downloadKafka(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String sessionId, Map topics, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain, String datasetName) throws AppException {
 
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator;
+        
+        Inode inode = inodeFacade.getInodeAtPath(dsPath);
+        
+        Dataset ds = datasetFacade.findByProjectAndInode(project, inode);
+        
+        ds.setPublicDs(true);
+        ds.setPublicDsId(publicDsId);
+        ds.setEditable(false);
 
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(
                 new HdfsResource(hdfsConfigXMLPath, hdfsUsersController.getHdfsUserName(project, user)),

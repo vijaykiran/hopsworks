@@ -26,7 +26,7 @@ import se.kth.hopsworks.controller.KafkaController;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.filters.AllowedRoles;
 import se.kth.hopsworks.gvod.io.download.FrontentJsonForHdfsDownload;
-import se.kth.hopsworks.controller.GVodController;
+import se.kth.hopsworks.controller.GVoDController;
 import se.kth.hopsworks.controller.ProjectController;
 import se.kth.hopsworks.gvod.io.download.FrontendJsonForHdfsKafkaDownload;
 import se.kth.hopsworks.gvod.io.download.DownloadRequest;
@@ -51,7 +51,7 @@ public class GVodService {
     @EJB
     private NoCacheResponse noCacheResponse;
     @EJB
-    private GVodController gvodController;
+    private GVoDController gvodController;
     @EJB
     private ProjectController projectController;
     @EJB

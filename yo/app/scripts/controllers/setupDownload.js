@@ -1,3 +1,4 @@
+
 angular.module('hopsWorksApp')
         .controller('SetupDownloadCtrl', ['$modalInstance', 'DataSetService', 'KafkaService', 'GVoDService', 'growl', 'defaultDatasetName', 'projectId', 'datasetId', 'partners', 'ModalService',
             function ($modalInstance, DataSetService, KafkaService, GVoDService, growl, defaultDatasetName, projectId, datasetId, partners, ModalService) {
@@ -13,7 +14,6 @@ angular.module('hopsWorksApp')
 
 
                 self.manifestAvailable = false;
-                self.manifestKafka = false;
                 self.manifest;
 
                 self.DownloadType;
@@ -121,13 +121,10 @@ angular.module('hopsWorksApp')
                     json.datasetId = self.datasetId;
                     json.projectId = self.projectId;
                     GVoDService.downloadRequest(json).then(function (success) {
-                        self.manifest = success;
+                        self.manifest = success.data;
                         self.manifestAvailable = true;
                         if (self.manifest.supportKafka) {
-                            self.manifestKafka = true;
                             self.setTopicsRemainingForCreation(self.manifest.fileInfos);
-                        } else {
-                            self.manifestKafka = false;
                         }
                     },
                             function (error) {

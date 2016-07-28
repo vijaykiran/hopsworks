@@ -116,8 +116,11 @@ angular.module('hopsWorksApp')
 
                 self.DownloadRequest = function () {
 
-                    var json = {"projectId": self.projectId, "datasetId": self.datasetId, "datasetName": self.datasetName};
-                    GVoDService.DownloadRequest(json).then(function (success) {
+                    var json = {};
+                    json.datasetName = self.datasetName;
+                    json.datasetId = self.datasetId;
+                    json.projectId = self.projectId;
+                    GVoDService.downloadRequest(json).then(function (success) {
                         self.manifest = success;
                         self.manifestAvailable = true;
                         if (self.manifest.supportKafka) {

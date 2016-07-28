@@ -16,16 +16,15 @@ public class DownloadRequest {
     
     private String datasetName;
     
-    private String publicDatasetId;
+    private String datasetId;
     
     private int projectId;
 
-    public DownloadRequest() {
-    }
+    public DownloadRequest() {}
 
-    public DownloadRequest(String datasetName, String publicDatasetId, int projectId) {
+    public DownloadRequest(String datasetName, String datasetId, int projectId) {
         this.datasetName = datasetName;
-        this.publicDatasetId = publicDatasetId;
+        this.datasetId = datasetId;
         this.projectId = projectId;
     }
 
@@ -37,20 +36,20 @@ public class DownloadRequest {
         this.datasetName = datasetName;
     }
 
-    public String getPublicDatasetId() {
-        return publicDatasetId;
-    }
-
-    public void setPublicDatasetId(String publicDatasetId) {
-        this.publicDatasetId = publicDatasetId;
-    }
-
     public int getProjectId() {
         return projectId;
     }
 
     public void setProjectId(int projectId) {
         this.projectId = projectId;
+    }
+
+    public String getDatasetId() {
+        return datasetId;
+    }
+
+    public void setDatasetId(String datasetId) {
+        this.datasetId = datasetId;
     }
     
     

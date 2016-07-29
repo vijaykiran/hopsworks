@@ -29,9 +29,13 @@ angular.module('hopsWorksApp')
                     var topics;
 
                     KafkaService.getTopics(self.projectId).then(function (success) {
-                        topics = success.data;
+                        topics = success;
+                    },
+                    function(error){
+                        growl.error(error.data.errorMsg, {title: 'Failed to get Topics', ttl: 5000});
                     });
-
+                  
+                    
                     for (var i = 0; i < topics.length; i++) {
                         if (topicName === topics[i].name) {
                             return false;
@@ -42,7 +46,7 @@ angular.module('hopsWorksApp')
 
                 self.createTopic = function (file) {
                     
-                    var fileName = file.Name;
+                    var fileName = file.FileName;
                     var topicName = document.getElementById(fileName).value;
 
                     var schemaDetail = {};

@@ -99,7 +99,7 @@
                                 <div class="form-inline">
                                     <div class="form-group">
                                         <label for="{{file.fileName}}">TopicName</label>
-                                        <input type="text" class="form-control" id="{{file.fileName}}" value="{{setupDownloadCtrl.projectId + '_' + setupDownloadCtrl.manifest.datasetName + '_' + file.name}}">
+                                        <input type="text" class="form-control" id="{{file.fileName}}" value="{{setupDownloadCtrl.projectId + '_' + setupDownloadCtrl.manifest.datasetName + '_' + file.fileName}}">
                                     </div>
                                     <button class="btn btn-default" ng-click="setupDownloadCtrl.createTopic(file)" ng-show="setupDownloadCtrl.validTopicName(file.fileName)">create Topic</button>
                                     <label style="color:red;" ng-show="!setupDownloadCtrl.validTopicName(file.fileName)">topic name not allowed, choose another !</label>

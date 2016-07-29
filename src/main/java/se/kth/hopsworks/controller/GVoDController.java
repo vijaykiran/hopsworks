@@ -67,10 +67,10 @@ public class GVoDController {
 
     @EJB
     private HdfsUsersController hdfsUsersBean;
-    
+
     @EJB
     private DatasetFacade datasetFacade;
-    
+
     @EJB
     private InodeFacade inodeFacade;
 
@@ -109,7 +109,7 @@ public class GVoDController {
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-        datasetController.createDataset(user, project, datasetName, "", -1, true, false, dfso, udfso);
+            datasetController.createDataset(user, project, datasetName, "", -1, true, false, dfso, udfso);
 
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
@@ -130,7 +130,7 @@ public class GVoDController {
                 udfso.close();
             }
         }
-        
+
         DownloadRequest downloadRequest = new DownloadRequest(
                 new HdfsResource(hdfsConfigXMLPath, username),
                 publicDsId,
@@ -152,18 +152,8 @@ public class GVoDController {
         String pathToManifest = "/Projects/source/trial/manifest.json";
         ManifestJson manifestJson = null;
         if (pathToManifest != null) {
-
-            try {
-                dfso = dfs.getDfsOps();
-                JSONParser parser = new JSONParser();
-                dfso.copyFromHDFSToLocal(pathToManifest, "/tmp/in/" + project.getName() + "/manifest.json");
-                Object obj = parser.parse(new FileReader("/tmp/in/" + project.getName() + "/manifest.json"));
-                JSONObject jsonObject = (JSONObject) obj;
-                String jsonString = new Gson().toJson(jsonObject);
-                manifestJson = new Gson().fromJson(jsonString, ManifestJson.class);
-            } catch (IOException | ParseException ex) {
-                Logger.getLogger(GVoDController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            byte [] jsonBytes = datasetController.readJsonFromHdfs(pathToManifest);
+            manifestJson = datasetController.getManifestJSON(jsonBytes);
 
         } else {
             try {
@@ -176,8 +166,8 @@ public class GVoDController {
             } catch (Exception e) {
                 throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), e.
                         getLocalizedMessage());
-            }finally{
-                if(dfso != null){
+            } finally {
+                if (dfso != null) {
                     dfso.close();
                 }
             }
@@ -188,17 +178,17 @@ public class GVoDController {
     public String downloadHdfs(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String datasetName) throws AppException {
 
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator;
-        
+
         Inode inode = inodeFacade.getInodeAtPath(dsPath);
-        
+
         Dataset ds = datasetFacade.findByProjectAndInode(project, inode);
-        
+
         ds.setPublicDs(true);
         ds.setPublicDsId(publicDsId);
         ds.setEditable(false);
 
         DownloadGVoDJson downloadGVoDJson = new DownloadGVoDJson(
-                new HdfsResource(hdfsConfigXMLPath,hdfsUsersController.getHdfsUserName(project, user)),
+                new HdfsResource(hdfsConfigXMLPath, hdfsUsersController.getHdfsUserName(project, user)),
                 null,
                 new HopsResource(project.getId()),
                 new TorrentId(publicDsId),
@@ -221,11 +211,11 @@ public class GVoDController {
     public String downloadKafka(String hdfsConfigXMLPath, Project project, Users user, String publicDsId, List<String> partners, String sessionId, Map topics, String keyStorePath, String trustStorePath, String brokerEndpoint, String restEndpoint, String domain, String datasetName) throws AppException {
 
         String dsPath = File.separator + Settings.DIR_ROOT + File.separator + project.getName() + File.separator + datasetName + File.separator;
-        
+
         Inode inode = inodeFacade.getInodeAtPath(dsPath);
-        
+
         Dataset ds = datasetFacade.findByProjectAndInode(project, inode);
-        
+
         ds.setPublicDs(true);
         ds.setPublicDsId(publicDsId);
         ds.setEditable(false);

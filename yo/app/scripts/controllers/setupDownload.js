@@ -41,7 +41,7 @@ angular.module('hopsWorksApp')
 
                 self.createTopic = function (file) {
                     
-                    var fileName = file.name;
+                    var fileName = file.Name;
                     var topicName = document.getElementById(fileName).value;
 
                     var schemaDetail = {};

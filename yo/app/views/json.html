@@ -3,7 +3,7 @@
   <h3 class="modal-title">{{jsonCtrl.title}}</h3>
 </div>
 <div class="modal-body">
-    <pretty-json json="jsonObj">{{jsonCtrl.json}}</pretty-json>
+    <pre pretty-json="jsonCtrl.json"  />
 </div>
 <div class="modal-footer" style="align:center">
   <button class="btn btn-primary" ng-click="jsonCtrl.ok()">OK</button>

@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('hopsWorksApp')
-        .controller('JsonCtrl', ['$modalInstance', '$scope', 'title', 'json',
-          function ($modalInstance, $scope, title, json) {
+        .controller('JSONCtrl', ['$modalInstance', 'title', 'json',
+          function ($modalInstance, title, json) {
 
             var self = this;
             self.title = title;

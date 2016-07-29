@@ -559,5 +559,14 @@ public class DistributedFileSystemOps {
       logger.log(Level.SEVERE, "Error while closing file system.", ex);
     }
   }
+  
+  public long getlength(String path){
+      try {
+          return dfs.getLength(new Path(path));
+      } catch (IOException ex) {
+        logger.log(Level.SEVERE, "Error while getting length of file", ex);
+      }
+      return -1;
+  }
 
 }

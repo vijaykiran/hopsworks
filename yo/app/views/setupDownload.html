@@ -21,7 +21,7 @@
                                 <input type="text" value="{{setupDownloadCtrl.datasetName}}" ng-model="setupDownloadCtrl.datasetName" ng-change="setupDownloadCtrl.isNameOk()" id="dsName">
                             </div>
                             <button ng-show="setupDownloadCtrl.datasetNameOk" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" ng-click="setupDownloadCtrl.DownloadRequest()">
-                                Continue
+                                Create Dataset Destination
                                 <i class="glyphicon glyphicon-forward" style="color:green;">
                                 </i>
                             </button>
@@ -53,26 +53,25 @@
                                     <label class="control-label text-muted">{{setupDownloadCtrl.manifest.datasetDescription}}</label>
                                 </div>
                             </div>
-                            <div class="row">
-                                <h3>Files in Dataset</h3>
-                                <div ng-repeat="file in setupDownload.manifest.fileInfos" ng-show="setupDownload.manifest.kafkaSupport">
-                                    <label>{{file.name}}</label>
-                                    <button class="btn btn-default" ng-click="setupDownload.showSchema(file.schema)">Show Schema
-                                        <i class="glyphicon glyphicon-resize-full"></i>
-                                    </button>
+                            <hr>
+                                <div ng-repeat="file in setupDownloadCtrl.manifest.fileInfos"  class="row"> 
+                                    <div class="col-md-2" style="width: 20%">
+                                        <label class="control-label">FileName:</label>
+                                    </div>
+                                    <div class="col-md-10" style="width: 80%">
+                                        <label class="control-label text-muted">{{file.fileName}}</label>
+                                        <a ng-click="setupDownloadCtrl.showSchema(file.schema)" ng-show="file.schema !== '' " class="pull-right"> {{file.fileName + '.avro'}}</a>
+                                    </div>
                                 </div>
-                                <div ng-repeat="file in setupDownload.manifest.fileInfos" ng-show="!setupDownload.manifest.kafkaSupport">
-                                    <label>{{file.name}}</label>
-                                </div>
-                            </div>
+                            <hr>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-click="setupDownload.downloadTypeHdfs()">
+                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-click="setupDownloadCtrl.downloadTypeHdfs()">
                                         HDFS Download
                                     </button>
                                 </div>
                                 <div class="col-md-6">
-                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-disabled="!setupDownload.manifest.kafkaSupport" ng-click="setupDownload.downloadTypeKafkaHdfs()">
+                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-disabled="!setupDownloadCtrl.manifest.kafkaSupport" ng-click="setupDownload.downloadTypeKafkaHdfs()">
                                         Kafka and HDFS Download
                                     </button>
                                 </div>
@@ -100,10 +99,10 @@
                                 <div class="form-inline">
                                     <div class="form-group">
                                         <label for="{{file.name}}">TopicName</label>
-                                        <input type="text" class="form-control" id="{{file.name}}" value="{{setupDownload.projectId + '_' + setupDownload.manifest.datasetName + '_' + file.name}}">
+                                        <input type="text" class="form-control" id="{{file.fileName}}" value="{{setupDownload.projectId + '_' + setupDownload.manifest.datasetName + '_' + file.name}}">
                                     </div>
-                                    <button class="btn btn-default" ng-click="setupDownload.createTopic(file)" ng-show="setupDownload.validTopicName(file.name)">create Topic</button>
-                                    <label style="color:red;" ng-show="!setupDownload.validTopicName(file.name)">topic name not allowed, choose another !</label>
+                                    <button class="btn btn-default" ng-click="setupDownload.createTopic(file)" ng-show="setupDownload.validTopicName(file.fileName)">create Topic</button>
+                                    <label style="color:red;" ng-show="!setupDownload.validTopicName(file.fileName)">topic name not allowed, choose another !</label>
                                 </div>
                             </div>
                             <button class="btn btn-success" ng-click="setupDownload.download();" ng-show="setupDownload.topicsCreated">

@@ -91,21 +91,21 @@
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse">
                     <div class="panel-body">
-                        <button class="btn btn-success" ng-click="setupDownload.download()" ng-show="setupDownload.downloadType === 0">
+                        <button class="btn btn-success" ng-click="setupDownloadCtrl.download()" ng-show="setupDownloadCtrl.downloadType === 0">
                             Download HDFS
                         </button>
-                        <div class="row" ng-show="setupDownload.downloadType === 1">
-                            <div ng-repeat="file in setupDownload.manifest.fileInfos | filter: setupDownload.myFilter ">
+                        <div class="row" ng-show="setupDownloadCtrl.downloadType === 1">
+                            <div ng-repeat="file in setupDownloadCtrl.manifest.fileInfos | filter: setupDownloadCtrl.myFilter ">
                                 <div class="form-inline">
                                     <div class="form-group">
-                                        <label for="{{file.name}}">TopicName</label>
-                                        <input type="text" class="form-control" id="{{file.fileName}}" value="{{setupDownload.projectId + '_' + setupDownload.manifest.datasetName + '_' + file.name}}">
+                                        <label for="{{file.fileName}}">TopicName</label>
+                                        <input type="text" class="form-control" id="{{file.fileName}}" value="{{setupDownloadCtrl.projectId + '_' + setupDownloadCtrl.manifest.datasetName + '_' + file.name}}">
                                     </div>
-                                    <button class="btn btn-default" ng-click="setupDownload.createTopic(file)" ng-show="setupDownload.validTopicName(file.fileName)">create Topic</button>
-                                    <label style="color:red;" ng-show="!setupDownload.validTopicName(file.fileName)">topic name not allowed, choose another !</label>
+                                    <button class="btn btn-default" ng-click="setupDownloadCtrl.createTopic(file)" ng-show="setupDownloadCtrl.validTopicName(file.fileName)">create Topic</button>
+                                    <label style="color:red;" ng-show="!setupDownloadCtrl.validTopicName(file.fileName)">topic name not allowed, choose another !</label>
                                 </div>
                             </div>
-                            <button class="btn btn-success" ng-click="setupDownload.download();" ng-show="setupDownload.topicsCreated">
+                            <button class="btn btn-success" ng-click="setupDownloadCtrl.download();" ng-show="setupDownloadCtrl.topicsCreated">
                                Download Kafka and HDFS
                             </button>
                         </div>

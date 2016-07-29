@@ -1,4 +1,5 @@
 
+
 angular.module('hopsWorksApp')
         .controller('SetupDownloadCtrl', ['$modalInstance', 'DataSetService', 'KafkaService', 'GVoDService', 'growl', 'defaultDatasetName', 'projectId', 'datasetId', 'partners', 'ModalService',
             function ($modalInstance, DataSetService, KafkaService, GVoDService, growl, defaultDatasetName, projectId, datasetId, partners, ModalService) {

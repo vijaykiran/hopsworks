@@ -17,19 +17,20 @@ angular.module('hopsWorksApp')
                 self.manifestAvailable = false;
                 self.manifest;
 
-                self.DownloadType;
+                self.DownloadTypeKafka = false;
 
                 self.topicsRemainingForCreation = 0;
                 self.topicsCreated = false;
+                self.topicValues = [];
+                self.topicDone = [];
                 
                 self.topicsMap = {};
 
-                self.validTopicName = function (id) {
-                    var topicName = document.getElementById(id).value;
-                    var topics;
+                self.validTopicName = function (topicName) {
+                    var topics = [];
 
                     KafkaService.getTopics(self.projectId).then(function (success) {
-                        topics = success;
+                        topics = success.data;
                     },
                     function(error){
                         growl.error(error.data.errorMsg, {title: 'Failed to get Topics', ttl: 5000});
@@ -44,14 +45,11 @@ angular.module('hopsWorksApp')
                     return true;
                 };
 
-                self.createTopic = function (file) {
-                    
-                    var fileName = file.FileName;
-                    var topicName = document.getElementById(fileName).value;
+                self.createTopic = function (topicName, schema, index) {
 
                     var schemaDetail = {};
                     schemaDetail.name = topicName;
-                    schemaDetail.contents = file.schema;
+                    schemaDetail.contents = schema;
                     schemaDetail.version = 1;
 
                     KafkaService.createSchema(self.projectId, schemaDetail).then(
@@ -65,13 +63,14 @@ angular.module('hopsWorksApp')
                     topicDetails.name = topicName;
                     topicDetails.numOfPartitions = 2;
                     topicDetails.numOfReplicas = 1;
-                    topicDetails.schemaName = file.schema;
+                    topicDetails.schemaName = topicName;
                     topicDetails.schemaVersion = 1;
 
                     KafkaService.createTopic(self.projectId, topicDetails).then(
                             function (success) {
                                 self.topicsRemainingForCreation--;
                                 self.topicsMap.fileName = topicName;
+                                self.topicDone[index] = false;
                                 if(self.topicsRemainingForCreation === 0){
                                     self.topicsCreated = true;
                                 }
@@ -86,6 +85,8 @@ angular.module('hopsWorksApp')
                     for (var i = 0; i < files.length; i++) {
                         if (files[i].schema !== '') {
                             self.topicsRemainingForCreation++;
+                            self.topicDone[i] = false;
+                            self.topicValues[i] = self.projectId + '_' + self.datasetName + '_' + files[i].fileName;
                         }
                     }
                 };
@@ -143,16 +144,16 @@ angular.module('hopsWorksApp')
                 };
 
                 self.downloadTypeHdfs = function () {
-                    self.DownloadType = 0;
+                    self.DownloadTypeKafka = false;
                 };
 
                 self.downloadTypeKafkaHdfs = function () {
-                    self.DownloadType = 1;
+                    self.DownloadTypeKafka = true;
                 };
 
                 self.download = function () {
 
-                    if (self.DownloadType === 0) {
+                    if (!self.DownloadTypeKafka) {
                         
                         var json = {};
                         json.datasetName = self.manifest.datasetName;

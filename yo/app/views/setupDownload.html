@@ -54,15 +54,15 @@
                                 </div>
                             </div>
                             <hr>
-                                <div ng-repeat="file in setupDownloadCtrl.manifest.fileInfos"  class="row"> 
-                                    <div class="col-md-2" style="width: 20%">
-                                        <label class="control-label">FileName:</label>
-                                    </div>
-                                    <div class="col-md-10" style="width: 80%">
-                                        <label class="control-label text-muted">{{file.fileName}}</label>
-                                        <a ng-click="setupDownloadCtrl.showSchema(file.schema)" ng-show="file.schema !== '' " class="pull-right"> {{file.fileName + '.avro'}}</a>
-                                    </div>
+                            <div ng-repeat="file in setupDownloadCtrl.manifest.fileInfos"  class="row"> 
+                                <div class="col-md-2" style="width: 20%">
+                                    <label class="control-label">FileName:</label>
                                 </div>
+                                <div class="col-md-10" style="width: 80%">
+                                    <label class="control-label text-muted">{{file.fileName}}</label>
+                                    <a ng-click="setupDownloadCtrl.showSchema(file.schema)" ng-show="file.schema !== ''" class="pull-right"> {{file.fileName + '.avro'}}</a>
+                                </div>
+                            </div>
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
@@ -71,7 +71,7 @@
                                     </button>
                                 </div>
                                 <div class="col-md-6">
-                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-disabled="!setupDownloadCtrl.manifest.kafkaSupport" ng-click="setupDownload.downloadTypeKafkaHdfs()">
+                                    <button class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" ng-disabled="!setupDownloadCtrl.manifest.kafkaSupport" ng-click="setupDownloadCtrl.downloadTypeKafkaHdfs()">
                                         Kafka and HDFS Download
                                     </button>
                                 </div>
@@ -91,29 +91,29 @@
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse">
                     <div class="panel-body">
-                        <button class="btn btn-success" ng-click="setupDownloadCtrl.download()" ng-show="setupDownloadCtrl.downloadType === 0">
-                            Download HDFS
-                        </button>
-                        <div class="row" ng-show="setupDownloadCtrl.downloadType === 1">
-                            <div ng-repeat="file in setupDownloadCtrl.manifest.fileInfos | filter: setupDownloadCtrl.myFilter ">
-                                <div class="form-inline">
-                                    <div class="form-group">
-                                        <label for="{{file.fileName}}">TopicName</label>
-                                        <input type="text" class="form-control" id="{{file.fileName}}" value="{{setupDownloadCtrl.projectId + '_' + setupDownloadCtrl.manifest.datasetName + '_' + file.fileName}}">
-                                    </div>
-                                    <button class="btn btn-default" ng-click="setupDownloadCtrl.createTopic(file)" ng-show="setupDownloadCtrl.validTopicName(file.fileName)">create Topic</button>
-                                    <label style="color:red;" ng-show="!setupDownloadCtrl.validTopicName(file.fileName)">topic name not allowed, choose another !</label>
-                                </div>
-                            </div>
-                            <button class="btn btn-success" ng-click="setupDownloadCtrl.download();" ng-show="setupDownloadCtrl.topicsCreated">
-                               Download Kafka and HDFS
+                        <div class="container-fluid">
+                            <button class="btn btn-success" ng-click="setupDownloadCtrl.download()" ng-show="!setupDownloadCtrl.DownloadTypeKafka">
+                                Download HDFS
                             </button>
+                            <div class="row" ng-show="setupDownloadCtrl.DownloadTypeKafka">
+                                <div ng-repeat="file in setupDownloadCtrl.manifest.fileInfos| filter: setupDownloadCtrl.myFilter ">
+                                    <div class="form-inline" ng-disabled="setupDownloadCtrl.topicDone[$index]">
+                                        <div class="form-group">
+                                            <label for="{{file.fileName}}">TopicName</label>
+                                            <input type="text" class="form-control" ng-model="setupDownloadCtrl.topicValues[$index]" id="{{file.fileName}}" value="{{setupDownloadCtrl.topicValues[$index]}}">
+                                        </div>
+                                        <button class="btn btn-default" ng-click="setupDownloadCtrl.createTopic(setupDownloadCtrl.topicValues[$index], file.schema, $index)">create Topic</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-success" ng-click="setupDownloadCtrl.download();" ng-show="setupDownloadCtrl.topicsCreated">
+                                    Download Kafka and HDFS
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <p><strong>Note:</strong> Click on the linked heading text to expand or collapse accordion panels.</p>
     </div>
 </div>
 

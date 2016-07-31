@@ -25,12 +25,12 @@ import se.kth.bbc.security.ua.UserManager;
 import se.kth.hopsworks.controller.KafkaController;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.filters.AllowedRoles;
-import se.kth.hopsworks.gvod.io.download.FrontentJsonForHdfsDownload;
+import io.hops.gvod.io.download.FrontentJsonForHdfsDownload;
 import se.kth.hopsworks.controller.GVoDController;
 import se.kth.hopsworks.controller.ProjectController;
-import se.kth.hopsworks.gvod.io.download.FrontendJsonForHdfsKafkaDownload;
-import se.kth.hopsworks.gvod.io.download.DownloadRequest;
-import se.kth.hopsworks.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.download.FrontendJsonForHdfsKafkaDownload;
+import io.hops.gvod.io.download.DownloadRequest;
+import io.hops.gvod.io.resources.items.ManifestJson;
 import se.kth.hopsworks.util.Settings;
 
 /**
@@ -82,7 +82,8 @@ public class GVodService {
                 settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, 
                 userBean.getUserByEmail(sc.getUserPrincipal().getName()), 
                 projectController.findProjectById(downloadRequest.getProjectId()), 
-                downloadRequest.getDatasetName());
+                downloadRequest.getDatasetName(),
+                downloadRequest.getPartners());
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();

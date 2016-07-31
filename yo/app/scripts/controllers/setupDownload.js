@@ -128,6 +128,7 @@ angular.module('hopsWorksApp')
                     json.datasetName = self.datasetName;
                     json.datasetId = self.datasetId;
                     json.projectId = self.projectId;
+                    json.partners = self.partners;
                     GVoDService.downloadRequest(json).then(function (success) {
                         self.manifest = success.data;
                         self.manifestAvailable = true;

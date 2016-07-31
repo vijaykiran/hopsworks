@@ -60,11 +60,11 @@ import se.kth.bbc.project.Project;
 import se.kth.bbc.project.ProjectFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import se.kth.hopsworks.hopssite.restCommunication.ManageGlobalClusterParticipation;
+import io.hops.hopssite.restCommunication.ManageGlobalClusterParticipation;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.controller.DatasetController;
-import se.kth.hopsworks.hopssite.io.register.RegisteredClusterJson;
+import io.hops.hopssite.io.register.RegisteredClusterJson;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 

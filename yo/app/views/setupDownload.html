@@ -18,7 +18,7 @@
                         <form class="form-inline" role="form">
                             <div class="form-group">
                                 <label for="dsName">Name</label>
-                                <input type="text" value="{{setupDownloadCtrl.datasetName}}" ng-model="setupDownloadCtrl.datasetName" ng-change="setupDownloadCtrl.isNameOk()" id="dsName">
+                                <input type="text" ng-model="setupDownloadCtrl.datasetName" ng-change="setupDownloadCtrl.isNameOk()" id="dsName">
                             </div>
                             <button ng-show="setupDownloadCtrl.datasetNameOk" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" ng-click="setupDownloadCtrl.DownloadRequest()">
                                 Create Dataset Destination
@@ -100,7 +100,7 @@
                                     <div class="form-inline" ng-disabled="setupDownloadCtrl.topicDone[$index]">
                                         <div class="form-group">
                                             <label for="{{file.fileName}}">TopicName</label>
-                                            <input type="text" class="form-control" ng-model="setupDownloadCtrl.topicValues[$index]" id="{{file.fileName}}" value="{{setupDownloadCtrl.topicValues[$index]}}">
+                                            <input type="text" class="form-control" ng-model="setupDownloadCtrl.topicValues[$index]" id="{{file.fileName}}" ng-init="setupDownloadCtrl.initTopic($index, file.fileName);">
                                         </div>
                                         <button class="btn btn-default" ng-click="setupDownloadCtrl.createTopic(setupDownloadCtrl.topicValues[$index], file.schema, $index)">create Topic</button>
                                     </div>

@@ -1,6 +1,5 @@
 package se.kth.hopsworks.rest;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.hops.kafka.AclDTO;
 import io.hops.kafka.AclUserDTO;
 import io.hops.kafka.TopicDTO;
@@ -34,13 +33,10 @@ import io.hops.kafka.PartitionDetailsDTO;
 import io.hops.kafka.SchemaDTO;
 import io.hops.kafka.SharedProjectDTO;
 import io.hops.kafka.TopicDefaultValueDTO;
-import java.util.logging.Level;
-import javax.json.JsonObject;
 import javax.persistence.EntityExistsException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.PUT;
-import org.apache.avro.Schema;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -499,7 +495,7 @@ public class KafkaService {
             try {
                 JSONArray jsonArray = new JSONArray(schemaContent);
             } catch (JSONException ex1) {
-                 json.setErrorMsg("schema is valid");
+                 json.setErrorMsg("schema is invalid");
                 return noCacheResponse.getNoCacheResponseBuilder(Response.Status.NOT_ACCEPTABLE).entity(
                         json).build();
             }

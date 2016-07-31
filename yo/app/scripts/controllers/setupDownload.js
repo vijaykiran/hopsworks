@@ -19,12 +19,20 @@ angular.module('hopsWorksApp')
 
                 self.DownloadTypeKafka = false;
 
-                self.topicsRemainingForCreation = 0;
-                self.topicsCreated = false;
+
                 self.topicValues = [];
                 self.topicDone = [];
-                
+                self.topicsCreated = false;
+                self.topicsRemainingForCreation = 0;
+
                 self.topicsMap = {};
+
+
+                self.initTopic = function (index, fileName) {
+                    self.topicValues[index] = self.projectId + '_' + self.datasetName + '_' + fileName;
+                    self.topicDone[index] = false;
+                    self.topicsRemainingForCreation++;
+                };
 
                 self.validTopicName = function (topicName) {
                     var topics = [];
@@ -32,11 +40,11 @@ angular.module('hopsWorksApp')
                     KafkaService.getTopics(self.projectId).then(function (success) {
                         topics = success.data;
                     },
-                    function(error){
-                        growl.error(error.data.errorMsg, {title: 'Failed to get Topics', ttl: 5000});
-                    });
-                  
-                    
+                            function (error) {
+                                growl.error(error.data.errorMsg, {title: 'Failed to get Topics', ttl: 5000});
+                            });
+
+
                     for (var i = 0; i < topics.length; i++) {
                         if (topicName === topics[i].name) {
                             return false;
@@ -51,44 +59,38 @@ angular.module('hopsWorksApp')
                     schemaDetail.name = topicName;
                     schemaDetail.contents = schema;
                     schemaDetail.version = 1;
+                    schemaDetail.versions = [];
 
                     KafkaService.createSchema(self.projectId, schemaDetail).then(
                             function (success) {
+
+                                var topicDetails = {};
+                                topicDetails.name = topicName;
+                                topicDetails.numOfPartitions = 2;
+                                topicDetails.numOfReplicas = 1;
+                                topicDetails.schemaName = topicName;
+                                topicDetails.schemaVersion = 1;
+
+                                KafkaService.createTopic(self.projectId, topicDetails).then(
+                                        function (success) {
+                                            self.topicsRemainingForCreation--;
+                                            self.topicDone[index] = true;
+                                            self.topicsMap.fileName = topicName;
+                                            if (self.topicsRemainingForCreation === 0) {
+                                                self.topicsCreated = true;
+                                            }
+                                        }, function (error) {
+                                    growl.error(error.data.errorMsg, {title: 'Failed to create topic', ttl: 5000});
+
+                                });
+
 
                             }, function (error) {
                         growl.error(error.data.errorMsg, {title: 'Failed to create schema', ttl: 5000});
                     });
 
-                    var topicDetails = {};
-                    topicDetails.name = topicName;
-                    topicDetails.numOfPartitions = 2;
-                    topicDetails.numOfReplicas = 1;
-                    topicDetails.schemaName = topicName;
-                    topicDetails.schemaVersion = 1;
 
-                    KafkaService.createTopic(self.projectId, topicDetails).then(
-                            function (success) {
-                                self.topicsRemainingForCreation--;
-                                self.topicsMap.fileName = topicName;
-                                self.topicDone[index] = false;
-                                if(self.topicsRemainingForCreation === 0){
-                                    self.topicsCreated = true;
-                                }
-                            }, function (error) {
-                        growl.error(error.data.errorMsg, {title: 'Failed to create topic', ttl: 5000});
-                        
-                    });
 
-                };
-
-                self.setTopicsRemainingForCreation = function (files) {
-                    for (var i = 0; i < files.length; i++) {
-                        if (files[i].schema !== '') {
-                            self.topicsRemainingForCreation++;
-                            self.topicDone[i] = false;
-                            self.topicValues[i] = self.projectId + '_' + self.datasetName + '_' + files[i].fileName;
-                        }
-                    }
                 };
 
                 self.myFilter = function (item) {
@@ -112,7 +114,7 @@ angular.module('hopsWorksApp')
                         self.datasetNameOk = true;
 
                     }, function (error) {
-                        
+
                     });
 
                 };
@@ -129,12 +131,9 @@ angular.module('hopsWorksApp')
                     GVoDService.downloadRequest(json).then(function (success) {
                         self.manifest = success.data;
                         self.manifestAvailable = true;
-                        if (self.manifest.supportKafka) {
-                            self.setTopicsRemainingForCreation(self.manifest.fileInfos);
-                        }
                     },
                             function (error) {
-                                
+
                                 growl.error(error.data.errorMsg, {title: 'Failed to get manifest', ttl: 5000});
 
                             });
@@ -154,36 +153,36 @@ angular.module('hopsWorksApp')
                 self.download = function () {
 
                     if (!self.DownloadTypeKafka) {
-                        
+
                         var json = {};
                         json.datasetName = self.manifest.datasetName;
                         json.projectId = self.projectId;
                         json.datasetId = self.datasetId;
                         json.partners = self.partners;
-                        
-                        GVoDService.downloadHdfs(json).then(function(success){
-                           
+
+                        GVoDService.downloadHdfs(json).then(function (success) {
+
                             $modalInstance.close(success);
-                            
-                        },function(error){
-                             growl.error(error.data.errorMsg, {title: 'Failed to start download', ttl: 5000});
+
+                        }, function (error) {
+                            growl.error(error.data.errorMsg, {title: 'Failed to start download', ttl: 5000});
                         });
 
                     } else {
-                        
+
                         var json = {};
                         json.datasetName = self.manifest.datasetName;
                         json.projectId = self.projectId;
                         json.datasetId = self.datasetId;
                         json.partners = self.partners;
                         json.topics = self.topicsMap;
-                        
-                        GVoDService.downloadKafka(json).then(function(success){
-                           
+
+                        GVoDService.downloadKafka(json).then(function (success) {
+
                             $modalInstance.close(success);
-                            
-                        },function(error){
-                             growl.error(error.data.errorMsg, {title: 'Failed to start download', ttl: 5000});
+
+                        }, function (error) {
+                            growl.error(error.data.errorMsg, {title: 'Failed to start download', ttl: 5000});
                         });
                     }
 

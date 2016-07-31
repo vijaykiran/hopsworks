@@ -175,7 +175,7 @@ public class Settings {
             CLUSTER_CERT = setUserVar(VARIABLE_CLUSTER_CERT, CLUSTER_CERT);
             CLUSTER_MAIL = setUserVar(VARIABLE_CLUSTER_MAIL, CLUSTER_MAIL);
             GVOD_REST_ENDPOINT = setUserVar(VARIABLE_GVOD_REST_ENDPOINT, GVOD_REST_ENDPOINT);
-            GVOD_UDP_ENDPOINT = getGvodEndpoint();
+            GVOD_UDP_ENDPOINT = getGvodUDPEndpoint();
             ELASTIC_PUBLIC_RESTENDPOINT = setUserVar(VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT, ELASTIC_PUBLIC_RESTENDPOINT);
             DOMAIN = setUserVar(VARIABLE_DOMAIN,DOMAIN);
             REST_PORT = setUserVar(VARIABLE_REST_PORT,REST_PORT);
@@ -808,10 +808,10 @@ public class Settings {
 
     public synchronized String getGVOD_UDP_ENDPOINT() {
         checkCache();
-        return this.getGvodEndpoint();
+        return this.getGvodUDPEndpoint();
     }
 
-    private String getGvodEndpoint() {
+    private String getGvodUDPEndpoint() {
 
         if (GVOD_UDP_ENDPOINT != null) {
 

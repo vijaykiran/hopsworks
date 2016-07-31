@@ -102,10 +102,12 @@
                                             <label for="{{file.fileName}}">TopicName</label>
                                             <input type="text" class="form-control" ng-model="setupDownloadCtrl.topicValues[$index]" id="{{file.fileName}}" ng-init="setupDownloadCtrl.initTopic($index, file.fileName);">
                                         </div>
-                                        <button class="btn btn-default" ng-click="setupDownloadCtrl.createTopic(setupDownloadCtrl.topicValues[$index], file.schema, $index)">create Topic</button>
+                                        <button class="btn btn-default" ng-click="setupDownloadCtrl.createTopic(setupDownloadCtrl.topicValues[$index], file.schema, $index)" ng-show="!setupDownloadCtrl.topicDone[$index]">create Topic</button>
+                                        <i style="color:green;" class="glyphicon glyphicon-ok" ng-show="setupDownloadCtrl.topicDone[$index]"></i>
                                     </div>
                                 </div>
-                                <button class="btn btn-success" ng-click="setupDownloadCtrl.download();" ng-show="setupDownloadCtrl.topicsCreated">
+                                <hr>
+                                <button class="btn btn-success" ng-click="setupDownloadCtrl.download();" ng-show="setupDownloadCtrl.topicsCreated" style="margin-top: 5px;">
                                     Download Kafka and HDFS
                                 </button>
                             </div>

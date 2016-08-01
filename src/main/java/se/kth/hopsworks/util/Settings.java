@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class Settings {
 
-
     @PersistenceContext(unitName = "kthfsPU")
     private EntityManager em;
 
@@ -178,8 +177,8 @@ public class Settings {
             GVOD_REST_ENDPOINT = setUserVar(VARIABLE_GVOD_REST_ENDPOINT, GVOD_REST_ENDPOINT);
             GVOD_UDP_ENDPOINT = getGvodUDPEndpoint();
             ELASTIC_PUBLIC_RESTENDPOINT = setUserVar(VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT, ELASTIC_PUBLIC_RESTENDPOINT);
-            DOMAIN = setUserVar(VARIABLE_DOMAIN,DOMAIN);
-            REST_PORT = setUserVar(VARIABLE_REST_PORT,REST_PORT);
+            DOMAIN = setUserVar(VARIABLE_DOMAIN, DOMAIN);
+            REST_PORT = setUserVar(VARIABLE_REST_PORT, REST_PORT);
             cached = true;
         }
     }
@@ -415,7 +414,7 @@ public class Settings {
     public static final String DEFAULT_YARN_CONFFILE_NAME = "yarn-site.xml";
     public static final String DEFAULT_HADOOP_CONFFILE_NAME = "core-site.xml";
     public static final String DEFAULT_HDFS_CONFFILE_NAME = "hdfs-site.xml";
-    
+
     //manifest name
     public static final String MANIFEST_NAME = "manifest.json";
 
@@ -622,16 +621,16 @@ public class Settings {
     // Kafka
     private String KAFKA_IP = "10.0.2.15";
     public static final int KAFKA_PORT = 9091;
-    
-        private static String DOMAIN = "bbc1.sics.se";
-    
+
+    private static String DOMAIN = "bbc1.sics.se";
+
     private static String REST_PORT = "14003";
-    
-    public synchronized String getRestPort(){
+
+    public synchronized String getRestPort() {
         checkCache();
         return REST_PORT;
     }
-    
+
     public synchronized String getDOMAIN() {
         checkCache();
         return DOMAIN;
@@ -734,8 +733,6 @@ public class Settings {
     public static final String KAFKA_BROKERADDR_ENV_VAR = "kafka.brokeraddress";
 //  public static final String KAFKA_K_CERTIFICATE_ENV_VAR = "kafka.key.certificate";
 //  public static final String KAFKA_T_CERTIFICATE_ENV_VAR = "kafka.trusted.certificate";
-    
-    
 
     private static final String VARIABLE_CLUSTER_ID = "cluster_id";
     private Client restClient = null;
@@ -800,7 +797,7 @@ public class Settings {
             return null;
         }
     }
-    
+
     private String GVOD_REST_ENDPOINT = "http://bbc1.sics.se:19303";
 
     public synchronized String getGVOD_REST_ENDPOINT() {
@@ -822,27 +819,24 @@ public class Settings {
             return GVOD_UDP_ENDPOINT;
 
         } else {
-            Response response = null;
             if (restClient == null || target == null) {
                 restClient = ClientBuilder.newClient();
                 target = restClient.target(GVOD_REST_ENDPOINT).path("/vod/endpoint");
             }
-            try {
-                response = target.request().accept(MediaType.APPLICATION_JSON).get();
-            } catch (Exception e) {
 
-            } finally {
-                if (response != null && response.getStatus() == 200) {
-                    return response.readEntity(AddressJSON.class);
-                } else {
-                    return null;
-                }
+            Response r = target.request().accept(MediaType.APPLICATION_JSON).get();
+
+            if (r != null && r.getStatus() == 200) {
+                return r.readEntity(AddressJSON.class);
+            } else {
+                return null;
             }
+
         }
 
     }
-    
-    public static String getPublicDatasetId(String clusterId, String projectName, String datasetName){
+
+    public static String getPublicDatasetId(String clusterId, String projectName, String datasetName) {
         return clusterId + "_" + projectName + "_" + datasetName;
     }
 

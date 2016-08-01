@@ -14,9 +14,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AddressJSON {
     
-    private final String ip;
-    private final int port;
-    private final int id;
+    private String ip;
+    private int port;
+    private int id;
+    
+    public AddressJSON(){
+        
+    }
     
     public AddressJSON(String ip, int port, int id) {
         this.ip = ip;
@@ -35,6 +39,20 @@ public class AddressJSON {
     public int getId() {
         return id;
     }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
     
     
     

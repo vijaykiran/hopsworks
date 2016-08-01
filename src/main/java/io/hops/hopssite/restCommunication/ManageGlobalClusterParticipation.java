@@ -5,6 +5,7 @@
  */
 package io.hops.hopssite.restCommunication;
 
+import io.hops.gvod.io.resources.items.AddressJSON;
 import io.hops.hopssite.io.register.RegisterJson;
 import io.hops.hopssite.io.populardatasets.PopularDatasetJson;
 import java.util.List;
@@ -75,7 +76,7 @@ public class ManageGlobalClusterParticipation {
 
         String id = null;
         try {
-            String gvodEndpoint = settings.getGVOD_UDP_ENDPOINT();
+            AddressJSON gvodEndpoint = settings.getGVOD_UDP_ENDPOINT();
             if (gvodEndpoint != null) {
                 id = RegisterRest(settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), gvodEndpoint);
             }
@@ -136,7 +137,7 @@ public class ManageGlobalClusterParticipation {
         }
     }
 
-    private String RegisterRest(String searchEndpoint, String email, String cert, String gvodEndpoint) {
+    private String RegisterRest(String searchEndpoint, String email, String cert, AddressJSON gvodEndpoint) {
 
         WebTarget resource = webTarget.path("register");
         

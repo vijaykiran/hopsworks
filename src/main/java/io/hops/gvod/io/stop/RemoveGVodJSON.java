@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.hops.gvod.io.status;
+package io.hops.gvod.io.stop;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import io.hops.gvod.io.resources.items.TorrentId;
@@ -13,15 +13,15 @@ import io.hops.gvod.io.resources.items.TorrentId;
  * @author jsvhqr
  */
 @XmlRootElement
-public class StatusGVoDJson {
+public class RemoveGVodJSON {
     
-    private TorrentId torrentId;
+      private TorrentId torrentId;
       private String datasetPath;
 
-    public StatusGVoDJson() {
+    public RemoveGVodJSON() {
     }
 
-    public StatusGVoDJson(String datasetPath, TorrentId torrentId) {
+    public RemoveGVodJSON(String datasetPath, TorrentId torrentId) {
         this.torrentId = torrentId;
         this.datasetPath = datasetPath;
     }
@@ -41,4 +41,8 @@ public class StatusGVoDJson {
     public void setDatasetPath(String datasetPath) {
         this.datasetPath = datasetPath;
     }
+      
+      
+    
+    
 }

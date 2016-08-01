@@ -16,22 +16,32 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class UploadGVoDJson {
+public class UploadGVoDJSON {
     
     
     private TorrentId torrentId;
+    private String torrentName;
     private HDFSResource manifestHDFSResource;
     private HDFSEndpoint hdfsEndpoint;
 
-    public UploadGVoDJson(TorrentId torrentId, HDFSResource manifestHDFSResource, HDFSEndpoint hdfsEndpoint) {
+    public UploadGVoDJSON(TorrentId torrentId, String torrentName, HDFSResource manifestHDFSResource, HDFSEndpoint hdfsEndpoint) {
         this.torrentId = torrentId;
+        this.torrentName = torrentName;
         this.manifestHDFSResource = manifestHDFSResource;
         this.hdfsEndpoint = hdfsEndpoint;
     }
 
-    public UploadGVoDJson() {
+    public UploadGVoDJSON() {
     }
 
+    public String getTorrentName() {
+        return torrentName;
+    }
+
+    public void setTorrentName(String torrentName) {
+        this.torrentName = torrentName;
+    }
+    
     public TorrentId getTorrentId() {
         return torrentId;
     }

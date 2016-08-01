@@ -5,6 +5,7 @@
  */
 package io.hops.hopssite.io.register;
 
+import io.hops.gvod.io.resources.items.AddressJSON;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -16,13 +17,13 @@ public class RegisterJson {
 
     private String searchEndpoint;
 
-    private String gvodEndpoint;
+    private AddressJSON gvodEndpoint;
 
     private String email;
 
     private String cert;
 
-    public RegisterJson(String searchEndpoint, String gvodEndpoint, String email, String cert) {
+    public RegisterJson(String searchEndpoint, AddressJSON gvodEndpoint, String email, String cert) {
         this.searchEndpoint = searchEndpoint;
         this.gvodEndpoint = gvodEndpoint;
         this.email = email;
@@ -36,7 +37,7 @@ public class RegisterJson {
         this.searchEndpoint = searchEndpoint;
     }
 
-    public void setGvodEndpoint(String gvodEndpoint) {
+    public void setGvodEndpoint(AddressJSON gvodEndpoint) {
         this.gvodEndpoint = gvodEndpoint;
     }
 
@@ -52,7 +53,7 @@ public class RegisterJson {
         return searchEndpoint;
     }
 
-    public String getGvodEndpoint() {
+    public AddressJSON getGvodEndpoint() {
         return gvodEndpoint;
     }
 

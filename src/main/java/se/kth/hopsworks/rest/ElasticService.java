@@ -67,8 +67,6 @@ import se.kth.hopsworks.controller.DatasetController;
 import io.hops.hopssite.io.register.RegisteredClusterJson;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
-import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
-import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 /**
  *
@@ -210,7 +208,7 @@ public class ElasticService {
                         List<ElasticHit> elasticHits = response.readEntity(new GenericType<List<ElasticHit>>(){});
                         for (ElasticHit ehit : elasticHits) {
                             if (!results.containsKey(ehit.getPublicId())) {
-                                if (settings.getGVOD_UDP_ENDPOINT().equals(ehit.getOriginalGvodEndpoint())) {
+                                if (settings.getGVOD_UDP_ENDPOINT().getId() == ehit.getOriginalGvodEndpoint().getId()) {
                                     ehit.setLocalDataset(true);
                                 } else {
                                     ehit.setLocalDataset(false);

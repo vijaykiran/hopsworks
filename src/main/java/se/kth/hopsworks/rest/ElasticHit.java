@@ -1,5 +1,6 @@
 package se.kth.hopsworks.rest;
 
+import io.hops.gvod.io.resources.items.AddressJSON;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -35,9 +36,9 @@ public class ElasticHit implements Comparator<ElasticHit> {
 
     private String publicId;
 
-    private List<String> gvodEndpoints;
+    private List<AddressJSON> gvodEndpoints;
 
-    private String originalGvodEndpoint;
+    private AddressJSON originalGvodEndpoint;
 
     private boolean localDataset;
 
@@ -71,20 +72,20 @@ public class ElasticHit implements Comparator<ElasticHit> {
         this.localDataset = localDataset;
     }
 
-    public String getOriginalGvodEndpoint() {
+    public AddressJSON getOriginalGvodEndpoint() {
         return originalGvodEndpoint;
     }
 
-    public void setOriginalGvodEndpoint(String originalGvodEndpoint) {
+    public void setOriginalGvodEndpoint(AddressJSON originalGvodEndpoint) {
         this.originalGvodEndpoint = originalGvodEndpoint;
     }
     
     @XmlElement(name = "partners")
-    public List<String> getGvodEndpoints() {
+    public List<AddressJSON> getGvodEndpoints() {
         return gvodEndpoints;
     }
 
-    public void appendEndpoint(String gvod_endpoint) {
+    public void appendEndpoint(AddressJSON gvod_endpoint) {
         if (this.gvodEndpoints != null) {
             this.gvodEndpoints.add(gvod_endpoint);
         } else {

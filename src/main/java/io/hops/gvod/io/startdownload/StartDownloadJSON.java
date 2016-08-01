@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.hops.gvod.io.requestmanifest;
+package io.hops.gvod.io.startdownload;
 
 import io.hops.gvod.io.resources.HDFSEndpoint;
 import io.hops.gvod.io.resources.HDFSResource;
@@ -19,12 +19,14 @@ public class StartDownloadJSON {
     
     
     private TorrentId torrentId;
+    private String torrentName;
     private HDFSResource manifestHDFSResource;
     private List<AddressJSON> partners;
     private HDFSEndpoint hdfsEndpoint;
 
-    public StartDownloadJSON(TorrentId torrentId, HDFSResource manifestHDFSResource, List<AddressJSON> partners, HDFSEndpoint hdfsEndpoint) {
+    public StartDownloadJSON(TorrentId torrentId, String torrentName, HDFSResource manifestHDFSResource, List<AddressJSON> partners, HDFSEndpoint hdfsEndpoint) {
         this.torrentId = torrentId;
+        this.torrentName = torrentName;
         this.manifestHDFSResource = manifestHDFSResource;
         this.partners = partners;
         this.hdfsEndpoint = hdfsEndpoint;
@@ -33,6 +35,14 @@ public class StartDownloadJSON {
     
     
     public StartDownloadJSON() {
+    }
+
+    public String getTorrentName() {
+        return torrentName;
+    }
+
+    public void setTorrentName(String torrentName) {
+        this.torrentName = torrentName;
     }
 
     public TorrentId getTorrentId() {

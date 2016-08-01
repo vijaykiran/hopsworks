@@ -1,5 +1,6 @@
 package se.kth.hopsworks.util;
 
+import io.hops.gvod.io.resources.items.AddressJSON;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -807,14 +808,14 @@ public class Settings {
         return GVOD_REST_ENDPOINT;
     }
 
-    private String GVOD_UDP_ENDPOINT = null;
+    private AddressJSON GVOD_UDP_ENDPOINT = null;
 
-    public synchronized String getGVOD_UDP_ENDPOINT() {
+    public synchronized AddressJSON getGVOD_UDP_ENDPOINT() {
         checkCache();
         return this.getGvodUDPEndpoint();
     }
 
-    private String getGvodUDPEndpoint() {
+    private AddressJSON getGvodUDPEndpoint() {
 
         if (GVOD_UDP_ENDPOINT != null) {
 
@@ -832,7 +833,7 @@ public class Settings {
 
             } finally {
                 if (response != null && response.getStatus() == 200) {
-                    return response.readEntity(String.class);
+                    return response.readEntity(AddressJSON.class);
                 } else {
                     return null;
                 }

@@ -25,12 +25,14 @@ import se.kth.bbc.security.ua.UserManager;
 import se.kth.hopsworks.controller.KafkaController;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.filters.AllowedRoles;
-import io.hops.gvod.io.download.FrontentJsonForHdfsDownload;
+import io.hops.gvod.io.download.HDFSDownloadDTO;
 import se.kth.hopsworks.controller.GVoDController;
 import se.kth.hopsworks.controller.ProjectController;
-import io.hops.gvod.io.download.FrontendJsonForHdfsKafkaDownload;
-import io.hops.gvod.io.download.DownloadRequest;
+import io.hops.gvod.io.download.HDFSKafkaDownloadDTO;
+import io.hops.gvod.io.download.startDownloadDTO;
+import io.hops.gvod.io.resources.KafkaEndpoint;
 import io.hops.gvod.io.resources.items.ManifestJson;
+import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.util.Settings;
 
 /**
@@ -58,14 +60,16 @@ public class GVodService {
     private KafkaController kafkaController;
     @EJB
     private UserManager userBean;
+    @EJB
+    private HdfsUsersController hdfsUsersBean;
     
     @PUT
-    @Path("downloadrequest")
+    @Path("startdownload")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
-    public Response downloadRequest(@Context SecurityContext sc,
-            @Context HttpServletRequest req, DownloadRequest downloadRequest) throws AppException {
+    public Response startDownload(@Context SecurityContext sc,
+            @Context HttpServletRequest req, startDownloadDTO startDownloadDTO) throws AppException {
 
         if (settings.getCLUSTER_ID() == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -77,13 +81,11 @@ public class GVodService {
         }
 
         
-        ManifestJson response = gvodController.downloadRequest(
-                downloadRequest.getDatasetId(), 
-                settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, 
+        ManifestJson response = gvodController.startDownload(startDownloadDTO.getPublicDatasetId(), 
                 userBean.getUserByEmail(sc.getUserPrincipal().getName()), 
-                projectController.findProjectById(downloadRequest.getProjectId()), 
-                downloadRequest.getDatasetName(),
-                downloadRequest.getPartners());
+                projectController.findProjectById(startDownloadDTO.getProjectId()), 
+                startDownloadDTO.getDestinationDatasetName(),
+                startDownloadDTO.getPartners());
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
@@ -98,7 +100,7 @@ public class GVodService {
     @Consumes(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
     public Response downloadDatasetHdfs(@Context SecurityContext sc,
-            @Context HttpServletRequest req, FrontentJsonForHdfsDownload frontentJsonForHdfsDownload) throws AppException {
+            @Context HttpServletRequest req, HDFSDownloadDTO hdfsDownloadDTO) throws AppException {
 
         if (settings.getCLUSTER_ID() == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -108,13 +110,15 @@ public class GVodService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.GVOD_OFFLINE);
         }
-
-        String response = gvodController.downloadHdfs(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
-                projectController.findProjectById(frontentJsonForHdfsDownload.getProjectId()),
-                userBean.getUserByEmail(sc.getUserPrincipal().getName()),
-                frontentJsonForHdfsDownload.getDatasetId(),
-                frontentJsonForHdfsDownload.getPartners(),
-                frontentJsonForHdfsDownload.getDatasetName());
+        
+        Project project = projectController.findProjectById(hdfsDownloadDTO.getProjectId());
+        String response = gvodController.download(
+                null, 
+                hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
+                hdfsDownloadDTO.getPublicDatasetId(), 
+                Settings.getProjectPath(project.getName()) + File.separator + hdfsDownloadDTO.getDestinationDatasetName() + File.separator, 
+                hdfsDownloadDTO.getFileTopics(), 
+                null);
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
@@ -129,7 +133,7 @@ public class GVodService {
     @Consumes(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
     public Response downloadDatasetKafka(@Context SecurityContext sc,
-            @Context HttpServletRequest req, FrontendJsonForHdfsKafkaDownload frontendJsonForHdfsKafkaDownload) throws AppException {
+            @Context HttpServletRequest req, HDFSKafkaDownloadDTO hdfsKafkaDownloadDTO) throws AppException {
         
         if (settings.getCLUSTER_ID() == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -140,22 +144,15 @@ public class GVodService {
                     ResponseMessages.GVOD_OFFLINE);
         }
 
-        Project project = projectController.findProjectById(frontendJsonForHdfsKafkaDownload.getProjectId());
+        Project project = projectController.findProjectById(hdfsKafkaDownloadDTO.getProjectId());
         String certPath = kafkaController.getKafkaCertPaths(project);
-
-        String response = gvodController.downloadKafka(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME,
-                project,
-                userBean.getUserByEmail(sc.getUserPrincipal().getName()),
-                frontendJsonForHdfsKafkaDownload.getDatasetId(),
-                frontendJsonForHdfsKafkaDownload.getPartners(),
-                req.getSession().getId(),
-                frontendJsonForHdfsKafkaDownload.getTopics(),
-                certPath + "/keystore.jks",
-                certPath + "/truststore.jks",
-                settings.getKafkaConnectStr(),
-                "http://" + settings.getDOMAIN() + ":" + settings.getRestPort(),
-                settings.getDOMAIN(),
-                frontendJsonForHdfsKafkaDownload.getDatasetName());
+        
+        String response = gvodController.download(new KafkaEndpoint(settings.getKafkaConnectStr(), "http://" + settings.getDOMAIN() + ":" + settings.getRestPort(), settings.getDOMAIN(), String.valueOf(hdfsKafkaDownloadDTO.getProjectId()), certPath + "/keystore.jks", certPath + "/truststore.jks"), 
+                hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
+                hdfsKafkaDownloadDTO.getPublicDatasetId(), 
+                Settings.getProjectPath(project.getName()) + File.separator + hdfsKafkaDownloadDTO.getDestinationDatasetName() + File.separator, 
+                hdfsKafkaDownloadDTO.getTopics(), 
+                req.getSession().getId());
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();

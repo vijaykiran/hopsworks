@@ -14,31 +14,31 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class DownloadRequest {
+public class startDownloadDTO {
     
-    private String datasetName;
+    private String destinationDatasetName;
     
-    private String datasetId;
+    private String publicDatasetId;
     
     private int projectId;
     
     private List<AddressJSON> partners;
 
-    public DownloadRequest() {}
+    public startDownloadDTO() {}
 
-    public DownloadRequest(String datasetName, String datasetId, int projectId, List<AddressJSON> partners) {
-        this.datasetName = datasetName;
-        this.datasetId = datasetId;
+    public startDownloadDTO(String destinationDatasetName, String publicDatasetId, int projectId, List<AddressJSON> partners) {
+        this.destinationDatasetName = destinationDatasetName;
+        this.publicDatasetId = publicDatasetId;
         this.projectId = projectId;
         this.partners = partners;
     }
 
-    public String getDatasetName() {
-        return datasetName;
+    public String getDestinationDatasetName() {
+        return destinationDatasetName;
     }
 
-    public void setDatasetName(String datasetName) {
-        this.datasetName = datasetName;
+    public void setDestinationDatasetName(String destinationDatasetName) {
+        this.destinationDatasetName = destinationDatasetName;
     }
 
     public int getProjectId() {
@@ -49,20 +49,20 @@ public class DownloadRequest {
         this.projectId = projectId;
     }
 
-    public String getDatasetId() {
-        return datasetId;
-    }
-
-    public void setDatasetId(String datasetId) {
-        this.datasetId = datasetId;
-    }
-
     public List<AddressJSON> getPartners() {
         return partners;
     }
 
     public void setPartners(List<AddressJSON> partners) {
         this.partners = partners;
+    }
+
+    public String getPublicDatasetId() {
+        return publicDatasetId;
+    }
+
+    public void setPublicDatasetId(String publicDatasetId) {
+        this.publicDatasetId = publicDatasetId;
     }
     
     

@@ -5,6 +5,7 @@
  */
 package io.hops.gvod.io.requestmanifest;
 
+import io.hops.gvod.io.resources.HDFSEndpoint;
 import io.hops.gvod.io.resources.HDFSResource;
 import io.hops.gvod.io.resources.items.AddressJSON;
 import io.hops.gvod.io.resources.items.TorrentId;
@@ -14,20 +15,24 @@ import java.util.List;
  *
  * @author jsvhqr
  */
-public class DownloadRequest {
+public class StartDownloadJSON {
     
     
     private TorrentId torrentId;
     private HDFSResource manifestHDFSResource;
     private List<AddressJSON> partners;
+    private HDFSEndpoint hdfsEndpoint;
 
-    public DownloadRequest() {
-    }
-
-    public DownloadRequest(TorrentId torrentId, HDFSResource manifestHDFSResource, List<AddressJSON> partners) {
+    public StartDownloadJSON(TorrentId torrentId, HDFSResource manifestHDFSResource, List<AddressJSON> partners, HDFSEndpoint hdfsEndpoint) {
         this.torrentId = torrentId;
         this.manifestHDFSResource = manifestHDFSResource;
         this.partners = partners;
+        this.hdfsEndpoint = hdfsEndpoint;
+    }
+
+    
+    
+    public StartDownloadJSON() {
     }
 
     public TorrentId getTorrentId() {
@@ -52,6 +57,14 @@ public class DownloadRequest {
 
     public void setPartners(List<AddressJSON> partners) {
         this.partners = partners;
+    }
+
+    public HDFSEndpoint getHdfsEndpoint() {
+        return hdfsEndpoint;
+    }
+
+    public void setHdfsEndpoint(HDFSEndpoint hdfsEndpoint) {
+        this.hdfsEndpoint = hdfsEndpoint;
     }
     
     

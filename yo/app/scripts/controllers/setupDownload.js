@@ -160,7 +160,14 @@ angular.module('hopsWorksApp')
                         json.projectId = self.projectId;
                         json.datasetId = self.datasetId;
                         json.partners = self.partners;
-
+                        
+                        for(var i = 0;i<self.manifest.fileInfos.length;i++){
+                            var keyName = self.manifest.fileInfos[i].fileName;
+                            self.topicsMap.keyName = "";
+                        }
+                        
+                        json.topics = self.topicsMap;
+                        
                         GVoDService.downloadHdfs(json).then(function (success) {
 
                             $modalInstance.close(success);
@@ -176,6 +183,14 @@ angular.module('hopsWorksApp')
                         json.projectId = self.projectId;
                         json.datasetId = self.datasetId;
                         json.partners = self.partners;
+                        
+                        for(var i = 0; i<self.manifest.fileInfos.length;i++){
+                            var keyName = self.manifest.fileInfos[i].fileName;
+                            if(!(keyName in self.topicsMap)){
+                                self.topicsMap.keyName = "";
+                            }
+                        }
+                        
                         json.topics = self.topicsMap;
 
                         GVoDService.downloadKafka(json).then(function (success) {

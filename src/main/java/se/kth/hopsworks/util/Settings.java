@@ -414,6 +414,9 @@ public class Settings {
     public static final String DEFAULT_YARN_CONFFILE_NAME = "yarn-site.xml";
     public static final String DEFAULT_HADOOP_CONFFILE_NAME = "core-site.xml";
     public static final String DEFAULT_HDFS_CONFFILE_NAME = "hdfs-site.xml";
+    
+    //manifest name
+    public static final String MANIFEST_NAME = "manifest.json";
 
     //Environment variable keys
     //TODO: Check if ENV_KEY_YARN_CONF_DIR should be replaced with ENV_KEY_YARN_CONF
@@ -836,6 +839,10 @@ public class Settings {
             }
         }
 
+    }
+    
+    public static String getPublicDatasetId(String clusterId, String projectName, String datasetName){
+        return clusterId + "_" + projectName + "_" + datasetName;
     }
 
     //Project creation: default datasets

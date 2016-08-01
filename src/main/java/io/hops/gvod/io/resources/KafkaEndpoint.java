@@ -5,7 +5,6 @@
  */
 package io.hops.gvod.io.resources;
 
-import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -13,22 +12,24 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class KafkaResource {
+public class KafkaEndpoint {
     
     private String brokerEndpoint;
     private String restEndpoint;
     private String domain;
-    private String sessionId;
     private String projectId;
     private String keyStore;
     private String trustStore;
 
-    public KafkaResource(String brokerEndpoint, String restEndpoint, String domain, String sessionId,
+    public KafkaEndpoint() {
+    }
+    
+
+    public KafkaEndpoint(String brokerEndpoint, String restEndpoint, String domain,
             String projectId, String keyStore, String trustStore) {
         this.brokerEndpoint = brokerEndpoint;
         this.restEndpoint = restEndpoint;
         this.domain = domain;
-        this.sessionId = sessionId;
         this.projectId = projectId;
         this.keyStore = keyStore;
         this.trustStore = trustStore;
@@ -44,10 +45,6 @@ public class KafkaResource {
 
     public String getDomain() {
         return domain;
-    }
-
-    public String getSessionId() {
-        return sessionId;
     }
 
     public String getProjectId() {
@@ -72,10 +69,6 @@ public class KafkaResource {
 
     public void setDomain(String domain) {
         this.domain = domain;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
     }
 
     public void setProjectId(String projectId) {

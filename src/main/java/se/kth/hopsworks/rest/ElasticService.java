@@ -67,6 +67,8 @@ import se.kth.hopsworks.controller.DatasetController;
 import io.hops.hopssite.io.register.RegisteredClusterJson;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 /**
  *

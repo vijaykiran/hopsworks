@@ -5,7 +5,8 @@
  */
 package io.hops.gvod.io.download;
 
-import io.hops.gvod.io.resources.KafkaResource;
+import io.hops.gvod.io.resources.HDFSEndpoint;
+import io.hops.gvod.io.resources.KafkaEndpoint;
 import io.hops.gvod.io.resources.items.ExtendedDetails;
 import io.hops.gvod.io.resources.items.TorrentId;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,18 +16,20 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class DownloadGVoDJson {
+public class DownloadGVoDJSON {
 
     private TorrentId torrentId;
-    private KafkaResource kafkaEndpoint;
+    private KafkaEndpoint kafkaEndpoint;
+    private HDFSEndpoint hdfsEndpoint;
     private ExtendedDetails extendedDetails;
 
-    public DownloadGVoDJson() {
+    public DownloadGVoDJSON() {
     }
     
-    public DownloadGVoDJson(TorrentId torrentId, KafkaResource kafkaEndpoint, ExtendedDetails extendedDetails) {
+    public DownloadGVoDJSON(TorrentId torrentId, KafkaEndpoint kafkaEndpoint, HDFSEndpoint hdfsEndpoint, ExtendedDetails extendedDetails) {
         this.torrentId = torrentId;
         this.kafkaEndpoint = kafkaEndpoint;
+        this.hdfsEndpoint = hdfsEndpoint;
         this.extendedDetails = extendedDetails;
     }
 
@@ -38,11 +41,11 @@ public class DownloadGVoDJson {
         this.torrentId = torrentId;
     }
 
-    public KafkaResource getKafkaEndpoint() {
+    public KafkaEndpoint getKafkaEndpoint() {
         return kafkaEndpoint;
     }
 
-    public void setKafkaEndpoint(KafkaResource kafkaEndpoint) {
+    public void setKafkaEndpoint(KafkaEndpoint kafkaEndpoint) {
         this.kafkaEndpoint = kafkaEndpoint;
     }
 
@@ -52,6 +55,14 @@ public class DownloadGVoDJson {
 
     public void setExtendedDetails(ExtendedDetails extendedDetails) {
         this.extendedDetails = extendedDetails;
+    }
+
+    public HDFSEndpoint getHdfsEndpoint() {
+        return hdfsEndpoint;
+    }
+
+    public void setHdfsEndpoint(HDFSEndpoint hdfsEndpoint) {
+        this.hdfsEndpoint = hdfsEndpoint;
     }
     
     

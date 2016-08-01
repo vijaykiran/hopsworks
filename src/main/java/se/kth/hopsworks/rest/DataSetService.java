@@ -1014,8 +1014,8 @@ public class DataSetService {
                 project);
         
         String response = gvodController.uploadToGVod(
-                project,
-                dataset,
+                project.getName(),
+                dataset.getName(),
                 hdfsUsersController.getHdfsUserName(project, userBean.findByEmail(sc.getUserPrincipal().getName())),
                 path + dataset.getName() + File.separator);
 
@@ -1025,11 +1025,11 @@ public class DataSetService {
                     json).build();
         } else {
             dataset.setPublicDs(true);
-            dataset.setPublicDsId(settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataset.getName());
+            dataset.setPublicDsId(Settings.getPublicDatasetId(settings.getCLUSTER_ID(), dataset.getName(), project.getName()));
             dataset.setEditable(false);
             datasetFacade.merge(dataset);
             json.setSuccessMessage("The Dataset is now public.");
-            manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, settings.getCLUSTER_ID() + "_" + project.getName() + "_" + dataset.getName(), 0, 1);
+            //manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, Settings.getPublicDatasetId(settings.getCLUSTER_ID(), dataset.getName(), project.getName()), 0, 1);
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
                     response).build();
         }

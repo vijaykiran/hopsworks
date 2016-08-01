@@ -15,12 +15,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class HDFSResource {
     
     private String dirPath;
+    private String fileName;
 
     public HDFSResource() {
     }
 
-    public HDFSResource(String dirPath) {
+    public HDFSResource(String dirPath, String fileName) {
         this.dirPath = dirPath;
+        this.fileName = fileName;
     }
 
     public String getDirPath() {
@@ -29,6 +31,14 @@ public class HDFSResource {
 
     public void setDirPath(String dirPath) {
         this.dirPath = dirPath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     

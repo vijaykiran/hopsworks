@@ -6,7 +6,6 @@
 package io.hops.gvod.io.resources.items;
 
 import io.hops.gvod.io.resources.HDFSResource;
-import io.hops.gvod.io.resources.KafkaResource;
 import java.util.Map;
 
 /**
@@ -25,7 +24,7 @@ public class ExtendedDetails {
         this.hdfsDetails = hdfsDetails;
         this.kafkaDetails = kafkaDetails;
     }
-
+    
     public Map<String, HDFSResource> getHdfsDetails() {
         return hdfsDetails;
     }
@@ -41,6 +40,7 @@ public class ExtendedDetails {
     public void setKafkaDetails(Map<String, KafkaResource> kafkaDetails) {
         this.kafkaDetails = kafkaDetails;
     }
+
     
     
     

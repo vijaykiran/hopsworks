@@ -10,7 +10,7 @@ angular.module('hopsWorksApp')
                     downloadRequest: function (json) {
                         return $http({
                             method: 'PUT',
-                            url: '/api/gvod/downloadrequest',
+                            url: '/api/gvod/startdownload',
                             data: json
                         });
                     },

@@ -1,86 +1,29 @@
-angular.module('hopsWorksApp').controller('P2PCtrl', ['GVodService', function (GVodService) {
+angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService','$routeParams','$scope','$interval', function (GVoDService, $routeParams, $scope, $interval) {
         var self = this;
-        self.identifier = GVodService.getIdentifier();
-        self.filename = GVodService.getFilename();
-
-        self.uri;
-        self.size;
-        self.description;
-        self.result;
-        self.viewToLoad;
-
-        self.showView = new Array(0);
-        self.status = false;
-        self.addFile = function () {
-
-            var fileInfo = {
-                name: self.filename,
-                uri: self.uri,
-                size: self.size,
-                description: self.description
-
-            };
-
-            var JSONObj = {"identifier": self.identifier, "fileInfo": fileInfo};
-
-            GVodService.addFile(JSONObj).then(function (result) {
-                self.result = result;
-            });
-
-        };
-
-        self.getLibraryContents = function () {
-
-            GVodService.getLibraryContents().then(function (result) {
-                self.result = result;
-            });
-
-        };
-
-        self.getLibraryElement = function () {
-            var JSONObj = {"identifier": self.identifier, "name": self.filename};
-            GVodService.getLibraryElement(JSONObj).then(function (result) {
-                self.result = result;
-            });
-            self.status = true;
-        };
+      
+        self.projectId = $routeParams.projectID;
         
-        self.closeLibraryElement = function(){
-            self.status = false;
-        };
-
-        self.enlarge = function (status, name, identifier, index) {
-
-            switch (status) {
-                case "NONE":
-                    self.viewToLoad = "upload";
-                    break;
-                case "UPLOADING":
-                    self.viewToLoad = "stop";
-                    break;
-                case "DOWNLOADING" :
-                    self.viewToLoad = "stop";
-                    break;
-            }
-
-            GVodService.setFilename(name);
-            GVodService.setIdentifier(identifier);
-            
-            if(self.showView.length === 0){
-                self.showView = new Array(self.result.data.contents.length);
-                self.showView[index] = true;
-            }else{
-                self.showView[index] = true;
-            }
-            
-            
-
-        };
+        self.contents;
         
-        self.minimize = function(index){
+        var getContents = function(){
           
-          self.showView[index]= false;  
+            var json = {};
+            json.projectId = self.projectId;
+            
+            GVoDService.getContents(json).then(function(success){
+                self.contents = success.data.contents;
+            });
             
         };
-
+        
+        getContents();
+        
+        
+        var contentsInterval = $interval(function () {
+                     getContents();
+                }, 6000);
+                
+        $scope.$on("$destroy", function () {
+                    $interval.cancel(contentsInterval);
+                });        
     }]);

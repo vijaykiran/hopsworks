@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class startDownloadDTO {
+public class StartDownloadDTO {
     
     private String destinationDatasetName;
     
@@ -24,9 +24,9 @@ public class startDownloadDTO {
     
     private List<AddressJSON> partners;
 
-    public startDownloadDTO() {}
+    public StartDownloadDTO() {}
 
-    public startDownloadDTO(String destinationDatasetName, String publicDatasetId, int projectId, List<AddressJSON> partners) {
+    public StartDownloadDTO(String destinationDatasetName, String publicDatasetId, int projectId, List<AddressJSON> partners) {
         this.destinationDatasetName = destinationDatasetName;
         this.publicDatasetId = publicDatasetId;
         this.projectId = projectId;

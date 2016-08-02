@@ -15,6 +15,17 @@ angular.module('hopsWorksApp')
                         });
                     },
                     
+                    getContents: function (json){
+                      
+                      return $http({
+                            method: 'PUT',
+                            url: '/api/gvod/contents',
+                            data: json
+                        });
+                        
+                        
+                    },
+                    
                     downloadHdfs: function (json) {
                         return $http({
                             method: 'PUT',

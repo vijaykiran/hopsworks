@@ -5,6 +5,7 @@
  */
 package se.kth.hopsworks.rest;
 
+import io.hops.gvod.io.contents.ContentsRequestDTO;
 import java.io.File;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -29,9 +30,10 @@ import io.hops.gvod.io.download.HDFSDownloadDTO;
 import se.kth.hopsworks.controller.GVoDController;
 import se.kth.hopsworks.controller.ProjectController;
 import io.hops.gvod.io.download.HDFSKafkaDownloadDTO;
-import io.hops.gvod.io.download.startDownloadDTO;
+import io.hops.gvod.io.download.StartDownloadDTO;
 import io.hops.gvod.io.resources.KafkaEndpoint;
 import io.hops.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.responses.HopsContentsSummaryJSON;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.util.Settings;
 
@@ -69,7 +71,7 @@ public class GVodService {
     @Consumes(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
     public Response startDownload(@Context SecurityContext sc,
-            @Context HttpServletRequest req, startDownloadDTO startDownloadDTO) throws AppException {
+            @Context HttpServletRequest req, StartDownloadDTO startDownloadDTO) throws AppException {
 
         if (settings.getCLUSTER_ID() == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
@@ -156,6 +158,32 @@ public class GVodService {
 
         if (response != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
+        } else {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
+        }
+    }
+    
+    @PUT
+    @Path("contents")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
+    public Response getContents(@Context SecurityContext sc,
+            @Context HttpServletRequest req, ContentsRequestDTO contentsRequestDTO) throws AppException {
+        
+        if (settings.getCLUSTER_ID() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.NOT_REGISTERD_WITH_HOPS_SITE);
+        }
+        if(settings.getGVOD_UDP_ENDPOINT() == null){
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.GVOD_OFFLINE);
+        }
+        
+        HopsContentsSummaryJSON hopsContentsSummaryJSON = gvodController.getContents(contentsRequestDTO.getProjectId());
+
+        if (hopsContentsSummaryJSON != null) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(hopsContentsSummaryJSON).build();
         } else {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
         }

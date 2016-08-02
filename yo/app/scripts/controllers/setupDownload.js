@@ -125,8 +125,8 @@ angular.module('hopsWorksApp')
                 self.DownloadRequest = function () {
 
                     var json = {};
-                    json.datasetName = self.datasetName;
-                    json.datasetId = self.datasetId;
+                    json.destinationDatasetName = self.datasetName;
+                    json.publicDatasetId = self.datasetId;
                     json.projectId = self.projectId;
                     json.partners = self.partners;
                     GVoDService.downloadRequest(json).then(function (success) {
@@ -156,9 +156,9 @@ angular.module('hopsWorksApp')
                     if (!self.DownloadTypeKafka) {
 
                         var json = {};
-                        json.datasetName = self.manifest.datasetName;
+                        json.destinationDatasetName = self.manifest.datasetName;
                         json.projectId = self.projectId;
-                        json.datasetId = self.datasetId;
+                        json.publicDatasetId = self.datasetId;
                         json.partners = self.partners;
                         
                         for(var i = 0;i<self.manifest.fileInfos.length;i++){

@@ -37,7 +37,6 @@ import se.kth.bbc.project.services.ProjectServiceEnum;
 import se.kth.bbc.security.ua.UserManager;
 import se.kth.hopsworks.certificates.UserCertsFacade;
 import se.kth.hopsworks.controller.DataSetDTO;
-import se.kth.hopsworks.controller.DatasetController;
 import se.kth.hopsworks.controller.ProjectController;
 import se.kth.hopsworks.controller.ProjectDTO;
 import se.kth.hopsworks.controller.QuotasDTO;
@@ -89,8 +88,6 @@ public class ProjectService {
   @EJB
   private DatasetFacade datasetFacade;
   @EJB
-  private DatasetController datasetController;
-  @EJB
   private InodeFacade inodes;
   @EJB
   private HdfsUsersController hdfsUsersBean;
@@ -107,6 +104,7 @@ public class ProjectService {
   private Settings settings;
   @EJB
   private ManageGlobalClusterParticipation manageGlobalClusterParticipation;
+  @EJB
   private DistributedFsService dfs;
   private final static Logger logger = Logger.getLogger(ProjectService.class.
     getName());
@@ -568,7 +566,9 @@ public class ProjectService {
       throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
         ResponseMessages.PROJECT_FOLDER_NOT_REMOVED);
     } finally {
-      udfso.close();
+        if(udfso != null){
+            udfso.close();
+        }
     }
     if (success) {
       json.setSuccessMessage(ResponseMessages.PROJECT_REMOVED);

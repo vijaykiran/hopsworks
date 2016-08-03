@@ -17,11 +17,13 @@ public class FileInfo {
     private String fileName;
     
     private String schema;
+    
+    private long length;
 
     public FileInfo() {
     }
 
-    public FileInfo(String fileName, String schema) {
+    public FileInfo(String fileName, String schema, long length) {
         this.fileName = fileName;
         this.schema = schema;
     }
@@ -41,6 +43,15 @@ public class FileInfo {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+
+    public long getLength() {
+        return length;
+    }
+
+    public void setLength(long length) {
+        this.length = length;
+    }
+    
     
     
 }

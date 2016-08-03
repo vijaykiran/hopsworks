@@ -402,14 +402,15 @@ public class DatasetController {
             FileInfo fileInfo = null;
             
             if(!isAvro(child)){
-                
                 fileInfo = new FileInfo();
                 fileInfo.setFileName(child);
                 if(childrenOfDataset.contains(child + ".avro")){
                     String hdfsPath = dsPath + child + ".avro";
                     fileInfo.setSchema(new String(this.readJsonFromHdfs(hdfsPath)));
+                    fileInfo.setLength(this.getLength(dsPath + child));
                 }else{
                     fileInfo.setSchema("");
+                    fileInfo.setLength(this.getLength(dsPath + child));
                 }
                 
             }
@@ -523,5 +524,16 @@ public class DatasetController {
     
     private boolean isCsv(String s){
         return true;
+    }
+
+    private long getLength(String pathToFile) {
+        return dfs.getDfsOps().getlength(pathToFile);
+    }
+    
+    public void makeDatasetPublicAndImmutable(Dataset ds, String id){
+        
+        ds.setPublicDs(true);
+        ds.setPublicDsId(id);
+        ds.setEditable(false);
     }
 }

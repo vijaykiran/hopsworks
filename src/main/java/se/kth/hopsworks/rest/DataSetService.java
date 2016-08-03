@@ -58,7 +58,6 @@ import se.kth.hopsworks.dataset.DatasetFacade;
 import se.kth.hopsworks.dataset.DatasetRequest;
 import se.kth.hopsworks.dataset.DatasetRequestFacade;
 import se.kth.hopsworks.filters.AllowedRoles;
-import io.hops.gvod.io.resources.items.ManifestJson;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.MoveDTO;
@@ -1006,7 +1005,7 @@ public class DataSetService {
                     ResponseMessages.GVOD_OFFLINE);
         }
         
-        ManifestJson manifestJson = datasetController.createAndPersistManifestJson(
+        datasetController.createAndPersistManifestJson(
                 path + dataset.getName() + File.separator, 
                 dataset.getDescription(), 
                 dataset.getName(),
@@ -1025,7 +1024,7 @@ public class DataSetService {
                     json).build();
         } else {
             dataset.setPublicDs(true);
-            dataset.setPublicDsId(Settings.getPublicDatasetId(settings.getCLUSTER_ID(), dataset.getName(), project.getName()));
+            dataset.setPublicDsId(Settings.getPublicDatasetId(settings.getCLUSTER_ID(), project.getName(), dataset.getName()));
             dataset.setEditable(false);
             datasetFacade.merge(dataset);
             json.setSuccessMessage("The Dataset is now public.");

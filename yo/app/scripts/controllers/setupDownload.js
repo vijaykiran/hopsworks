@@ -53,7 +53,7 @@ angular.module('hopsWorksApp')
                     return true;
                 };
 
-                self.createTopic = function (topicName, schema, index) {
+                self.createTopic = function (topicName, schema, fileName, index) {
 
                     var schemaDetail = {};
                     schemaDetail.name = topicName;
@@ -75,7 +75,7 @@ angular.module('hopsWorksApp')
                                         function (success) {
                                             self.topicsRemainingForCreation--;
                                             self.topicDone[index] = true;
-                                            self.topicsMap.fileName = topicName;
+                                            self.topicsMap[fileName] = topicName;
                                             if (self.topicsRemainingForCreation === 0) {
                                                 self.topicsCreated = true;
                                             }
@@ -163,7 +163,7 @@ angular.module('hopsWorksApp')
                         
                         for(var i = 0;i<self.manifest.fileInfos.length;i++){
                             var keyName = self.manifest.fileInfos[i].fileName;
-                            self.topicsMap.keyName = "";
+                            self.topicsMap[keyName] = "";
                         }
                         
                         json.topics = self.topicsMap;
@@ -179,15 +179,15 @@ angular.module('hopsWorksApp')
                     } else {
 
                         var json = {};
-                        json.datasetName = self.manifest.datasetName;
+                        json.destinationDatasetName = self.manifest.datasetName;
                         json.projectId = self.projectId;
-                        json.datasetId = self.datasetId;
+                        json.publicDatasetId = self.datasetId;
                         json.partners = self.partners;
                         
                         for(var i = 0; i<self.manifest.fileInfos.length;i++){
                             var keyName = self.manifest.fileInfos[i].fileName;
                             if(!(keyName in self.topicsMap)){
-                                self.topicsMap.keyName = "";
+                                self.topicsMap[keyName] = "";
                             }
                         }
                         

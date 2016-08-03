@@ -7,7 +7,6 @@ package io.hops.gvod.io.download;
 
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -15,8 +14,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class HDFSKafkaDownloadDTO {
+public class DownloadDTO {
     
+    private String destinationDatasetName;
     
     private int projectId;
     
@@ -24,18 +24,25 @@ public class HDFSKafkaDownloadDTO {
     
     private List<String> partners;
     
-    private Map topics;
+    private Map<String,String> topics;
     
-    private String destinationDatasetName;
 
-    public HDFSKafkaDownloadDTO() {
+    public DownloadDTO() {
     }
 
-    public HDFSKafkaDownloadDTO(int projectId, String publicDatasetId, List<String> partners, Map topics, String destinationDatasetName) {
+    public DownloadDTO(String destinationDatasetName, int projectId, String publicDatasetId, List<String> partners, Map<String, String> topics) {
+        this.destinationDatasetName = destinationDatasetName;
         this.projectId = projectId;
         this.publicDatasetId = publicDatasetId;
         this.partners = partners;
         this.topics = topics;
+    }
+
+    public String getDestinationDatasetName() {
+        return destinationDatasetName;
+    }
+
+    public void setDestinationDatasetName(String destinationDatasetName) {
         this.destinationDatasetName = destinationDatasetName;
     }
 
@@ -47,30 +54,31 @@ public class HDFSKafkaDownloadDTO {
         this.publicDatasetId = publicDatasetId;
     }
 
-    public String getDestinationDatasetName() {
-        return destinationDatasetName;
-    }
-
-    public void setDestinationDatasetName(String destinationDatasetName) {
-        this.destinationDatasetName = destinationDatasetName;
-    }
-    
-
     public int getProjectId() {
         return projectId;
     }
     public List<String> getPartners() {
         return partners;
-    }
+    } 
 
-    public Map getTopics() {
+    public Map<String, String> getTopics() {
         return topics;
     }
 
-    public void setTopics(Map topics) {
+    public void setTopics(Map<String, String> topics) {
         this.topics = topics;
     }
-     
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setPartners(List<String> partners) {
+        this.partners = partners;
+    }
     
-      
+    
+    
+    
+    
 }

@@ -39,16 +39,19 @@ import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.rest.AppException;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.Settings;
-import se.kth.hopsworks.dataset.Dataset;
 import java.util.Map;
 import io.hops.gvod.io.status.StatusGVoDJSON;
 import java.util.HashMap;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import se.kth.hopsworks.dataset.Dataset;
 
 /**
  *
  * @author jsvhqr
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.NEVER)
 public class GVoDController {
 
     @EJB
@@ -62,7 +65,7 @@ public class GVoDController {
 
     @EJB
     private HdfsUsersController hdfsUsersBean;
-
+    
     private WebTarget webTarget = null;
     private Client rest_client = null;
 
@@ -93,15 +96,15 @@ public class GVoDController {
 
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;
-        Dataset ds = null;
         String username = hdfsUsersBean.getHdfsUserName(project, user);
         try {
             dfso = dfs.getDfsOps();
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-            datasetController.createDataset(user, project, destinationDatasetName, "", -1, true, false, dfso, udfso);
-
+            Dataset ds =  datasetController.createDataset(user, project, destinationDatasetName, "", -1, true, false, dfso, udfso);
+            datasetController.makeDatasetPublicAndImmutable(ds, publicDsId);
+            
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
                     getLocalizedMessage());
@@ -283,5 +286,4 @@ public class GVoDController {
             return null;
         }
     }
-
 }

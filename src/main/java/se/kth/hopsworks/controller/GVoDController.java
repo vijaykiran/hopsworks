@@ -42,8 +42,11 @@ import se.kth.hopsworks.util.Settings;
 import java.util.Map;
 import io.hops.gvod.io.status.StatusGVoDJSON;
 import java.util.HashMap;
+import java.util.Iterator;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import org.json.JSONException;
+import org.json.JSONObject;
 import se.kth.hopsworks.dataset.Dataset;
 
 /**
@@ -65,7 +68,7 @@ public class GVoDController {
 
     @EJB
     private HdfsUsersController hdfsUsersBean;
-    
+
     private WebTarget webTarget = null;
     private Client rest_client = null;
 
@@ -102,9 +105,9 @@ public class GVoDController {
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-            Dataset ds =  datasetController.createDataset(user, project, destinationDatasetName, "", -1, true, false, dfso, udfso);
+            Dataset ds = datasetController.createDataset(user, project, destinationDatasetName, "", -1, true, false, dfso, udfso);
             datasetController.makeDatasetPublicAndImmutable(ds, publicDsId);
-            
+
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
                     getLocalizedMessage());
@@ -166,20 +169,26 @@ public class GVoDController {
         return manifestJson;
     }
 
-    public String download(KafkaEndpoint kafkaEndpoint, String username, String publicDsId, String dsPath, Map<String, String> fileTopics, String sessiodId) {
+    public String download(KafkaEndpoint kafkaEndpoint, String username, String publicDsId, String dsPath, JSONObject fileTopics, String sessiodId) {
 
         if (kafkaEndpoint != null) { // perform kafka download
 
             Map<String, HDFSResource> hdfsResources = new HashMap<>();
             Map<String, KafkaResource> kafkaResources = new HashMap<>();
-            for (Map.Entry<String, String> entry : fileTopics.entrySet()) {
 
-                if (!entry.getValue().equals("")) {
-                    kafkaResources.put(entry.getKey(), new KafkaResource(sessiodId, entry.getValue()));
-                } else {
-                    hdfsResources.put(entry.getKey(), new HDFSResource(dsPath, entry.getKey()));
+            Iterator<String> iter = fileTopics.keys();
+            while (iter.hasNext()) {
+                String key = iter.next();
+                try {
+                    String value = (String) fileTopics.get(key);
+                    if (!value.equals("")) {
+                        kafkaResources.put(key, new KafkaResource(sessiodId, value));
+                    } else {
+                        hdfsResources.put(key, new HDFSResource(dsPath, key));
+                    }
+                } catch (JSONException e) {
+                    // Something went wrong!
                 }
-
             }
             DownloadGVoDJSON downloadGVodJSON = new DownloadGVoDJSON(
                     new TorrentId(publicDsId),
@@ -203,11 +212,17 @@ public class GVoDController {
         } else { // only hdfs
 
             Map<String, HDFSResource> hdfsResources = new HashMap<>();
-            for (Map.Entry<String, String> entry : fileTopics.entrySet()) {
-
-                hdfsResources.put(entry.getKey(), new HDFSResource(dsPath, entry.getKey()));
-
+            
+            Iterator<String> iter = fileTopics.keys();
+            while (iter.hasNext()) {
+                String key = iter.next();
+                try {
+                    hdfsResources.put(key, new HDFSResource(dsPath, key));
+                } catch (JSONException e) {
+                    // Something went wrong!
+                }
             }
+            
             DownloadGVoDJSON downloadGVodJSON = new DownloadGVoDJSON(
                     new TorrentId(publicDsId),
                     null,
@@ -245,27 +260,27 @@ public class GVoDController {
 
         if (r != null && r.getStatus() == 200) {
             return r.readEntity(SuccessJSON.class).getDetails();
-        } else if(r != null){
+        } else if (r != null) {
             return r.readEntity(ErrorDescJSON.class).getDetails();
-        }else{
+        } else {
             return null;
         }
 
     }
-    
-    public HopsContentsSummaryJSON getContents(int projectId){
-        
+
+    public HopsContentsSummaryJSON getContents(int projectId) {
+
         HopsContentsReqJSON hopsContentsReqJSON = new HopsContentsReqJSON(projectId);
-        
+
         rest_client = ClientBuilder.newClient();
 
         webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("t/library/contents");
 
         Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(hopsContentsReqJSON, MediaType.APPLICATION_JSON), Response.class);
-        
+
         if (r != null && r.getStatus() == 200) {
             return r.readEntity(HopsContentsSummaryJSON.class);
-        } else{
+        } else {
             return null;
         }
     }

@@ -99,14 +99,14 @@ public class GVoDController {
 
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;
+        Dataset ds = null;
         String username = hdfsUsersBean.getHdfsUserName(project, user);
         try {
             dfso = dfs.getDfsOps();
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-            Dataset ds = datasetController.createDataset(user, project, destinationDatasetName, "", -1, true, false, dfso, udfso);
-            datasetController.makeDatasetPublicAndImmutable(ds, publicDsId);
+            ds = datasetController.createDataset(user, project, destinationDatasetName, "", -1, true, false, dfso, udfso);
 
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
@@ -166,6 +166,9 @@ public class GVoDController {
                 }
             }
         }
+        
+        ds.setDescription(manifestJson.getDatasetDescription());
+        datasetController.makeDatasetPublicAndImmutable(ds, publicDsId);
         return manifestJson;
     }
 
@@ -183,6 +186,7 @@ public class GVoDController {
                     String value = (String) fileTopics.get(key);
                     if (!value.equals("")) {
                         kafkaResources.put(key, new KafkaResource(sessiodId, value));
+                        hdfsResources.put(key, new HDFSResource(dsPath, key));
                     } else {
                         hdfsResources.put(key, new HDFSResource(dsPath, key));
                     }

@@ -117,7 +117,7 @@ public class GVodService {
                 hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
                 downloadDTO.getPublicDatasetId(), 
                 Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName() + File.separator, 
-                downloadDTO.getTopics(), 
+                downloadDTO.getJSONTopics(), 
                 null);
 
         if (response != null) {
@@ -151,7 +151,7 @@ public class GVodService {
                 hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
                 downloadDTO.getPublicDatasetId(), 
                 Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName() + File.separator, 
-                downloadDTO.getTopics(), 
+                downloadDTO.getJSONTopics(), 
                 req.getSession().getId());
 
         if (response != null) {

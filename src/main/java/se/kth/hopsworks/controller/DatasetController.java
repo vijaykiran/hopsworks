@@ -535,5 +535,6 @@ public class DatasetController {
         ds.setPublicDs(true);
         ds.setPublicDsId(id);
         ds.setEditable(false);
+        datasetFacade.merge(ds);
     }
 }

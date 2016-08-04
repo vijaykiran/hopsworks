@@ -5,9 +5,7 @@
  */
 package io.hops.gvod.io.download;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.json.JSONObject;
 
@@ -26,13 +24,13 @@ public class DownloadDTO {
     
     private List<String> partners;
     
-    private JSONObject topics; 
+    private String topics; 
         
 
     public DownloadDTO() {
     }
 
-    public DownloadDTO(String destinationDatasetName, int projectId, String publicDatasetId, List<String> partners, JSONObject topics) {
+    public DownloadDTO(String destinationDatasetName, int projectId, String publicDatasetId, List<String> partners, String topics) {
         this.destinationDatasetName = destinationDatasetName;
         this.projectId = projectId;
         this.publicDatasetId = publicDatasetId;
@@ -62,12 +60,16 @@ public class DownloadDTO {
     public List<String> getPartners() {
         return partners;
     } 
-
-    public JSONObject getTopics() {
+    
+    public String getTopics() {
         return topics;
     }
 
-    public void setTopics(JSONObject topics) {
+    public JSONObject getJSONTopics() {
+        return new JSONObject(topics);
+    }
+
+    public void setTopics(String topics) {
         this.topics = topics;
     }
 

@@ -166,7 +166,7 @@ angular.module('hopsWorksApp')
                             self.topicsMap[keyName] = "";
                         }
                         
-                        json.topics = self.topicsMap;
+                        json.topics = JSON.stringify(self.topicsMap);
                         
                         GVoDService.downloadHdfs(json).then(function (success) {
 
@@ -191,7 +191,7 @@ angular.module('hopsWorksApp')
                             }
                         }
                         
-                        json.topics = self.topicsMap;
+                        json.topics = JSON.stringify(self.topicsMap);
 
                         GVoDService.downloadKafka(json).then(function (success) {
 

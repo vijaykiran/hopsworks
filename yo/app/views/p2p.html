@@ -1,21 +1,24 @@
-<div class="jumbotron" ng-repeat="content in p2pCtrl.contents">
-
-    <div class="container-fluid" >
-
-        <h2> Dataset with id {{content.torrentId.val}} has files ..</h2>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-2" style="width: 20%">
-                    <label class="control-label">FileName:</label>
-                    <label class="control-label">Status:</label>
-                </div>
-                <div class="col-md-10" style="width: 80%">
-                    <label class="control-label text-muted">{{p2pCtrl.content.fileName}}</label><br>
-                    <label class="control-label text-muted">{{setupDownloadCtrl.content.torrentStatus}}</label>
-                </div>
-            </div>
-        </div>
-
+<div>
+    <div ng-include="'nav.html'"></div>
+    <div id="wrapper" class="toggled">
+        <div class="overlay"></div>
+        <div ng-include="'navProject.html'"></div>
+        <table class="table" ng-controller="P2PCtrl as p2pCtrl">
+            <thead>
+                <tr>
+                    <th>Dataset</th>
+                    <th>Id</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="dataset in p2pCtrl.contents">
+                <tr>
+                    <td>{{dataset.fileName}}</td>
+                    <td>{{dataset.torrentId.val}}</td>
+                    <td>{{dataset.torrentStatus}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
 </div>
+

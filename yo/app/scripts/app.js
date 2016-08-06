@@ -358,7 +358,7 @@ angular.module('hopsWorksApp', [
             })
             .when('/project/:projectID/p2p', {
               templateUrl: 'views/p2p.html',
-              controller: 'P2PCtrl as p2pCtrl',
+              controller: 'ProjectCtrl as projectCtrl',
               resolve: {
                 auth: ['$q', '$location', 'AuthService', '$cookies',
                   function ($q, $location, AuthService, $cookies) {

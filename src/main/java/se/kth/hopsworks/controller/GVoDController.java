@@ -27,6 +27,7 @@ import io.hops.gvod.io.resources.items.AddressJSON;
 import io.hops.gvod.io.resources.items.ExtendedDetails;
 import io.hops.gvod.io.resources.items.KafkaResource;
 import io.hops.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.resources.items.ManifestResponse;
 import io.hops.gvod.io.resources.items.TorrentId;
 import io.hops.gvod.io.responses.ErrorDescJSON;
 import io.hops.gvod.io.responses.HopsContentsSummaryJSON;
@@ -95,11 +96,12 @@ public class GVoDController {
         }
     }
 
-    public ManifestJson startDownload(String publicDsId, Users user, Project project, String destinationDatasetName, List<AddressJSON> partners) throws AppException {
+    public ManifestResponse startDownload(String publicDsId, Users user, Project project, String destinationDatasetName, List<AddressJSON> partners) throws AppException {
 
         DistributedFileSystemOps dfso = null;
         DistributedFileSystemOps udfso = null;
         Dataset ds = null;
+        ManifestResponse to_ret;
         String username = hdfsUsersBean.getHdfsUserName(project, user);
         try {
             dfso = dfs.getDfsOps();
@@ -149,6 +151,9 @@ public class GVoDController {
         if (r != null && r.getStatus() == 200) {
             byte[] jsonBytes = datasetController.readJsonFromHdfs(pathToManifest);
             manifestJson = datasetController.getManifestJSON(jsonBytes);
+            ds.setDescription(manifestJson.getDatasetDescription());
+            datasetController.makeDatasetPublicAndImmutable(ds, publicDsId);
+            to_ret = new ManifestResponse(manifestJson, r);
 
         } else {
             try {
@@ -165,14 +170,13 @@ public class GVoDController {
                     dfso.close();
                 }
             }
+            to_ret = new ManifestResponse(manifestJson, r);
         }
         
-        ds.setDescription(manifestJson.getDatasetDescription());
-        datasetController.makeDatasetPublicAndImmutable(ds, publicDsId);
-        return manifestJson;
+        return to_ret;
     }
 
-    public String download(KafkaEndpoint kafkaEndpoint, String username, String publicDsId, String dsPath, JSONObject fileTopics, String sessiodId) {
+    public Response download(KafkaEndpoint kafkaEndpoint, String username, String publicDsId, String dsPath, JSONObject fileTopics, String sessiodId) {
 
         if (kafkaEndpoint != null) { // perform kafka download
 
@@ -208,8 +212,10 @@ public class GVoDController {
             Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(downloadGVodJSON, MediaType.APPLICATION_JSON), Response.class);
 
             if (r != null && r.getStatus() == 200) {
-                return r.readEntity(String.class);
-            } else {
+                return r;
+            } else if(r!= null) {
+                return r;
+            }else{
                 return null;
             }
 
@@ -231,7 +237,7 @@ public class GVoDController {
                     new TorrentId(publicDsId),
                     null,
                     new HDFSEndpoint(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, username),
-                    new ExtendedDetails(hdfsResources, null)
+                    new ExtendedDetails(hdfsResources, new HashMap<String,KafkaResource>())
             );
 
             rest_client = ClientBuilder.newClient();
@@ -241,9 +247,9 @@ public class GVoDController {
             Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(downloadGVodJSON, MediaType.APPLICATION_JSON), Response.class);
 
             if (r != null && r.getStatus() == 200) {
-                return r.readEntity(SuccessJSON.class).getDetails();
+                return r;
             } else if (r != null) {
-                return r.readEntity(ErrorDescJSON.class).getDetails();
+                return r;
             } else {
                 return null;
             }
@@ -278,7 +284,7 @@ public class GVoDController {
 
         rest_client = ClientBuilder.newClient();
 
-        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("t/library/contents");
+        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("/library/contents");
 
         Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(hopsContentsReqJSON, MediaType.APPLICATION_JSON), Response.class);
 

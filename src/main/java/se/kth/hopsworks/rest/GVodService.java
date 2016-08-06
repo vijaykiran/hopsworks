@@ -31,8 +31,10 @@ import se.kth.hopsworks.controller.GVoDController;
 import se.kth.hopsworks.controller.ProjectController;
 import io.hops.gvod.io.download.StartDownloadDTO;
 import io.hops.gvod.io.resources.KafkaEndpoint;
-import io.hops.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.resources.items.ManifestResponse;
+import io.hops.gvod.io.responses.ErrorDescJSON;
 import io.hops.gvod.io.responses.HopsContentsSummaryJSON;
+import io.hops.gvod.io.responses.SuccessJSON;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.util.Settings;
 
@@ -82,16 +84,16 @@ public class GVodService {
         }
 
         
-        ManifestJson response = gvodController.startDownload(startDownloadDTO.getPublicDatasetId(), 
+        ManifestResponse response = gvodController.startDownload(startDownloadDTO.getPublicDatasetId(), 
                 userBean.getUserByEmail(sc.getUserPrincipal().getName()), 
                 projectController.findProjectById(startDownloadDTO.getProjectId()), 
                 startDownloadDTO.getDestinationDatasetName(),
                 startDownloadDTO.getPartners());
 
-        if (response != null) {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
+        if (response.getResponse().getStatus() == 200) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.getManifest()).build();
         } else {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.getResponse().readEntity(ErrorDescJSON.class).getDetails()).build();
         }
     }
     
@@ -113,16 +115,18 @@ public class GVodService {
         }
         
         Project project = projectController.findProjectById(downloadDTO.getProjectId());
-        String response = gvodController.download(null, 
+        Response response = gvodController.download(null, 
                 hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
                 downloadDTO.getPublicDatasetId(), 
                 Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName() + File.separator, 
                 downloadDTO.getJSONTopics(), 
                 null);
 
-        if (response != null) {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
-        } else {
+        if (response != null && response.getStatus() == 200) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.readEntity(SuccessJSON.class).getDetails()).build();
+        } else if(response != null) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.readEntity(ErrorDescJSON.class).getDetails()).build();
+        }else{
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
         }
     }
@@ -147,16 +151,18 @@ public class GVodService {
         Project project = projectController.findProjectById(downloadDTO.getProjectId());
         String certPath = kafkaController.getKafkaCertPaths(project);
         
-        String response = gvodController.download(new KafkaEndpoint(settings.getKafkaConnectStr(), "http://" + settings.getDOMAIN() + ":" + settings.getRestPort(), settings.getDOMAIN(), String.valueOf(downloadDTO.getProjectId()), certPath + "/keystore.jks", certPath + "/truststore.jks"), 
+        Response response = gvodController.download(new KafkaEndpoint(settings.getKafkaConnectStr(), "http://" + settings.getDOMAIN() + ":" + settings.getRestPort(), settings.getDOMAIN(), String.valueOf(downloadDTO.getProjectId()), certPath + "/keystore.jks", certPath + "/truststore.jks"), 
                 hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
                 downloadDTO.getPublicDatasetId(), 
                 Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName() + File.separator, 
                 downloadDTO.getJSONTopics(), 
                 req.getSession().getId());
 
-        if (response != null) {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
-        } else {
+        if (response != null && response.getStatus() == 200) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.readEntity(SuccessJSON.class).getDetails()).build();
+        } else if(response != null) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.readEntity(ErrorDescJSON.class).getDetails()).build();
+        }else{
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
         }
     }

@@ -1,24 +1,27 @@
-<div>
+<div ng-controller="MainCtrl as mainCtrl">
+
     <div ng-include="'nav.html'"></div>
-    <div id="wrapper" class="toggled">
+    <div id="wrapper" class="toggled"  ng-controller="P2PCtrl as p2pCtrl">
         <div class="overlay"></div>
         <div ng-include="'navProject.html'"></div>
-        <table class="table" ng-controller="P2PCtrl as p2pCtrl">
-            <thead>
-                <tr>
-                    <th>Dataset</th>
-                    <th>Id</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody ng-repeat="dataset in p2pCtrl.contents">
-                <tr>
-                    <td>{{dataset.fileName}}</td>
-                    <td>{{dataset.torrentId.val}}</td>
-                    <td>{{dataset.torrentStatus}}</td>
-                </tr>
-            </tbody>
-        </table>
+        <section>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Dataset</th>
+                        <th>Id</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="dataset in p2pCtrl.contents">
+                    <tr>
+                        <td>{{dataset.fileName}}</td>
+                        <td>{{dataset.torrentId.val}}</td>
+                        <td>{{dataset.torrentStatus}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
     </div>
 </div>
 

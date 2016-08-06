@@ -10,7 +10,7 @@
 
     <div ng-show="mainCtrl.searchReturned === ''" class="row">
 
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-3 col-xs-3">
             <div class="list-group">
                 <a href="" class="list-group-item active">Help</a>
                 <a href="" ng-click="homeCtrl.showTours = !homeCtrl.showTours; homeCtrl.getTours();" class="list-group-item"
@@ -40,11 +40,30 @@
                         Getting Started with Zeppelin
                     </div>
                 </a>
+                <a href="" ng-click="homeCtrl.showPublicDatasets = !homeCtrl.showPublicDatasets; homeCtrl.getPublicDatasets();" class="list-group-item">
+                    <span class="glyphicon" ng-class="{'glyphicon-triangle-right':!homeCtrl.showPublicDatasets, 'glyphicon-triangle-bottom':homeCtrl.showPublicDatasets}"></span>
+                    Public Data Sets
+                    <span class="glyphicon glyphicon-globe pull-right" style="margin-right: 1px;"></span>
+                    <div ng-show="homeCtrl.showPublicDatasets" ng-repeat="dataset in homeCtrl.publicDatasets">
+                        <div>
+                            <button style="padding-bottom: 2px; padding-top: 2px; papdding-left: 0px; padding-right: 0px;" 
+                                    uib-popover="Add this public dataset to one of your projects."
+                                    type="button" class="btn btn-default btn-block" ng-click="homeCtrl.addPublicDatasetModal(dataset.inodeId, dataset.name, dataset.description);">
+                                <span>{{dataset.name}}</span>
+                            </button>
+                        </div>
+                        <div ng-show="homeCtrl.publicDatasets.length === 0" >
+                            None available.
+                        </div>
+                    </div>
+                </a>
+
+
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div style="background: white;"> 
+        <div class="col-md-6 col-sm-6 col-xs-6">
+            <!--<div style="background: white;"> 
                 <div class="row" style="background-color: #2E353D;">
                     <div class="col-md-1">
 
@@ -109,9 +128,9 @@
                     </div>
                 </div>    
 
-            </div>
+            </div>-->
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 col-sm-3 col-xs-3">
 
             <span class="list-group-item active">
                 <span class="badge pull-left" style="margin-right: 10px;">{{homeCtrl.projects.length}}</span> Projects

@@ -5,6 +5,7 @@
  */
 package se.kth.hopsworks.controller;
 
+import com.google.gson.Gson;
 import io.hops.gvod.io.contents.HopsContentsReqJSON;
 import io.hops.gvod.io.download.DownloadGVoDJSON;
 import java.io.File;
@@ -198,6 +199,9 @@ public class GVoDController {
                     // Something went wrong!
                 }
             }
+            
+        
+            
             DownloadGVoDJSON downloadGVodJSON = new DownloadGVoDJSON(
                     new TorrentId(publicDsId),
                     kafkaEndpoint,
@@ -208,8 +212,13 @@ public class GVoDController {
             rest_client = ClientBuilder.newClient();
 
             webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("/torrent/hops/download/advance/xml");
-
-            Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(downloadGVodJSON, MediaType.APPLICATION_JSON), Response.class);
+            
+            
+            Gson gson = new Gson();
+            
+            String json = gson.toJson(downloadGVodJSON);
+            
+            Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(json, MediaType.APPLICATION_JSON), Response.class);
 
             if (r != null && r.getStatus() == 200) {
                 return r;
@@ -243,8 +252,12 @@ public class GVoDController {
             rest_client = ClientBuilder.newClient();
 
             webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("/torrent/hops/download/advance/xml");
+            
+            Gson gson = new Gson();
+            
+            String json = gson.toJson(downloadGVodJSON);
 
-            Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(downloadGVodJSON, MediaType.APPLICATION_JSON), Response.class);
+            Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(json, MediaType.APPLICATION_JSON), Response.class);
 
             if (r != null && r.getStatus() == 200) {
                 return r;

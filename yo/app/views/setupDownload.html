@@ -54,14 +54,23 @@
                                 </div>
                             </div>
                             <hr>
-                            <div ng-repeat="file in setupDownloadCtrl.manifest.fileInfos"  class="row"> 
-                                <div class="col-md-2" style="width: 20%">
-                                    <label class="control-label">FileName:</label>
-                                </div>
-                                <div class="col-md-10" style="width: 80%">
-                                    <label class="control-label text-muted">{{file.fileName}}</label>
-                                    <a ng-click="setupDownloadCtrl.showSchema(file.schema)" ng-show="file.schema !== ''" class="pull-right"> {{file.fileName + '.avro'}}</a>
-                                </div>
+                            <div class="row">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>FileName</th>
+                                            <th>Schema</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-repeat="file in setupDownloadCtrl.manifest.fileInfos | limitTo:setupDownloadCtrl.limit">
+                                        <tr>
+                                            <td>{{file.fileName}}</td>
+                                            <td><a ng-click="setupDownloadCtrl.showSchema(file.schema)" ng-show="file.schema !== ''"> {{file.fileName + '.avro'}}</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <a ng-click="setupDownloadCtrl.showMore()">show more</a>
                             </div>
                             <hr>
                             <div class="row">

@@ -24,6 +24,7 @@ angular.module('hopsWorksApp')
                 self.topicDone = [];
                 self.topicsCreated = false;
                 self.topicsRemainingForCreation = 0;
+                self.limit = 5;
 
                 self.topicsMap = {};
 
@@ -135,7 +136,7 @@ angular.module('hopsWorksApp')
                     },
                             function (error) {
 
-                                growl.error(error.data.errorMsg, {title: 'Failed to get manifest', ttl: 5000});
+                                growl.error(error.data.details, {title: 'Failed to start initiate Download', ttl: 5000});
 
                             });
 
@@ -169,11 +170,12 @@ angular.module('hopsWorksApp')
                         json.topics = JSON.stringify(self.topicsMap);
                         
                         GVoDService.downloadHdfs(json).then(function (success) {
-
+                            
+                            growl.success(success.data.details, {title: 'Success', ttl: 1000});
                             $modalInstance.close(success);
 
                         }, function (error) {
-                            growl.error(error.data.errorMsg, {title: 'Failed to start download', ttl: 5000});
+                            growl.error(error.data.details, {title: 'Failed to start download', ttl: 5000});
                         });
 
                     } else {
@@ -194,11 +196,12 @@ angular.module('hopsWorksApp')
                         json.topics = JSON.stringify(self.topicsMap);
 
                         GVoDService.downloadKafka(json).then(function (success) {
-
+                            
+                            growl.success(success.data.details, {title: 'Success', ttl: 1000});
                             $modalInstance.close(success);
 
                         }, function (error) {
-                            growl.error(error.data.errorMsg, {title: 'Failed to start download', ttl: 5000});
+                            growl.error(error.data.details, {title: 'Failed to start download', ttl: 5000});
                         });
                     }
 
@@ -210,6 +213,11 @@ angular.module('hopsWorksApp')
 
                     });
 
+                };
+                
+                self.showMore = function(){
+                    
+                    self.limit = self.limit + 5;
                 };
 
             }]);

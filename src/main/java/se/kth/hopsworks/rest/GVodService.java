@@ -93,7 +93,7 @@ public class GVodService {
         if (response.getResponse().getStatus() == 200) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.getManifest()).build();
         } else {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.getResponse().readEntity(ErrorDescJSON.class).getDetails()).build();
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.getResponse().readEntity(ErrorDescJSON.class)).build();
         }
     }
     
@@ -123,9 +123,9 @@ public class GVodService {
                 null);
 
         if (response != null && response.getStatus() == 200) {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.readEntity(SuccessJSON.class).getDetails()).build();
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.readEntity(SuccessJSON.class)).build();
         } else if(response != null) {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.readEntity(ErrorDescJSON.class).getDetails()).build();
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.readEntity(ErrorDescJSON.class)).build();
         }else{
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
         }
@@ -159,9 +159,9 @@ public class GVodService {
                 req.getSession().getId());
 
         if (response != null && response.getStatus() == 200) {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.readEntity(SuccessJSON.class).getDetails()).build();
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response.readEntity(SuccessJSON.class)).build();
         } else if(response != null) {
-            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.readEntity(ErrorDescJSON.class).getDetails()).build();
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(response.readEntity(ErrorDescJSON.class)).build();
         }else{
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
         }

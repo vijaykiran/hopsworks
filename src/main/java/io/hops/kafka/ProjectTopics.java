@@ -123,10 +123,7 @@ public class ProjectTopics implements Serializable {
             return false;
         }
         ProjectTopics other = (ProjectTopics) object;
-        if ((this.projectTopicsPK == null && other.projectTopicsPK != null) || (this.projectTopicsPK != null && !this.projectTopicsPK.equals(other.projectTopicsPK))) {
-            return false;
-        }
-        return true;
+        return !((this.projectTopicsPK == null && other.projectTopicsPK != null) || (this.projectTopicsPK != null && !this.projectTopicsPK.equals(other.projectTopicsPK)));
     }
 
     @Override

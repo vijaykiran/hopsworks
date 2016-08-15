@@ -53,7 +53,7 @@ module.exports = function (config) {
       'bower_components/angular-utils-pagination/dirPagination.js',
       'bower_components/cytoscape/dist/cytoscape.js',
       'bower_components/cytoscape-cxtmenu/cytoscape-cxtmenu.js',
-      'bower_components/js.cytoscape-navigator/cytoscape-navigator.js',
+      'bower_components/js.cytoscape-navigator/cytoscape.js-navigator.js',
       'bower_components/lodash/lodash.js',
       'bower_components/graphlib/dist/graphlib.core.js',
       'bower_components/dagre/dist/dagre.core.js',

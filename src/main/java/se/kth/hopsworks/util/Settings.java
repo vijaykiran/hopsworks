@@ -453,6 +453,9 @@ public class Settings {
   public static final String FLINK_AM_MAIN = "org.apache.flink.yarn.ApplicationMaster";
   public static final int FLINK_APP_MASTER_MEMORY = 768;
   
+  //Zookeeper constant
+  public static long INTERVAL_MS_SYNCHRONIZE_KAFKA_TOPICS = 60 * 1000l;
+  
   public synchronized String getLocalFlinkJarPath() {
     return getFlinkDir()+ "/flink.jar";
   }

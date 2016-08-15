@@ -28,8 +28,12 @@ import java.nio.charset.StandardCharsets;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.mail.MessagingException;
 import javax.persistence.NoResultException;
 import javax.ws.rs.POST;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.SecurityContext;
+import se.kth.hopsworks.rest.AppException;
 
 /**
  *
@@ -193,7 +197,7 @@ public class AgentResource {
       for (int i = 0; i < roles.size(); i++) {
         JsonObject s = roles.getJsonObject(i);
 
-        if (!s.containsKey("cluster") || !s.containsKey("cluster") || !s.containsKey("cluster")) {
+        if (!s.containsKey("cluster") || !s.containsKey("service") || !s.containsKey("role")) {
           logger.warning("Badly formed JSON object describing a service.");
           continue;
         }
@@ -254,18 +258,19 @@ public class AgentResource {
   @POST
   @Path("/alert")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response alert(@Context HttpServletRequest req, String jsonString) {
+  public Response alert(@Context SecurityContext sc, @Context HttpServletRequest req, 
+          @Context HttpHeaders httpHeaders, String jsonString) {
     // TODO: Alerts are stored in the database. Later, we should define reactions (Email, SMS, ...).
     try {
       InputStream stream = new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8));
       JsonObject json = Json.createReader(stream).readObject();
       Alert alert = new Alert();
       alert.setAlertTime(new Date());
-      alert.setProvider(Alert.Provider.valueOf(json.getString("Provider")));
-      alert.setSeverity(Alert.Severity.valueOf(json.getString("Severity")));
-      alert.setAgentTime(json.getJsonNumber("Time").longValue());
+      alert.setProvider(Alert.Provider.valueOf(json.getString("Provider")).toString());
+      alert.setSeverity(Alert.Severity.valueOf(json.getString("Severity")).toString());
+      alert.setAgentTime(json.getJsonNumber("Time").bigIntegerValue());
       alert.setMessage(json.getString("Message"));
-      alert.setHostId(json.getString("Host"));
+      alert.setHostid(json.getString("host-id"));
       alert.setPlugin(json.getString("Plugin"));
       if (json.containsKey("PluginInstance")) {
         alert.setPluginInstance(json.getString("PluginInstance"));
@@ -280,7 +285,7 @@ public class AgentResource {
         alert.setDataSource(json.getString("DataSource"));
       }
       if (json.containsKey("CurrentValue")) {
-        alert.setCurrentValue(json.getString("CurrentValue"));
+        alert.setCurrentValue(Boolean.toString(json.getBoolean("CurrentValue")));
       }
       if (json.containsKey("WarningMin")) {
         alert.setWarningMin(json.getString("WarningMin"));

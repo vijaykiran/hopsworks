@@ -117,7 +117,19 @@
                           <td>
                             <div class="dropdown position-fixed" id="menu-{{ $index}}">
                               <ul class="dropdown-menu dropdown-amore" role="menu">
-
+                                <li>
+                                  <a class="pointer"
+                                     role="menuitem"
+                                     tabindex="5"
+                                     ng-hide="file.dir"
+                                     ng-click="datasetsCtrl.filePreview(file.name)"
+                                     data-toggle="tooltip" title="Click to display a preview of a text file."
+                                    >
+                                    <span><i class="fa fa-camera-retro" ></i>
+                                      Preview</span>
+                                  </a>
+                                </li>
+                                <li ng-hide="file.dir" class="divider"></li>
                                 <li>
                                   <a class="pointer"
                                      role="menuitem"
@@ -589,7 +601,7 @@
                             <md-tab label="Activity">
                               <md-content class="md-padding" style="padding-left: 20px;padding-right: 20px;">
 
-                                <div class="row">
+<!--                            <div class="row">
                                   <span
                                     style="color: #444;font-size: 11px; margin-bottom: 10px;padding: 16px 6px 6px;text-transform: uppercase;">
                                     LAST WEEK
@@ -660,8 +672,6 @@
                     </div>
                   </div>
                 </div> <!-- end of col-lg-4 - metadata -->
-
-
 
               </div> <!-- end of col-lg-10 - metadata -->
 

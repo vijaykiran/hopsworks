@@ -19,7 +19,6 @@ angular.module('hopsWorksApp')
             self.fileDetail; //The details about the currently selected file.
             self.sharedPath; //The details about the currently selected file.
             self.routeParamArray = [];
-
             var dataSetService = DataSetService(self.projectId); //The datasetservice for the current project.
 
             $scope.isPublic = true;
@@ -351,6 +350,19 @@ This will make all its files unavailable to other projects unless you share it e
               return clippedPath;
             };
 
+            self.filePreview = function (fileName) {
+              var previewPathArray = self.pathArray.slice(0);
+              previewPathArray.push(fileName);
+              var filePath = getPath(previewPathArray);
+              
+              ModalService.filePreview('lg', fileName, filePath, self.projectId).then(
+                      function (success) {
+                        
+                      }, function (error) {
+              });
+      
+            };
+            
             self.move = function (inodeId, name) {
               ModalService.selectDir('lg', "/[^]*/",
                       "problem selecting file").then(
@@ -551,7 +563,7 @@ This will make all its files unavailable to other projects unless you share it e
             };
 
             self.deselect = function () {
-              self.selected = null
+              self.selected = null;
               self.fileDetail = null;
               self.sharedPath = null;
             };
@@ -572,18 +584,6 @@ This will make all its files unavailable to other projects unless you share it e
               return debounceFn;
             }
             ;
-
-            self.close = function () {
-              $mdSidenav('right').close()
-                      .then(function () {
-                        $log.debug("Closed metadata designer (right)");
-                      });
-
-              $mdSidenav('left').close()
-                      .then(function () {
-                        $log.debug("Closed metadata designer (left)");
-                      });
-            };
 
           }]);
 

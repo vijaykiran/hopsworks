@@ -171,6 +171,10 @@ a:focus {
   width: 38px;
 }
 
+div.filepreview {
+  white-space: pre-wrap;
+}
+
 div.scroll {
   border: 1px solid transparent;
   border-radius: 4px;
@@ -386,9 +390,20 @@ fieldset[disabled] #tourColumn .btn-danger.active {
   display:         flex;
 }
 
-.selectedTopic {
-  background-color: yellow; 
+.selectedTopicEven {
+  background-color: #f0efd8; 
 }
+.selectedTopicOdd {
+  background-color: #e8eae9; 
+}
+
+.top-buffer { margin-top:5px; }
+
+.kafka-table {
+    border-collapse: separate;
+    border-spacing: 0 1em;
+}
+
 .server-status {
   font-size: 14px;
   margin-top: 6px;

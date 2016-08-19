@@ -67,7 +67,6 @@ import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.controller.DatasetController;
 import io.hops.hopssite.io.register.RegisteredClusterJson;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import javax.ws.rs.client.InvocationCallback;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
@@ -230,10 +229,10 @@ public class ElasticService {
                                             }
                                         }
                                         responded.add(Boolean.TRUE);
-                                        if(responded.size() == registeredClusters.size()){
+                                        if (responded.size() == registeredClusters.size()) {
                                             futureResult.set(Boolean.TRUE);
                                         }
-                                        
+
                                     }
                                 }
 
@@ -431,10 +430,11 @@ public class ElasticService {
      * @throws AppException
      */
     @GET
-    @Path("datasetsearch/{datasetName}/{searchTerm}")
+    @Path("datasetsearch/{projectId}/{datasetName}/{searchTerm}")
     @Produces(MediaType.APPLICATION_JSON)
     @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
     public Response datasetSearch(
+            @PathParam("projectId") Integer projectId,
             @PathParam("datasetName") String datasetName,
             @PathParam("searchTerm") String searchTerm,
             @Context SecurityContext sc,
@@ -458,8 +458,17 @@ public class ElasticService {
                     getStatusCode(), ResponseMessages.ELASTIC_TYPE_NOT_FOUND);
         }
 
-        Dataset dataset = datasetFacade.findByName(datasetName);
-        final int projectId = dataset.getProjectId().getId();
+        String dsName = datasetName;
+        Project project;
+        if (datasetName.contains(Settings.SHARED_FILE_SEPARATOR)) {
+            String[] sharedDS = datasetName.split(Settings.SHARED_FILE_SEPARATOR);
+            dsName = sharedDS[1];
+            project = projectFacade.findByName(sharedDS[0]);
+        } else {
+            project = projectFacade.find(projectId);
+        }
+
+        Dataset dataset = datasetFacade.findByNameAndProjectId(project, dsName);
         final int datasetId = dataset.getIdForInode();
 
         //hit the indices - execute the queries
@@ -468,7 +477,7 @@ public class ElasticService {
         srb = srb.setQuery(this.datasetSearchQuery(datasetId, searchTerm));
         //FIXME: https://github.com/elastic/elasticsearch/issues/14999 
         //srb = srb.addHighlightedField("name");
-        srb = srb.setRouting(String.valueOf(projectId));
+        srb = srb.setRouting(String.valueOf(project.getId()));
 
         logger.log(Level.INFO, "Dataset Elastic query is: {0}", srb.toString());
         ListenableActionFuture<SearchResponse> futureResponse = srb.execute();
@@ -486,7 +495,6 @@ public class ElasticService {
             }
 
             this.clientShutdown(client);
-            Collections.sort(elasticHits, new ElasticHit());
             GenericEntity<List<ElasticHit>> searchResults
                     = new GenericEntity<List<ElasticHit>>(elasticHits) {
             };

@@ -235,6 +235,11 @@ angular.module('hopsWorksApp')
               }
             };
 
+            self.goToWorklows = function () {
+               self.goToUrl('workflows');
+            };
+
+	      
             self.goToSsh = function () {
               self.goToUrl('ssh');
             };
@@ -328,11 +333,13 @@ angular.module('hopsWorksApp')
             self.showKafka = function () {
               return showService("Kafka");
             };
-            
             self.showP2P = function(){
                 return showService("P2p");
             };
-
+	      
+            self.showWorkflows = function () {
+              return showService("Workflows");
+            };
 
             self.getRole = function () {
               UserService.getRole(self.pId).then(

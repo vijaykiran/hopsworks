@@ -48,6 +48,7 @@ import se.kth.hopsworks.meta.exception.DatabaseException;
 import se.kth.hopsworks.rest.AppException;
 import se.kth.hopsworks.util.Settings;
 import se.kth.hopsworks.user.model.Users;
+import se.kth.hopsworks.users.UserFacade;
 
 /**
  * Contains business logic pertaining DataSet management.
@@ -75,6 +76,8 @@ public class DatasetController {
     private InodeFacade inodeFacade;
     @EJB
     private DistributedFsService dfs;
+    @EJB
+    private UserFacade userFacade;
 
     /**
      * Create a new DataSet. This is, a folder right under the project home
@@ -432,8 +435,12 @@ public class DatasetController {
 
         //TODO other schemas
         manifestJson.setMetaDataJsons(new LinkedList<String>());
+        
+        Users user = userFacade.findByEmail(email);
+        
+        String username = hdfsUsersBean.getHdfsUserName(project, user);
 
-        this.writeManifestJsonToHdfs(manifestJson, dsPath + "manifest.json");
+        this.writeManifestJsonToHdfs(manifestJson, dsPath + "manifest.json", username);
 
         return manifestJson;
     }
@@ -464,12 +471,12 @@ public class DatasetController {
         return null;
     }
 
-    private void writeManifestJsonToHdfs(ManifestJson manifest, String path) {
+    private void writeManifestJsonToHdfs(ManifestJson manifest, String path, String username) {
 
         FSDataOutputStream out = null;
         try {
             byte[] manifestBytes = getManifestByte(manifest);
-            out = dfs.getDfsOps().create(path);
+            out = dfs.getDfsOps(username).create(path);
             out.write(manifestBytes);
             out.flush();
         } catch (IOException ex) {

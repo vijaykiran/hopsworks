@@ -1028,9 +1028,10 @@ public class DataSetService {
             dataset.setEditable(false);
             datasetFacade.merge(dataset);
             json.setSuccessMessage("The Dataset is now public.");
+            json.setData(response);
             //manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, Settings.getPublicDatasetId(settings.getCLUSTER_ID(), dataset.getName(), project.getName()), 0, 1);
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
-                    response).build();
+                    json).build();
         }
     }
 

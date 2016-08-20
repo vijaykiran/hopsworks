@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class ManifestJson {
+public class ManifestJSON {
     
     private String datasetName;
     
@@ -29,10 +29,10 @@ public class ManifestJson {
     
     private List<String> metaDataJsons;
 
-    public ManifestJson() {
+    public ManifestJSON() {
     }
 
-    public ManifestJson(String datasetName, String datasetDescription, String creatorEmail, String creatorDate, boolean kafkaSupport, List<FileInfo> fileInfos, List<String> metaDataJsons) {
+    public ManifestJSON(String datasetName, String datasetDescription, String creatorEmail, String creatorDate, boolean kafkaSupport, List<FileInfo> fileInfos, List<String> metaDataJsons) {
         this.datasetName = datasetName;
         this.datasetDescription = datasetDescription;
         this.creatorEmail = creatorEmail;

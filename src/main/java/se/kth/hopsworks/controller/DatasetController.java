@@ -29,7 +29,7 @@ import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
 import io.hops.gvod.io.resources.items.FileInfo;
-import io.hops.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.resources.items.ManifestJSON;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -374,9 +374,9 @@ public class DatasetController {
         return success;
     }
 
-    public ManifestJson createAndPersistManifestJson(String dsPath, String description, String name, String email, Project project) throws AppException {
+    public ManifestJSON createAndPersistManifestJson(String dsPath, String description, String name, String email, Project project) throws AppException {
         
-        ManifestJson manifestJson = new ManifestJson();
+        ManifestJSON manifestJson = new ManifestJSON();
         manifestJson.setDatasetName(name);
         manifestJson.setDatasetDescription(description);
         manifestJson.setKafkaSupport(false);
@@ -464,7 +464,7 @@ public class DatasetController {
         return null;
     }
 
-    private void writeManifestJsonToHdfs(ManifestJson manifest, String path, String username) {
+    private void writeManifestJsonToHdfs(ManifestJSON manifest, String path, String username) {
 
         FSDataOutputStream out = null;
         try {
@@ -485,7 +485,7 @@ public class DatasetController {
         }
     }
 
-    public byte[] getManifestByte(ManifestJson manifest) {
+    public byte[] getManifestByte(ManifestJSON manifest) {
         Gson gson = new GsonBuilder().create();
         String jsonString = gson.toJson(manifest);
         byte[] jsonByte;
@@ -500,7 +500,7 @@ public class DatasetController {
         return jsonByte;
     }
     
-    public ManifestJson getManifestJSON(byte[] jsonByte) {
+    public ManifestJSON getManifestJSON(byte[] jsonByte) {
         String jsonString;
         try {
             jsonString = new String(jsonByte, "UTF-8");
@@ -508,7 +508,7 @@ public class DatasetController {
             throw new RuntimeException(ex);
         }
         Gson gson = new GsonBuilder().create();
-        ManifestJson manifest = gson.fromJson(jsonString, ManifestJson.class);
+        ManifestJSON manifest = gson.fromJson(jsonString, ManifestJSON.class);
         return manifest;
     }
     
@@ -536,5 +536,15 @@ public class DatasetController {
         ds.setPublicDsId(id);
         ds.setEditable(false);
         datasetFacade.merge(ds);
+    }
+
+    public ManifestJSON getManifestForThisDataset(String datasetPath) {
+        
+        ManifestJSON manifestJSON;
+        
+        byte [] jsonBytes = readJsonFromHdfs(datasetPath);
+        manifestJSON = getManifestJSON(jsonBytes);
+        return manifestJSON;
+        
     }
 }

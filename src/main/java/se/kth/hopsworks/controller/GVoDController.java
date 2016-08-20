@@ -27,7 +27,7 @@ import io.hops.gvod.io.resources.KafkaEndpoint;
 import io.hops.gvod.io.resources.items.AddressJSON;
 import io.hops.gvod.io.resources.items.ExtendedDetails;
 import io.hops.gvod.io.resources.items.KafkaResource;
-import io.hops.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.resources.items.ManifestJSON;
 import io.hops.gvod.io.resources.items.ManifestResponse;
 import io.hops.gvod.io.resources.items.TorrentId;
 import io.hops.gvod.io.responses.ErrorDescJSON;
@@ -147,7 +147,7 @@ public class GVoDController {
 
         String pathToManifest = Settings.getProjectPath(project.getName()) + File.separator + destinationDatasetName + File.separator + Settings.MANIFEST_NAME;
 
-        ManifestJson manifestJson = null;
+        ManifestJSON manifestJson = null;
 
         if (r != null && r.getStatus() == 200) {
             byte[] jsonBytes = datasetController.readJsonFromHdfs(pathToManifest);
@@ -271,9 +271,9 @@ public class GVoDController {
 
     }
 
-    public String removeUpload(String dsPath, String publicDsId) {
+    public String removeUpload(String publicDsId) {
 
-        RemoveGVodJSON removeGVoDJSON = new RemoveGVodJSON(dsPath, new TorrentId(publicDsId));
+        RemoveGVodJSON removeGVoDJSON = new RemoveGVodJSON(new TorrentId(publicDsId));
 
         rest_client = ClientBuilder.newClient();
 

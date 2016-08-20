@@ -24,7 +24,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import io.hops.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.resources.items.ManifestJSON;
 import io.hops.hopssite.io.identity.IdentificationJson;
 import io.hops.hopssite.io.ping.PingedJson;
 import io.hops.hopssite.io.register.RegisteredJson;
@@ -160,7 +160,7 @@ public class ManageGlobalClusterParticipation {
 
     }
 
-    public void notifyHopsSiteAboutNewDataset(ManifestJson manifestJson, String publicDsId,int leeches, int seeds) {
+    public void notifyHopsSiteAboutNewDataset(ManifestJSON manifestJson, String publicDsId,int leeches, int seeds) {
         
         WebTarget resource = webTarget.path("populardatasets");
         

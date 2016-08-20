@@ -6,7 +6,7 @@
 package io.hops.hopssite.io.populardatasets;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import io.hops.gvod.io.resources.items.ManifestJson;
+import io.hops.gvod.io.resources.items.ManifestJSON;
 
 /**
  *
@@ -15,7 +15,7 @@ import io.hops.gvod.io.resources.items.ManifestJson;
 @XmlRootElement
 public class PopularDatasetJson {
     
-    private ManifestJson manifestJson;
+    private ManifestJSON manifestJson;
     
     private String datasetId;
     
@@ -23,7 +23,7 @@ public class PopularDatasetJson {
     
     private int seeds;
 
-    public PopularDatasetJson(ManifestJson manifestJson, String datasetId, int leeches, int seeds) {
+    public PopularDatasetJson(ManifestJSON manifestJson, String datasetId, int leeches, int seeds) {
         this.manifestJson = manifestJson;
         this.datasetId = datasetId;
         this.leeches = leeches;
@@ -46,11 +46,11 @@ public class PopularDatasetJson {
         this.seeds = seeds;
     }
 
-    public ManifestJson getManifestJson() {
+    public ManifestJSON getManifestJson() {
         return manifestJson;
     }
 
-    public void setManifestJson(ManifestJson manifestJson) {
+    public void setManifestJson(ManifestJSON manifestJson) {
         this.manifestJson = manifestJson;
     }
 

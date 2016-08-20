@@ -13,19 +13,19 @@ import javax.ws.rs.core.Response;
  */
 public class ManifestResponse {
     
-    private ManifestJson manifest;
+    private ManifestJSON manifest;
     private Response response;
 
-    public ManifestResponse(ManifestJson manifest, Response response) {
+    public ManifestResponse(ManifestJSON manifest, Response response) {
         this.manifest = manifest;
         this.response = response;
     }
 
-    public ManifestJson getManifest() {
+    public ManifestJSON getManifest() {
         return manifest;
     }
 
-    public void setManifest(ManifestJson manifest) {
+    public void setManifest(ManifestJSON manifest) {
         this.manifest = manifest;
     }
 

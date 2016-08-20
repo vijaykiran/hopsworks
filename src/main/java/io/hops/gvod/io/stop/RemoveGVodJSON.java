@@ -16,14 +16,12 @@ import io.hops.gvod.io.resources.items.TorrentId;
 public class RemoveGVodJSON {
     
       private TorrentId torrentId;
-      private String datasetPath;
 
     public RemoveGVodJSON() {
     }
 
-    public RemoveGVodJSON(String datasetPath, TorrentId torrentId) {
+    public RemoveGVodJSON(TorrentId torrentId) {
         this.torrentId = torrentId;
-        this.datasetPath = datasetPath;
     }
 
     public TorrentId getTorrentId() {
@@ -32,14 +30,6 @@ public class RemoveGVodJSON {
 
     public void setTorrentId(TorrentId torrentId) {
         this.torrentId = torrentId;
-    }
-
-    public String getDatasetPath() {
-        return datasetPath;
-    }
-
-    public void setDatasetPath(String datasetPath) {
-        this.datasetPath = datasetPath;
     }
       
       

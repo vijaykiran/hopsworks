@@ -326,6 +326,15 @@ This will make all its files available for any registered user to download and p
               );
             };
             
+            self.showManifest = function(id){
+                dataSetService.showManifest(id).then(function(success){
+                    var manifest = success;
+                    ModalService.json('md','Manifest', manifest).then(function(){
+                        
+                    });
+                });
+            };
+            
              self.removePublic = function (id) {
 
               ModalService.confirm('sm', 'Confirm', 'Are you sure you want to make this DataSet private? \n\

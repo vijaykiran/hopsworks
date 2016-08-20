@@ -1,5 +1,6 @@
 package se.kth.hopsworks.rest;
 
+import io.hops.gvod.io.resources.items.ManifestJSON;
 import io.hops.hdfs.HdfsLeDescriptorsFacade;
 import java.io.BufferedReader;
 import java.io.File;
@@ -1170,9 +1171,7 @@ public class DataSetService {
                     ResponseMessages.GVOD_OFFLINE);
         }
 
-        String result = gvodController.removeUpload(
-                path + dataset.getName() + File.separator,
-                dataset.getPublicDsId());
+        String result = gvodController.removeUpload(dataset.getPublicDsId());
 
         if (result == null) {
             json.setErrorMsg("GVoD could not remove upload at this time");
@@ -1185,6 +1184,49 @@ public class DataSetService {
             json.setSuccessMessage("The Dataset is no longer public.");
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
                     json).build();
+        }
+
+    }
+    
+    @GET
+    @Path("/showManifest/{inodeId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @AllowedRoles(roles = {AllowedRoles.DATA_OWNER})
+    public Response showManifest(@PathParam("inodeId") Integer inodeId,
+            @Context SecurityContext sc,
+            @Context HttpServletRequest req) throws AppException {
+        JsonResponse json = new JsonResponse();
+        if (inodeId == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    "Incomplete request!");
+        }
+        Inode inode = inodes.findById(inodeId);
+        if (inode == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.DATASET_NOT_FOUND);
+        }
+        if (dataset == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.DATASET_NOT_FOUND);
+        }
+        if (dataset.isPublicDs() == false) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.DATASET_NOT_PUBLIC);
+        }
+        if (settings.getGVOD_UDP_ENDPOINT() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.GVOD_OFFLINE);
+        }
+
+        ManifestJSON manifestJSON = datasetController.getManifestForThisDataset(path + File.separator + dataset.getName() + File.separator);
+
+        if (manifestJSON == null) {
+            json.setErrorMsg("No manifest");
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
+                    json).build();
+        } else {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
+                    manifestJSON).build();
         }
 
     }

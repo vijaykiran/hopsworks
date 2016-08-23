@@ -49,7 +49,7 @@ import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.HdfsInodeAttributes;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
-import io.hops.hopssite.io.populardatasets.PopularDatasetJson;
+import io.hops.hopssite.io.populardatasets.PopularDatasetJSON;
 import io.hops.hopssite.restCommunication.ManageGlobalClusterParticipation;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.LocalhostServices;
@@ -799,7 +799,7 @@ public class ProjectService {
     public Response popularDatasets(@Context SecurityContext sc,
             @Context HttpServletRequest req) throws AppException {
 
-        List<PopularDatasetJson> popularDatasets = this.manageGlobalClusterParticipation.getPopularDatasets();
+        List<PopularDatasetJSON> popularDatasets = this.manageGlobalClusterParticipation.getPopularDatasets();
 
         if (popularDatasets != null) {
 

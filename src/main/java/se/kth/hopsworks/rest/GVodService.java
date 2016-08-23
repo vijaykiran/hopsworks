@@ -5,7 +5,7 @@
  */
 package se.kth.hopsworks.rest;
 
-import io.hops.gvod.io.contents.ContentsRequestDTO;
+import io.hops.gvod.contents.ContentsRequestDTO;
 import java.io.File;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -26,15 +26,15 @@ import se.kth.bbc.security.ua.UserManager;
 import se.kth.hopsworks.controller.KafkaController;
 import se.kth.hopsworks.controller.ResponseMessages;
 import se.kth.hopsworks.filters.AllowedRoles;
-import io.hops.gvod.io.download.DownloadDTO;
+import io.hops.gvod.download.DownloadDTO;
 import se.kth.hopsworks.controller.GVoDController;
 import se.kth.hopsworks.controller.ProjectController;
-import io.hops.gvod.io.download.StartDownloadDTO;
-import io.hops.gvod.io.resources.KafkaEndpoint;
-import io.hops.gvod.io.resources.items.ManifestResponse;
-import io.hops.gvod.io.responses.ErrorDescJSON;
-import io.hops.gvod.io.responses.HopsContentsSummaryJSON;
-import io.hops.gvod.io.responses.SuccessJSON;
+import io.hops.gvod.download.StartDownloadDTO;
+import io.hops.gvod.resources.KafkaEndpoint;
+import io.hops.gvod.resources.items.ManifestResponse;
+import io.hops.gvod.responses.ErrorDescJSON;
+import io.hops.gvod.responses.HopsContentsSummaryJSON;
+import io.hops.gvod.responses.SuccessJSON;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.util.Settings;
 

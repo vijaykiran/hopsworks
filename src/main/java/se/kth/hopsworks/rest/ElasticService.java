@@ -65,9 +65,11 @@ import io.hops.hopssite.restCommunication.ManageGlobalClusterParticipation;
 import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.controller.DatasetController;
-import io.hops.hopssite.io.register.RegisteredClusterJson;
+import io.hops.hopssite.io.register.RegisteredClusterJSON;
 import java.util.concurrent.ExecutionException;
 import javax.ws.rs.client.InvocationCallback;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
@@ -200,7 +202,7 @@ public class ElasticService {
                     ResponseMessages.GVOD_OFFLINE);
         }
         final HashMap<String, ElasticHit> results = new HashMap<>();
-        final List<RegisteredClusterJson> registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
+        final List<RegisteredClusterJSON> registeredClusters = manageGlobalClusterParticipation.getRegisteredClusters();
         final SettableFuture<Boolean> futureResult = SettableFuture.create();
         if (registeredClusters != null && registeredClusters.size() > 0) {
             final List<Boolean> responded = new LinkedList<>();

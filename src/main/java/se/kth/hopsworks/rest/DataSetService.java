@@ -1,6 +1,6 @@
 package se.kth.hopsworks.rest;
 
-import io.hops.gvod.io.resources.items.ManifestJSON;
+import io.hops.gvod.resources.items.ManifestJSON;
 import io.hops.hdfs.HdfsLeDescriptorsFacade;
 import java.io.BufferedReader;
 import java.io.File;

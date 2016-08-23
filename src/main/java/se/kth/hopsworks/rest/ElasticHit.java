@@ -1,6 +1,6 @@
 package se.kth.hopsworks.rest;
 
-import io.hops.gvod.io.resources.items.AddressJSON;
+import io.hops.gvod.resources.items.AddressJSON;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;

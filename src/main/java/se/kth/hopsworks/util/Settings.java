@@ -1,6 +1,6 @@
 package se.kth.hopsworks.util;
 
-import io.hops.gvod.io.resources.items.AddressJSON;
+import io.hops.gvod.resources.items.AddressJSON;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

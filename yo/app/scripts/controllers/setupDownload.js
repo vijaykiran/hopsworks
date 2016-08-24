@@ -18,7 +18,7 @@ angular.module('hopsWorksApp')
                 self.manifest;
 
                 self.DownloadTypeKafka = false;
-
+                self.typeChosen = false;
 
                 self.topicValues = [];
                 self.topicDone = [];
@@ -146,10 +146,12 @@ angular.module('hopsWorksApp')
 
                 self.downloadTypeHdfs = function () {
                     self.DownloadTypeKafka = false;
+                    self.typeChosen = true;
                 };
 
                 self.downloadTypeKafkaHdfs = function () {
                     self.DownloadTypeKafka = true;
+                    self.typeChosen = true;
                 };
 
                 self.download = function () {

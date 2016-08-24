@@ -56,106 +56,11 @@ public class ZookeeprTopicCleanerTimer {
 
     @Resource
     private TimerService timerSvc;
-
-    @Schedule(persistent = false, second = "*/10", minute = "*", hour = "*")
-    public void execute(Timer timer) {
-
-        Set<String> zkTopics = new HashSet<>();
-        try {
-            if (zk == null || !zk.getState().isConnected()) {
-                if (zk != null) {
-                    zk.close();
-                }
-                zk = new ZooKeeper(settings.getZkConnectStr(),
-                        sessionTimeoutMs, new ZookeeperWatcher());
-            }
-            List<String> topics = zk.getChildren("/brokers/topics", false);
-            zkTopics.addAll(topics);
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Unable to find the zookeeper server: ", ex.toString());
-        } catch (KeeperException | InterruptedException ex) {
-            LOGGER.log(Level.SEVERE, "Cannot retrieve topic list from Zookeeper", ex.toString());
-        }
-
-        List<ProjectTopics> dbProjectTopics = em.createNamedQuery(
-                "ProjectTopics.findAll").getResultList();
-
-        Set<String> dbTopics = new HashSet<>();
-
-        for (ProjectTopics pt : dbProjectTopics) {
-            try {
-                dbTopics.add(pt.getProjectTopicsPK().getTopicName());
-            } catch (UnsupportedOperationException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
-            }
-        }
-
-        /*
-        Remove topics from database which no more exist in the zookeeper. 
-        A Kafka topic has a configurable retention period, defaults to 168 hours,
-        in the zookeeper. After this period, the topic and all its logs is deleted.
-        Such topics should be removed from the database.
-         */
-        Set<String> dbTopicsTemp = dbTopics;
-
-        //remove topics from database which do not exist in zookeeper		
-        if (!dbTopicsTemp.isEmpty()) {
-            dbTopicsTemp.removeAll(zkTopics);
-            for (String topicName : dbTopicsTemp) {
-                ProjectTopics removeTopic = em.createNamedQuery(
-                        "ProjectTopics.findByTopicName", ProjectTopics.class)
-                        .setParameter("topicName", topicName).getSingleResult();
-                em.remove(removeTopic);
-                LOGGER.log(Level.SEVERE, "************************** "
-                        + "{0} is being removed from database", new Object[]{topicName});
-            }
-        }
-
-        /*
-        Remove topics from zookeeper which do not exist in database. This situation
-        happens when a hopsworks project is deleted, because all the topics in the project
-        will be deleted (casecade delete) without deleting them from the Kafka cluster.
-        1. get all topics from zookeeper
-        2. get the topics which exist in zookeeper, but not in database
-            zkTopics.removeAll(dbTopics);
-        3. remove those topics
-        
-        Or during normal system operation:
-            1. topic create fails after creating the topic on zookeeper or
-            2. topic delete fails after removing the topic from the database.
-        
-         */
-        if (!zkTopics.isEmpty()) {
-            zkTopics.removeAll(dbTopics);
-            for (String topicName : zkTopics) {
-                try {
-                    if (zkClient == null) {
-                        zkClient = new ZkClient(kafkaFacade.getIp(settings.getZkConnectStr()).getHostName(),
-                                sessionTimeoutMs, connectionTimeout, ZKStringSerializer$.MODULE$);
-                    }
-                } catch (AppException ex) {
-                    LOGGER.log(Level.SEVERE, "Unable to get zookeeper ip address ", ex.toString());
-                }
-                if (zkConnection == null) {
-                    zkConnection = new ZkConnection(settings.getZkConnectStr());
-                }
-                ZkUtils zkUtils = new ZkUtils(zkClient, zkConnection, false);
-
-                try {
-                    AdminUtils.deleteTopic(zkUtils, topicName);
-                    LOGGER.log(Level.INFO, "{0} is removed from Zookeeper", new Object[]{topicName});
-                } catch (TopicAlreadyMarkedForDeletionException ex) {
-                    LOGGER.log(Level.INFO, "{0} is already marked for deletion", new Object[]{topicName});
-                }
-            }
-        }
-    }
-    
     
     @Timeout
     public void synchronizeTopics(){
     
-        Set<String> zkTopics = new HashSet<>();
+            Set<String> zkTopics = new HashSet<>();
         try {
             if (zk == null || !zk.getState().isConnected()) {
                 if (zk != null) {
@@ -191,7 +96,7 @@ public class ZookeeprTopicCleanerTimer {
         in the zookeeper. After this period, the topic and all its logs is deleted.
         Such topics should be removed from the database.
          */
-        Set<String> dbTopicsTemp = dbTopics;
+        Set<String> dbTopicsTemp = new HashSet(dbTopics);
 
         //remove topics from database which do not exist in zookeeper		
         if (!dbTopicsTemp.isEmpty()) {
@@ -262,7 +167,7 @@ public class ZookeeprTopicCleanerTimer {
     }
 
     private void scheduleCheckingServices() {
-        // When finished checking the availability of services, schedule another check 10 seconds later
+        // When finished checking the availability of services, schedule another check 60 seconds later
         timerSvc.createSingleActionTimer(Settings.INTERVAL_MS_SYNCHRONIZE_KAFKA_TOPICS, new TimerConfig());
     }
 

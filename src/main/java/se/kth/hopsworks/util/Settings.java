@@ -456,7 +456,7 @@ public class Settings {
   public static final int FLINK_APP_MASTER_MEMORY = 768;
   
   //Zookeeper constant
-  public static long INTERVAL_MS_SYNCHRONIZE_KAFKA_TOPICS = 60 * 1000l;
+  public static long INTERVAL_MS_SYNCHRONIZE_KAFKA_TOPICS = 60 * 1000l;// 60 seconds
   
   public synchronized String getLocalFlinkJarPath() {
     return getFlinkDir()+ "/flink.jar";

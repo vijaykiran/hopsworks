@@ -140,11 +140,9 @@ angular.module('hopsWorksApp')
                     ;
                     ModalService.messages('lg', selected)
                             .then(function (success) {
-                                growl.success(success.data.successMessage, {title: 'Success', ttl: 1000})
+                                growl.success(success.data.successMessage, {title: 'Success', ttl: 1000});
                             }, function (error) { });
                 };
-
-                self.PublicSearch = false;
                 self.searchTerm = "";
                 self.searchReturned = "";
                 self.searchReturnedPublicSearch = "";
@@ -192,7 +190,6 @@ angular.module('hopsWorksApp')
                         var local_data;
                         var global_data;
                         //triggering a global search
-                        if (self.PublicSearch) {
                             elasticService.globalSearch(self.searchTerm).then(function (response) {
                                 local_data = response.data;
                                 if (local_data.length > 0) {
@@ -217,34 +214,6 @@ angular.module('hopsWorksApp')
                                     self.resultItemsPublicSearch = self.searchResultPublicSearch.length;
                                 });
                             });
-                        } else {
-                            elasticService.globalSearch(self.searchTerm)
-                                    .then(function (response) {
-
-                                        var searchHits = response.data;
-                                        //console.log("RECEIVED RESPONSE " + JSON.stringify(response));
-                                        if (searchHits.length > 0) {
-                                            if (self.globalClusterBoundary) {
-                                                self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
-                                            } else {
-                                                self.searchReturned = "Result for <b>" + self.searchTerm + "</b>";
-                                            }
-                                            self.searchResult = searchHits;
-                                        } else {
-                                            self.searchResult = [];
-                                            if (self.globalClusterBoundary) {
-                                                self.searchReturned = "No result found for <b>" + self.searchTerm + "</b>";
-                                            } else {
-                                                self.searchReturned = "No result found for <b>" + self.searchTerm + "</b>";
-                                            }
-                                        }
-                                        self.resultPages = Math.ceil(self.searchResult.length / self.pageSize);
-                                        self.resultItems = self.searchResult.length;
-
-                                    }, function (error) {
-                                        growl.error(error.data.errorMsg, {title: 'Error', ttl: 10000});
-                                    });
-                        }
                     } else if (self.searchType === "projectCentric") {
                         elasticService.projectSearch(UtilsService.getProjectName(), self.searchTerm)
                                 .then(function (response) {

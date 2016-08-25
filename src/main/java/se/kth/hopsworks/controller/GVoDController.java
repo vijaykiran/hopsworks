@@ -7,6 +7,7 @@ package se.kth.hopsworks.controller;
 
 import com.google.gson.Gson;
 import io.hops.gvod.contents.HopsContentsReqJSON;
+import io.hops.gvod.contents.TorrentExtendedStatusJSON;
 import io.hops.gvod.download.DownloadGVoDJSON;
 import java.io.File;
 import java.io.IOException;
@@ -308,20 +309,21 @@ public class GVoDController {
         }
     }
 
-    public String getStatusOfDataset(String dsPath, String publicDsId) {
-
-        StatusGVoDJSON statusGVoDJSON = new StatusGVoDJSON(dsPath, new TorrentId(publicDsId));
+    public TorrentExtendedStatusJSON getDetails(String torrentId) {
+        
+        TorrentId torrent = new TorrentId(torrentId);
 
         rest_client = ClientBuilder.newClient();
 
-        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/stop");
+        webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("/library/extended");
 
-        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(statusGVoDJSON, MediaType.APPLICATION_JSON), Response.class);
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(torrent, MediaType.APPLICATION_JSON), Response.class);
 
         if (r != null && r.getStatus() == 200) {
-            return r.readEntity(String.class);
+            return r.readEntity(TorrentExtendedStatusJSON.class);
         } else {
             return null;
         }
+        
     }
 }

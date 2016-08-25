@@ -5,6 +5,14 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService','$routeParam
         
         self.contents;
         
+        self.remove = function(torrentId){
+            var json = {};
+            json.torrentId = torrentId;
+            GVoDService.remove(json).then(function(success){
+               getContents(); 
+            });
+        };
+        
         var getContents = function(){
           
             var json = {};
@@ -12,6 +20,13 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService','$routeParam
             
             GVoDService.getContents(json).then(function(success){
                 self.contents = success.data.contents;
+                for(var i = 0; i<self.contents.length;i++){
+                    var json = {};
+                    json.torrentId = self.contents[i].torrentId;
+                    GVoDService.getExtendedDetails(json).then(function(success){
+                        self.contents[i].progress = success.percentageCompleted;
+                    });
+                }
             });
             
         };
@@ -21,7 +36,7 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService','$routeParam
         
         var contentsInterval = $interval(function () {
                      getContents();
-                }, 6000);
+                }, 1000);
                 
         $scope.$on("$destroy", function () {
                     $interval.cancel(contentsInterval);

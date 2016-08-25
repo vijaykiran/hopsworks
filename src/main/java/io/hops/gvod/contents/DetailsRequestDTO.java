@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.hops.gvod.resources.items;
+package io.hops.gvod.contents;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -12,25 +12,20 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class TorrentId {
+public class DetailsRequestDTO {
     
-    private String val;
-    
-    public TorrentId() {
+    private String torrentId;
+
+    public DetailsRequestDTO() {
     }
 
-    public TorrentId(String val) {
-        this.val = val;
+    public String getTorrentId() {
+        return torrentId;
     }
 
-    public String getVal() {
-        return val;
+    public void setTorrentId(String torrentId) {
+        this.torrentId = torrentId;
     }
-
-    public void setVal(String val) {
-        this.val = val;
-    }
-    
     
     
     

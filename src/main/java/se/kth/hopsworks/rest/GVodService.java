@@ -6,6 +6,8 @@
 package se.kth.hopsworks.rest;
 
 import io.hops.gvod.contents.ContentsRequestDTO;
+import io.hops.gvod.contents.DetailsRequestDTO;
+import io.hops.gvod.contents.TorrentExtendedStatusJSON;
 import java.io.File;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -35,6 +37,7 @@ import io.hops.gvod.resources.items.ManifestResponse;
 import io.hops.gvod.responses.ErrorDescJSON;
 import io.hops.gvod.responses.HopsContentsSummaryJSON;
 import io.hops.gvod.responses.SuccessJSON;
+import io.hops.gvod.stop.RemoveTorrentDTO;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.util.Settings;
 
@@ -188,6 +191,58 @@ public class GVodService {
 
         if (hopsContentsSummaryJSON != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(hopsContentsSummaryJSON).build();
+        } else {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
+        }
+    }
+    
+    @PUT
+    @Path("details")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
+    public Response getExtendedDetails(@Context SecurityContext sc,
+            @Context HttpServletRequest req, DetailsRequestDTO detailsRequestDTO) throws AppException {
+        
+        if (settings.getCLUSTER_ID() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.NOT_REGISTERD_WITH_HOPS_SITE);
+        }
+        if(settings.getGVOD_UDP_ENDPOINT() == null){
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.GVOD_OFFLINE);
+        }
+        
+        TorrentExtendedStatusJSON torrentExtendedStatusJSON = gvodController.getDetails(detailsRequestDTO.getTorrentId());
+
+        if (torrentExtendedStatusJSON != null) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(torrentExtendedStatusJSON).build();
+        } else {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
+        }
+    }
+    
+    @PUT
+    @Path("remove")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @AllowedRoles(roles = {AllowedRoles.DATA_SCIENTIST, AllowedRoles.DATA_OWNER})
+    public Response remove(@Context SecurityContext sc,
+            @Context HttpServletRequest req, RemoveTorrentDTO removeTorrentDTO) throws AppException {
+        
+        if (settings.getCLUSTER_ID() == null) {
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.NOT_REGISTERD_WITH_HOPS_SITE);
+        }
+        if(settings.getGVOD_UDP_ENDPOINT() == null){
+            throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
+                    ResponseMessages.GVOD_OFFLINE);
+        }
+        
+        String response = gvodController.removeUpload(removeTorrentDTO.getTorrentId());
+
+        if (response != null) {
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(response).build();
         } else {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(null).build();
         }

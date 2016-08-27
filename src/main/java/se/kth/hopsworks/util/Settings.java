@@ -80,7 +80,6 @@ public class Settings {
     private WebTarget target = null;
     private static final String VARIABLE_GVOD_REST_ENDPOINT = "gvod_rest_endpoint";
     private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_base_uri";
-    private static final String VARIABLE_CLUSTER_MAIL = "cluster_mail";
     private static final String VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT = "public_search_endpoint";
     private static final String VARIABLE_CLUSTER_CERT = "certificate";
 
@@ -184,6 +183,13 @@ public class Settings {
       HDFS_DEFAULT_QUOTA_MBs = setDirVar(VARIABLE_HDFS_DEFAULT_QUOTA, HDFS_DEFAULT_QUOTA_MBs);
       MAX_NUM_PROJ_PER_USER = setDirVar(VARIABLE_MAX_NUM_PROJ_PER_USER, MAX_NUM_PROJ_PER_USER);
       HOPSWORKS_DEFAULT_SSL_MASTER_PASSWORD = setVar(VARIABLE_HOPSWORKS_SSL_MASTER_PASSWORD, HOPSWORKS_DEFAULT_SSL_MASTER_PASSWORD);
+      BASE_URI_HOPS_SITE = setDirVar(VARIABLE_BASE_URI_HOPS_SITE, BASE_URI_HOPS_SITE);
+      CLUSTER_CERT = setDirVar(VARIABLE_CLUSTER_CERT, CLUSTER_CERT);
+      GVOD_REST_ENDPOINT = setDirVar(VARIABLE_GVOD_REST_ENDPOINT, GVOD_REST_ENDPOINT);
+      GVOD_UDP_ENDPOINT = getGVoDUDPEndpoint();
+      ELASTIC_PUBLIC_RESTENDPOINT = setDirVar(VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT, ELASTIC_PUBLIC_RESTENDPOINT);
+      DOMAIN = setDirVar(VARIABLE_DOMAIN, DOMAIN);
+      REST_PORT = setDirVar(VARIABLE_REST_PORT, REST_PORT);
       cached = true;
     }
   }
@@ -702,13 +708,6 @@ public class Settings {
     public synchronized String getELASTIC_PUBLIC_RESTENDPOINT() {
         checkCache();
         return ELASTIC_PUBLIC_RESTENDPOINT;
-    }
-
-    private String CLUSTER_MAIL = "johsn@kth.se";
-
-    public synchronized String getCLUSTER_MAIL() {
-        checkCache();
-        return CLUSTER_MAIL;
     }
 
     private String CLUSTER_CERT = "asdasxasx8as6dx8a7sx7asdta8dtasxa8";

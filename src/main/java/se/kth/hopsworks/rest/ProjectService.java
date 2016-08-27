@@ -50,7 +50,7 @@ import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.HdfsInodeAttributes;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import io.hops.hopssite.io.populardatasets.PopularDatasetJSON;
-import io.hops.hopssite.restCommunication.ManageGlobalClusterParticipation;
+import io.hops.hopssite.rest.ManageGlobalClusterParticipation;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.LocalhostServices;
 import se.kth.hopsworks.util.Settings;

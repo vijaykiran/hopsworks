@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.hops.hopssite.restCommunication;
+package io.hops.hopssite.rest;
 
 import io.hops.gvod.resources.items.AddressJSON;
 import io.hops.hopssite.io.register.RegisterJSON;
@@ -29,6 +29,7 @@ import io.hops.hopssite.io.identity.IdentificationJSON;
 import io.hops.hopssite.io.ping.PingedJSON;
 import io.hops.hopssite.io.register.RegisteredJSON;
 import io.hops.hopssite.io.register.RegisteredClusterJSON;
+import javax.mail.Session;
 import se.kth.hopsworks.util.Settings;
 
 @Startup
@@ -45,6 +46,9 @@ public class ManageGlobalClusterParticipation {
 
     @EJB
     private Settings settings;
+    
+    @Resource(lookup = "mail/BBCMail")
+    private Session mailSession;
 
     @PostConstruct
     private void init() {
@@ -78,7 +82,7 @@ public class ManageGlobalClusterParticipation {
         try {
             AddressJSON gvodEndpoint = settings.getGVOD_UDP_ENDPOINT();
             if (gvodEndpoint != null) {
-                id = RegisterRest(settings.getELASTIC_PUBLIC_RESTENDPOINT(), settings.getCLUSTER_MAIL(), settings.getCLUSTER_CERT(), gvodEndpoint);
+                id = RegisterRest(settings.getELASTIC_PUBLIC_RESTENDPOINT(), mailSession.getProperty("mail.from"), settings.getCLUSTER_CERT(), gvodEndpoint);
             }
         } catch (ClientErrorException ex) {
 

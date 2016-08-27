@@ -328,7 +328,7 @@ This will make all its files available for any registered user to download and p
             
             self.showManifest = function(id){
                 dataSetService.showManifest(id).then(function(success){
-                    var manifest = success;
+                    var manifest = success.data;
                     ModalService.json('md','Manifest', manifest).then(function(){
                         
                     });

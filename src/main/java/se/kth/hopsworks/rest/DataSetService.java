@@ -1158,6 +1158,7 @@ public class DataSetService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);
         }
+        this.dataset = datasetFacade.findByProjectAndInode(this.project, inode);
         if (dataset == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);
@@ -1205,6 +1206,7 @@ public class DataSetService {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);
         }
+        this.dataset = datasetFacade.findByProjectAndInode(this.project, inode);
         if (dataset == null) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
                     ResponseMessages.DATASET_NOT_FOUND);

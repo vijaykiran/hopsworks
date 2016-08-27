@@ -542,7 +542,7 @@ public class DatasetController {
         
         ManifestJSON manifestJSON;
         
-        byte [] jsonBytes = readJsonFromHdfs(datasetPath);
+        byte [] jsonBytes = readJsonFromHdfs(datasetPath + Settings.MANIFEST_NAME);
         manifestJSON = getManifestJSON(jsonBytes);
         return manifestJSON;
         

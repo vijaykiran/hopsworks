@@ -24,7 +24,7 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService','$routeParam
                     var json = {};
                     json.torrentId = self.contents[i].torrentId;
                     GVoDService.getExtendedDetails(json).then(function(success){
-                        self.contents[i].progress = success.percentageCompleted;
+                        self.contents[i].progress = success.data.percentageCompleted;
                     });
                 }
             });

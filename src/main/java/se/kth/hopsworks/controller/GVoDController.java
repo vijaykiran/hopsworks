@@ -274,13 +274,13 @@ public class GVoDController {
 
     public String removeUpload(String publicDsId) {
 
-        RemoveGVodJSON removeGVoDJSON = new RemoveGVodJSON(new TorrentId(publicDsId));
+        TorrentId torrentId = new TorrentId(publicDsId);
 
         rest_client = ClientBuilder.newClient();
 
         webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/stop");
 
-        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(removeGVoDJSON, MediaType.APPLICATION_JSON), Response.class);
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(torrentId, MediaType.APPLICATION_JSON), Response.class);
 
         if (r != null && r.getStatus() == 200) {
             return r.readEntity(SuccessJSON.class).getDetails();

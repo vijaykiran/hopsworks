@@ -214,7 +214,11 @@ public class GVodService {
         }
         
         TorrentExtendedStatusJSON torrentExtendedStatusJSON = gvodController.getDetails(detailsRequestDTO.getTorrentId());
-
+        
+        if(torrentExtendedStatusJSON != null){
+            torrentExtendedStatusJSON.setIndex(detailsRequestDTO.getIndex());
+        }
+            
         if (torrentExtendedStatusJSON != null) {
             return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(torrentExtendedStatusJSON).build();
         } else {

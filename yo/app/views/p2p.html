@@ -21,11 +21,16 @@
                         <td>{{dataset.torrentId.val}}</td>
                         <td>{{dataset.torrentStatus}}</td>
                         <td>
-                            <uib-progressbar max="dataset.max" value="dataset.dynamic">
-                                <span style="color:white; white-space:nowrap;">{{dataset.dynamic}} / {{dataset.max}}</span>
-                            </uib-progressbar>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                                     aria-valuenow="{{dataset.dynamic}}" aria-valuemin="0" aria-valuemax="{{dataset.max}}" style="width:{{dataset.dynamic}}%">
+                                    {{dataset.dynamic}}%
+                                </div>
+                            </div>
                         </td>
-                        <td><span class="glyphicon glyphicon-remove" style="color:red;" ng-click="p2pCtrl.remove(dataset.torrentId)"></span></td>
+                        <td>
+                            <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="p2pCtrl.remove(dataset.torrentId)"></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>

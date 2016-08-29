@@ -25,8 +25,9 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                     self.contents[j]['max'] = 100;
                     var ejson = {};
                     ejson.torrentId = self.contents[j].torrentId.val;
+                    ejson.index = j;
                     GVoDService.getExtendedDetails(ejson).then(function (success) {
-                        self.contents[j]['dynamic'] = success.percentageCompleted * 100;
+                        self.contents[success.data.index]['dynamic'] = success.data.percentageCompleted;
                     });
                 }
             });

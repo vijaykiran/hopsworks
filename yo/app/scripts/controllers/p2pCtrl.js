@@ -22,13 +22,16 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                 self.contents = success.data.contents;
                 var length = self.contents.length;
                 for (var j = 0; j < length; j++) {
-                    self.contents[j]['max'] = 100;
-                    var ejson = {};
-                    ejson.torrentId = self.contents[j].torrentId.val;
-                    ejson.index = j;
-                    GVoDService.getExtendedDetails(ejson).then(function (success) {
-                        self.contents[success.data.index]['dynamic'] = success.data.percentageCompleted;
-                    });
+                    if (self.contents[j].torrentStatus === "DOWNLOADING") {
+                        self.contents[j]['max'] = 100;
+                        var ejson = {};
+                        ejson.torrentId = self.contents[j].torrentId.val;
+                        ejson.index = j;
+                        GVoDService.getExtendedDetails(ejson).then(function (success) {
+                            self.contents[success.data.index]['dynamic'] = success.data.percentageCompleted;
+                        });
+                    }
+
                 }
             });
 
@@ -39,7 +42,7 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
 
         var contentsInterval = $interval(function () {
             getContents();
-        }, 5000);
+        }, 1000);
 
         $scope.$on("$destroy", function () {
             $interval.cancel(contentsInterval);

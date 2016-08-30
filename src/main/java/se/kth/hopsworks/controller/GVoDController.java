@@ -34,7 +34,6 @@ import io.hops.gvod.resources.items.TorrentId;
 import io.hops.gvod.responses.ErrorDescJSON;
 import io.hops.gvod.responses.HopsContentsSummaryJSON;
 import io.hops.gvod.responses.SuccessJSON;
-import io.hops.gvod.stop.RemoveGVodJSON;
 import io.hops.gvod.upload.UploadGVoDJSON;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
@@ -43,7 +42,6 @@ import se.kth.hopsworks.rest.AppException;
 import se.kth.hopsworks.user.model.Users;
 import se.kth.hopsworks.util.Settings;
 import java.util.Map;
-import io.hops.gvod.status.StatusGVoDJSON;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.ejb.TransactionAttribute;
@@ -279,8 +277,12 @@ public class GVoDController {
         rest_client = ClientBuilder.newClient();
 
         webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/stop");
+        
+        Gson gson = new Gson();
+            
+        String json = gson.toJson(torrentId);
 
-        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).put(Entity.entity(torrentId, MediaType.APPLICATION_JSON), Response.class);
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(json, MediaType.APPLICATION_JSON), Response.class);
 
         if (r != null && r.getStatus() == 200) {
             return r.readEntity(SuccessJSON.class).getDetails();

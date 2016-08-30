@@ -35,7 +35,7 @@
                             </div>
                         </td>
                         <td>
-                            <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="p2pCtrl.remove(dataset.torrentId.val)"></span>
+                            <span class="glyphicon glyphicon-remove" style="color:red;" ng-click="p2pCtrl.remove(dataset.torrentId.val)" ng-if="dataset.torrentStatus !== 'DESTROYED'"></span>
                         </td>
                     </tr>
                 </tbody>

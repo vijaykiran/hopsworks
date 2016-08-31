@@ -16,17 +16,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author jsvhqr
  */
 @XmlRootElement
-public class DownloadGVoDJSON {
+public class HopsTorrentAdvanceDownload {
 
     private TorrentId torrentId;
     private KafkaEndpoint kafkaEndpoint;
     private HDFSEndpoint hdfsEndpoint;
     private ExtendedDetails extendedDetails;
 
-    public DownloadGVoDJSON() {
+    public HopsTorrentAdvanceDownload() {
     }
     
-    public DownloadGVoDJSON(TorrentId torrentId, KafkaEndpoint kafkaEndpoint, HDFSEndpoint hdfsEndpoint, ExtendedDetails extendedDetails) {
+    public HopsTorrentAdvanceDownload(TorrentId torrentId, KafkaEndpoint kafkaEndpoint, HDFSEndpoint hdfsEndpoint, ExtendedDetails extendedDetails) {
         this.torrentId = torrentId;
         this.kafkaEndpoint = kafkaEndpoint;
         this.hdfsEndpoint = hdfsEndpoint;

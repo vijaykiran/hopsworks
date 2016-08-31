@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author jsvhqr
  */
-public class StartDownloadJSON {
+public class HopsTorrentStartDownload {
     
     
     private TorrentId torrentId;
@@ -24,7 +24,7 @@ public class StartDownloadJSON {
     private List<AddressJSON> partners;
     private HDFSEndpoint hdfsEndpoint;
 
-    public StartDownloadJSON(TorrentId torrentId, String torrentName, HDFSResource manifestHDFSResource, List<AddressJSON> partners, HDFSEndpoint hdfsEndpoint) {
+    public HopsTorrentStartDownload(TorrentId torrentId, String torrentName, HDFSResource manifestHDFSResource, List<AddressJSON> partners, HDFSEndpoint hdfsEndpoint) {
         this.torrentId = torrentId;
         this.torrentName = torrentName;
         this.manifestHDFSResource = manifestHDFSResource;
@@ -34,7 +34,7 @@ public class StartDownloadJSON {
 
     
     
-    public StartDownloadJSON() {
+    public HopsTorrentStartDownload() {
     }
 
     public String getTorrentName() {

@@ -8,7 +8,7 @@ package se.kth.hopsworks.controller;
 import com.google.gson.Gson;
 import io.hops.gvod.contents.HopsContentsReqJSON;
 import io.hops.gvod.contents.TorrentExtendedStatusJSON;
-import io.hops.gvod.download.DownloadGVoDJSON;
+import io.hops.gvod.download.HopsTorrentAdvanceDownload;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +21,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import se.kth.bbc.project.Project;
-import io.hops.gvod.startdownload.StartDownloadJSON;
+import io.hops.gvod.startdownload.HopsTorrentStartDownload;
 import io.hops.gvod.resources.HDFSEndpoint;
 import io.hops.gvod.resources.HDFSResource;
 import io.hops.gvod.resources.KafkaEndpoint;
@@ -34,7 +34,7 @@ import io.hops.gvod.resources.items.TorrentId;
 import io.hops.gvod.responses.ErrorDescJSON;
 import io.hops.gvod.responses.HopsContentsSummaryJSON;
 import io.hops.gvod.responses.SuccessJSON;
-import io.hops.gvod.upload.UploadGVoDJSON;
+import io.hops.gvod.upload.HopsTorrentUpload;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
@@ -75,7 +75,7 @@ public class GVoDController {
 
     public String uploadToGVod(String projectName, String sourceDatasetName, String username, String datasetPath) {
 
-        UploadGVoDJSON uploadGVoDJSON = new UploadGVoDJSON(
+        HopsTorrentUpload hopsTorrentUpload = new HopsTorrentUpload(
                 new TorrentId(Settings.getPublicDatasetId(settings.getCLUSTER_ID(), projectName, sourceDatasetName)),
                 sourceDatasetName,
                 new HDFSResource(datasetPath, Settings.MANIFEST_NAME),
@@ -85,7 +85,7 @@ public class GVoDController {
 
         webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("torrent/hops/upload/xml");
 
-        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(uploadGVoDJSON, MediaType.APPLICATION_JSON), Response.class);
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(hopsTorrentUpload, MediaType.APPLICATION_JSON), Response.class);
 
         if (r != null && r.getStatus() == 200) {
             return r.readEntity(SuccessJSON.class).getDetails();
@@ -130,7 +130,7 @@ public class GVoDController {
             }
         }
 
-        StartDownloadJSON startDownloadJSON = new StartDownloadJSON(
+        HopsTorrentStartDownload hopsTorrentStartDownload = new HopsTorrentStartDownload(
                 new TorrentId(publicDsId),
                 destinationDatasetName,
                 new HDFSResource(Settings.getProjectPath(project.getName()) + File.separator + destinationDatasetName + File.separator, "manifest.json"),
@@ -142,7 +142,7 @@ public class GVoDController {
 
         webTarget = rest_client.target(settings.getGVOD_REST_ENDPOINT()).path("/torrent/hops/download/start/xml");
 
-        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(startDownloadJSON, MediaType.APPLICATION_JSON), Response.class);
+        Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(hopsTorrentStartDownload, MediaType.APPLICATION_JSON), Response.class);
 
         String pathToManifest = Settings.getProjectPath(project.getName()) + File.separator + destinationDatasetName + File.separator + Settings.MANIFEST_NAME;
 
@@ -201,7 +201,7 @@ public class GVoDController {
             
         
             
-            DownloadGVoDJSON downloadGVodJSON = new DownloadGVoDJSON(
+            HopsTorrentAdvanceDownload HopsTorrentAdvanceDownload = new HopsTorrentAdvanceDownload(
                     new TorrentId(publicDsId),
                     kafkaEndpoint,
                     new HDFSEndpoint(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, username),
@@ -215,7 +215,7 @@ public class GVoDController {
             
             Gson gson = new Gson();
             
-            String json = gson.toJson(downloadGVodJSON);
+            String json = gson.toJson(HopsTorrentAdvanceDownload);
             
             Response r = webTarget.request().accept(MediaType.APPLICATION_JSON).post(Entity.entity(json, MediaType.APPLICATION_JSON), Response.class);
 
@@ -241,7 +241,7 @@ public class GVoDController {
                 }
             }
             
-            DownloadGVoDJSON downloadGVodJSON = new DownloadGVoDJSON(
+            HopsTorrentAdvanceDownload downloadGVodJSON = new HopsTorrentAdvanceDownload(
                     new TorrentId(publicDsId),
                     null,
                     new HDFSEndpoint(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, username),

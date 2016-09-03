@@ -121,7 +121,7 @@ public class GVodService {
         Response response = gvodController.download(null, 
                 hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
                 downloadDTO.getPublicDatasetId(), 
-                Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName() + File.separator, 
+                Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName(), 
                 downloadDTO.getJSONTopics(), 
                 null);
 
@@ -157,7 +157,7 @@ public class GVodService {
         Response response = gvodController.download(new KafkaEndpoint(settings.getKafkaConnectStr(), "http://" + settings.getDOMAIN() + ":" + settings.getRestPort(), settings.getDOMAIN(), String.valueOf(downloadDTO.getProjectId()), certPath + "/keystore.jks", certPath + "/truststore.jks"), 
                 hdfsUsersBean.getHdfsUserName(project, userBean.getUserByEmail(sc.getUserPrincipal().getName())), 
                 downloadDTO.getPublicDatasetId(), 
-                Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName() + File.separator, 
+                Settings.getProjectPath(project.getName()) + File.separator + downloadDTO.getDestinationDatasetName(), 
                 downloadDTO.getJSONTopics(), 
                 req.getSession().getId());
 

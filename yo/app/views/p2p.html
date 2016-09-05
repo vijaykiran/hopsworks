@@ -10,20 +10,21 @@
                     <tr>
                         <th>Dataset</th>
                         <th>Id</th>
-                        <th>Status</th>
-                        <th>Progress</th>
+                        <th style="width: 35%;">Status</th>
+                        <th style="width: 25%;">Progress</th>
                         <td>Remove</td>
                     </tr>
                 </thead>
-                <tbody ng-repeat="dataset in p2pCtrl.contents track by dataset.torrentId.val">
+                <tbody ng-repeat="dataset in p2pCtrl.preview track by dataset.torrentId">
                     <tr>
                         <td>{{dataset.fileName}}</td>
-                        <td>{{dataset.torrentId.val}}</td>
-                        <td>{{dataset.torrentStatus}}</td>
+                        <td>{{dataset.torrentId}}</td>
+                        <td ng-if="dataset.torrentStatus === 'DOWNLOADING'">{{dataset.torrentStatus}} : {{dataset.speed}} kb/s</td>
+                        <td ng-if="dataset.torrentStatus === 'UPLOADING'">{{dataset.torrentStatus}}</td>
                         <td>
                             <div class="progress" ng-if="dataset.torrentStatus === 'DOWNLOADING'" style="width:100%;">
                                 <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar"
-                                     aria-valuenow="{{dataset.dynamic}}" aria-valuemin="0" aria-valuemax="{{dataset.max}}" style="width:{{dataset.dynamic}}%">
+                                     aria-valuenow="{{dataset.dynamic}}" aria-valuemin="0" aria-valuemax="100" style="width:{{dataset.dynamic}}%">
                                     {{dataset.dynamic}}%
                                 </div>
                             </div>

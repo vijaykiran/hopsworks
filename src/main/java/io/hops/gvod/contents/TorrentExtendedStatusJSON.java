@@ -19,7 +19,6 @@ public class TorrentExtendedStatusJSON {
     private String torrentStatus;
     private int downloadSpeed;
     private double percentageCompleted;
-    private int index;
 
     public TorrentExtendedStatusJSON(TorrentId torrentId, String torrentStatus, int downloadSpeed,
             double percentageCompleted) {
@@ -31,17 +30,7 @@ public class TorrentExtendedStatusJSON {
 
     public TorrentExtendedStatusJSON() {
     }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
     
-    
-
     public String getTorrentStatus() {
         return torrentStatus;
     }

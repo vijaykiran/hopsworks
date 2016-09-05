@@ -78,13 +78,13 @@ public class Settings {
     private static final String VARIABLE_CLUSTER_ID = "cluster_id";
     private Client restClient = null;
     private WebTarget target = null;
-    private static final String VARIABLE_GVOD_REST_ENDPOINT = "gvod_rest_endpoint";
-    private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_base_uri";
+    private static final String VARIABLE_GVOD_REST_ENDPOINT = "dela_endpoint";
+    private static final String VARIABLE_BASE_URI_HOPS_SITE = "hops_site_endpoint";
     private static final String VARIABLE_ELASTIC_PUBLIC_RESTENDPOINT = "public_search_endpoint";
-    private static final String VARIABLE_CLUSTER_CERT = "certificate";
+    private static final String VARIABLE_CLUSTER_CERT = "hopsworks_certificate";
 
-    private static final String VARIABLE_DOMAIN = "domain";
-    private static final String VARIABLE_REST_PORT = "rest_port";
+    private static final String VARIABLE_DOMAIN = "hopsworks_domain";
+    private static final String VARIABLE_REST_PORT = "hopsworks_public_port";
   
   private String setVar(String varName, String defaultValue) {
     Variables userName = findById(varName);

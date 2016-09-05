@@ -2,8 +2,10 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
         var self = this;
 
         self.projectId = $routeParams.projectID;
-
-        self.contents;
+        
+        self.preview = {};
+        self.contents = [];
+        
 
         self.remove = function (torrentId) {
             var json = {};
@@ -12,7 +14,7 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                 getContents();
             });
         };
-
+        
         var getContents = function () {
 
             var json = {};
@@ -23,12 +25,22 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                 var length = self.contents.length;
                 for (var j = 0; j < length; j++) {
                     if (self.contents[j].torrentStatus === "DOWNLOADING") {
-                        self.contents[j]['max'] = 100;
+                        var prevObj = self.preview[self.contents[j].torrentId.val];
+                        if(!prevObj) {
+                            prevObj = {
+                                fileName : self.contents[j].fileName,
+                                torrentId : self.contents[j].torrentId.val,
+                                torrentStatus : self.contents[j].torrentStatus,
+                                speed : 0,
+                                dynamic: 0
+                            };
+                            self.preview[self.contents[j].torrentId.val] = prevObj;
+                        }
                         var ejson = {};
                         ejson.torrentId = self.contents[j].torrentId.val;
-                        ejson.index = j;
                         GVoDService.getExtendedDetails(ejson).then(function (success) {
-                            self.contents[success.data.index]['dynamic'] = success.data.percentageCompleted;
+                            self.preview[ejson.torrentId].dynamic = Math.round(success.data.percentageCompleted);
+                            self.preview[ejson.torrentId].speed = Math.round(success.data.downloadSpeed / 1024);
                         });
                     }
 

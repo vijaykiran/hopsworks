@@ -42,6 +42,16 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                             self.preview[ejson.torrentId].dynamic = Math.round(success.data.percentageCompleted);
                             self.preview[ejson.torrentId].speed = Math.round(success.data.downloadSpeed / 1024);
                         });
+                    }else{
+                        var prevObj = self.preview[self.contents[j].torrentId.val];
+                        if(!prevObj) {
+                            prevObj = {
+                                fileName : self.contents[j].fileName,
+                                torrentId : self.contents[j].torrentId.val,
+                                torrentStatus : self.contents[j].torrentStatus
+                            };
+                            self.preview[self.contents[j].torrentId.val] = prevObj;
+                        }
                     }
 
                 }

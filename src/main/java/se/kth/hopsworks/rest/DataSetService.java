@@ -67,6 +67,8 @@ import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.MoveDTO;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import io.hops.hopssite.rest.ManageGlobalClusterParticipation;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import se.kth.hopsworks.controller.FilePreviewDTO;
 import se.kth.hopsworks.meta.db.TemplateFacade;
 import se.kth.hopsworks.meta.entity.Template;
 import se.kth.hopsworks.meta.exception.DatabaseException;
@@ -117,13 +119,13 @@ public class DataSetService {
     @Inject
     private DownloadService downloader;
     @EJB
+    private HdfsLeDescriptorsFacade hdfsLeDescriptorsFacade;
+    @EJB
     private ManageGlobalClusterParticipation manageGlobalCLusterParticipation;
     @EJB
     private GVoDController gvodController;
     @EJB
     private HdfsUsersController hdfsUsersController;
-
-    private HdfsLeDescriptorsFacade hdfsLeDescriptorsFacade;
 
     private Integer projectId;
     private Project project;
@@ -396,9 +398,33 @@ public class DataSetService {
             if (username != null) {
                 udfso = dfs.getDfsOps(username);
             }
-            datasetController.createDataset(user, project, dataSet.getName(), dataSet.
+            datasetController.createDataset(user, project, dataSet.getName(),
+                    dataSet.
                     getDescription(), dataSet.getTemplate(), dataSet.isSearchable(),
                     false, dfso, udfso);
+
+            //Generate README.md for the dataset if the user requested it
+            if (dataSet.isGenerateReadme()) {
+                String templateName = "No template is attached to this dataset";
+                if (dataSet.getTemplate() > 0) {
+                    templateName = template.getTemplate(dataSet.getTemplate()).getName();
+                }
+
+                //Persist README.md to hdfs
+                if (udfso != null) {
+                    String readmeFile = String.format(Settings.README_TEMPLATE, dataSet.
+                            getName(), dataSet.getDescription(), templateName,
+                            dataSet.isSearchable());
+                    String readMeFilePath = "/Projects/" + project.getName() + "/"
+                            + dataSet.getName() + "/README.md";;
+
+                    try (FSDataOutputStream fsOut = udfso.create(readMeFilePath)) {
+                        fsOut.writeBytes(readmeFile);
+                        fsOut.flush();
+                    }
+                }
+            }
+
         } catch (NullPointerException c) {
             throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(), c.
                     getLocalizedMessage());
@@ -711,6 +737,11 @@ public class DataSetService {
 
             //check if the path is a file only if it exists
             if (!exists || dfso.isDir(path)) {
+                //Return an appropriate response if looking for README
+                if (path.endsWith("README.md")) {
+                    return noCacheResponse.getNoCacheResponseBuilder(Response.Status.NOT_FOUND).
+                            entity(json).build();
+                }
                 throw new IOException("The file does not exist");
             }
             //tests if the user have permission to access this path
@@ -718,41 +749,59 @@ public class DataSetService {
 
             //Get file type first. If it is not a known image type, display its 
             //binary contents instead
+            //Set the default file type
+            String fileExtension = "txt";
+            //Check if file contains a valid image extension 
+            if (path.contains(".")) {
+                fileExtension = path.substring(path.lastIndexOf(".")).replace(".", "").
+                        toUpperCase();
+            }
             //If it is an image smaller than 10MB download it
             //otherwise thrown an error
-            String fileType = path.substring(path.lastIndexOf(".")).replace(".", "").toUpperCase();
-            if (Utils.isInEnum(fileType, FilePreviewImageTypes.class)) {
-                int imageSize = (int) udfso.getFileStatus(new org.apache.hadoop.fs.Path(path)).getLen();
+            if (Utils.isInEnum(fileExtension, FilePreviewImageTypes.class)) {
+                int imageSize = (int) udfso.getFileStatus(new org.apache.hadoop.fs.Path(
+                        path)).getLen();
                 if (udfso.getFileStatus(new org.apache.hadoop.fs.Path(path)).getLen()
-                        < 10000000) {
+                        < settings.getFilePreviewImageSize()) {
                     //Read the image in bytes and convert it to base64 so that is 
                     //rendered properly in the front-end
                     byte[] imageInBytes = new byte[imageSize];
                     is.readFully(imageInBytes);
                     String base64Image = new Base64().encodeAsString(imageInBytes);
-                    json.setSuccessMessage(base64Image);
-                    json.setStatus("image");
+                    FilePreviewDTO filePreviewDTO = new FilePreviewDTO("image",
+                            fileExtension.toLowerCase(), base64Image);
+
+                    json.setData(filePreviewDTO);
+
                 } else {
                     throw new AppException(Response.Status.BAD_REQUEST.getStatusCode(),
-                            "Image is too big to display, please download it instead: " + path);
+                            "Image at " + path
+                            + " is too big to display, please download it by double-clicking it instead");
                 }
             } else {
                 //File content
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                short maxLines = 100;
-                short count = 0;
+                int maxLines = settings.getFilePreviewTxtSize();
+                int count = 0;
                 StringBuilder sb = new StringBuilder();
                 try {
                     String line;
                     line = br.readLine();
+
                     while (line != null && count < maxLines) {
-                        sb.append(line).append("\n");
+                        sb.append("\n").append(line);
                         // be sure to read the next line otherwise you'll get an infinite loop
                         line = br.readLine();
                         count++;
                     }
-                    json.setSuccessMessage(sb.toString());
-                    json.setStatus("text");
+                    //Remove first new line character
+                    if (count > 0) {
+                        sb.replace(0, 1, "");
+                    }
+
+                    FilePreviewDTO filePreviewDTO = new FilePreviewDTO("text", fileExtension.
+                            toLowerCase(), sb.toString());
+                    json.setData(filePreviewDTO);
                 } finally {
                     // you should close out the BufferedReader
                     br.close();
@@ -1108,35 +1157,35 @@ public class DataSetService {
                     ResponseMessages.GVOD_OFFLINE);
         }
         String publicDsId = Settings.getPublicDatasetId(settings.getCLUSTER_ID(), project.getName(), dataset.getName());
-            datasetController.createAndPersistManifestJson(
-                    path + dataset.getName() + File.separator,
-                    dataset.getDescription(),
-                    dataset.getName(),
-                    sc.getUserPrincipal().getName(),
-                    project);
+        datasetController.createAndPersistManifestJson(
+                path + dataset.getName() + File.separator,
+                dataset.getDescription(),
+                dataset.getName(),
+                sc.getUserPrincipal().getName(),
+                project);
 
-            String response = gvodController.uploadToGVod(
-                    project.getName(),
-                    dataset.getName(),
-                    hdfsUsersController.getHdfsUserName(project, userBean.findByEmail(sc.getUserPrincipal().getName())),
-                    path + dataset.getName() + File.separator,
-                    publicDsId);
+        String response = gvodController.uploadToGVod(
+                project.getName(),
+                dataset.getName(),
+                hdfsUsersController.getHdfsUserName(project, userBean.findByEmail(sc.getUserPrincipal().getName())),
+                path + dataset.getName() + File.separator,
+                publicDsId);
 
-            if (response == null) {
-                json.setErrorMsg("The Dataset could not be shared with gvod");
-                return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
-                        json).build();
-            } else {
-                dataset.setPublicDs(true);
-                dataset.setPublicDsId(publicDsId);
-                dataset.setEditable(false);
-                datasetFacade.merge(dataset);
-                json.setSuccessMessage("The Dataset is now public.");
-                json.setData(response);
-                //manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, Settings.getPublicDatasetId(settings.getCLUSTER_ID(), dataset.getName(), project.getName()), 0, 1);
-                return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
-                        json).build();
-            }
+        if (response == null) {
+            json.setErrorMsg("The Dataset could not be shared with gvod");
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.EXPECTATION_FAILED).entity(
+                    json).build();
+        } else {
+            dataset.setPublicDs(true);
+            dataset.setPublicDsId(publicDsId);
+            dataset.setEditable(false);
+            datasetFacade.merge(dataset);
+            json.setSuccessMessage("The Dataset is now public.");
+            json.setData(response);
+            //manageGlobalCLusterParticipation.notifyHopsSiteAboutNewDataset(manifestJson, Settings.getPublicDatasetId(settings.getCLUSTER_ID(), dataset.getName(), project.getName()), 0, 1);
+            return noCacheResponse.getNoCacheResponseBuilder(Response.Status.OK).entity(
+                    json).build();
+        }
 
     }
 
@@ -1231,4 +1280,5 @@ public class DataSetService {
         }
 
     }
+
 }

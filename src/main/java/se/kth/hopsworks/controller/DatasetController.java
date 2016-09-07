@@ -1,6 +1,9 @@
 package se.kth.hopsworks.controller;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.hops.gvod.resources.items.FileInfo;
+import io.hops.gvod.resources.items.ManifestJSON;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -8,7 +11,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,10 +30,8 @@ import se.kth.bbc.project.fb.Inode;
 import se.kth.bbc.project.fb.InodeFacade;
 import se.kth.hopsworks.dataset.Dataset;
 import se.kth.hopsworks.dataset.DatasetFacade;
-import io.hops.gvod.resources.items.FileInfo;
-import io.hops.gvod.resources.items.ManifestJSON;
-import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfs.fileoperations.DistributedFileSystemOps;
+import se.kth.hopsworks.hdfs.fileoperations.DistributedFsService;
 import se.kth.hopsworks.hdfsUsers.controller.HdfsUsersController;
 import se.kth.hopsworks.meta.db.InodeBasicMetadataFacade;
 import se.kth.hopsworks.meta.db.TemplateFacade;
@@ -65,13 +65,13 @@ public class DatasetController {
     private InodeBasicMetadataFacade inodeBasicMetaFacade;
     @EJB
     private HdfsUsersController hdfsUsersBean;
+
     @EJB
     private InodeFacade inodeFacade;
     @EJB
     private DistributedFsService dfs;
     @EJB
     private UserFacade userFacade;
-
     /**
      * Create a new DataSet. This is, a folder right under the project home
      * folder.
@@ -90,6 +90,7 @@ public class DatasetController {
      * @param globallyVisible
      * @param dfso
      * @param udfso
+     * @return the created dataset
      * @throws NullPointerException If any of the given parameters is null.
      * @throws IllegalArgumentException If the given DataSetDTO contains invalid
      * folder names, or the folder already exists.
@@ -156,6 +157,24 @@ public class DatasetController {
                 activityFacade.persistActivity(ActivityFacade.NEW_DATA + dataSetName, project, user);
                 // creates a dataset and adds user as owner.
                 hdfsUsersBean.addDatasetUsersGroups(user, project, newDS, dfso);
+                //Persist README.md to hdfs
+//        String readMeFilePath = "/Projects/" + project.getName() + "/" + dataSetName+"/";
+//        String readmeFile = String.format(Settings.README_TEMPLATE, 
+//                  dataSetName, datasetDescription, 
+//                  "No template is attached to this dataset",
+//                false);
+//        File file = new File("/tmp" + readMeFilePath + "README.md");
+//
+//        file.getParentFile().mkdirs();
+//        file.createNewFile();
+//        PrintWriter writer = new PrintWriter(file);
+//        writer.print(readmeFile);
+//        writer.flush();
+//        writer.close();
+//
+//        udfso.copyToHDFSFromLocal(false, file.getAbsolutePath(),readMeFilePath);
+
+//      
                 return newDS;
             } catch (Exception e) {
                 IOException failed = new IOException("Failed to create dataset at path "
@@ -375,12 +394,12 @@ public class DatasetController {
     }
 
     public ManifestJSON createAndPersistManifestJson(String dsPath, String description, String name, String email, Project project) throws AppException {
-        
+
         ManifestJSON manifestJson = new ManifestJSON();
         manifestJson.setDatasetName(name);
         manifestJson.setDatasetDescription(description);
         manifestJson.setKafkaSupport(false);
-        manifestJson.setFileInfos(new LinkedList<FileInfo>());
+        manifestJson.setFileInfos(new ArrayList<FileInfo>());
         Inode inode = inodeFacade.getInodeAtPath(dsPath);
         List<Inode> inodekids = inodeFacade.getChildren(inode);
         List<String> childrenOfDataset = new ArrayList<>(inodekids.size());
@@ -392,25 +411,25 @@ public class DatasetController {
                         ResponseMessages.ONLY_SINGLE_LEVEL_PUBLIC_DATASETS);
             }
         }
-        
-        for(String child : childrenOfDataset){
-            
+
+        for (String child : childrenOfDataset) {
+
             FileInfo fileInfo = null;
-            
-            if(!isAvro(child)){
+
+            if (!isAvro(child)) {
                 fileInfo = new FileInfo();
                 fileInfo.setFileName(child);
-                if(childrenOfDataset.contains(child + ".avro")){
+                if (childrenOfDataset.contains(child + ".avro")) {
                     String hdfsPath = dsPath + child + ".avro";
                     fileInfo.setSchema(new String(this.readJsonFromHdfs(hdfsPath)));
                     fileInfo.setLength(this.getLength(dsPath + child));
-                }else{
+                } else {
                     fileInfo.setSchema("");
                     fileInfo.setLength(this.getLength(dsPath + child));
                 }
-                
+
             }
-            if(fileInfo != null){
+            if (fileInfo != null) {
                 manifestJson.getFileInfos().add(fileInfo);
             }
         }
@@ -427,10 +446,10 @@ public class DatasetController {
         manifestJson.setCreatorEmail(email);
 
         //TODO other schemas
-        manifestJson.setMetaDataJsons(new LinkedList<String>());
-        
+        manifestJson.setMetaDataJsons(new ArrayList<String>());
+
         Users user = userFacade.findByEmail(email);
-        
+
         String username = hdfsUsersBean.getHdfsUserName(project, user);
 
         this.writeManifestJsonToHdfs(manifestJson, dsPath + "manifest.json", username);
@@ -438,10 +457,10 @@ public class DatasetController {
         return manifestJson;
     }
 
-    public byte [] readJsonFromHdfs(String pathToJson) {
+    public byte[] readJsonFromHdfs(String pathToJson) {
 
         long jsonLength = dfs.getDfsOps().getlength(pathToJson);
-        if(jsonLength != -1){
+        if (jsonLength != -1) {
             FSDataInputStream fdi = null;
             try {
                 fdi = dfs.getDfsOps().open(new Path(pathToJson));
@@ -451,7 +470,7 @@ public class DatasetController {
             } catch (IOException ex) {
                 Logger.getLogger(DatasetController.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
-                if(fdi != null){
+                if (fdi != null) {
                     try {
                         fdi.close();
                     } catch (IOException ex) {
@@ -460,7 +479,7 @@ public class DatasetController {
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -475,7 +494,7 @@ public class DatasetController {
         } catch (IOException ex) {
             Logger.getLogger(DatasetController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            if(out != null){
+            if (out != null) {
                 try {
                     out.close();
                 } catch (IOException ex) {
@@ -499,7 +518,7 @@ public class DatasetController {
         }
         return jsonByte;
     }
-    
+
     public ManifestJSON getManifestJSON(byte[] jsonByte) {
         String jsonString;
         try {
@@ -511,27 +530,27 @@ public class DatasetController {
         ManifestJSON manifest = gson.fromJson(jsonString, ManifestJSON.class);
         return manifest;
     }
-    
-    private boolean isAvro(String s){
-        String remove_spaces = s.replaceAll(" ","");
-        String [] split = remove_spaces.split("\\.");
-        if(split.length == 2){
+
+    private boolean isAvro(String s) {
+        String remove_spaces = s.replaceAll(" ", "");
+        String[] split = remove_spaces.split("\\.");
+        if (split.length == 2) {
             return split[1].equals("avro");
-        }else{
+        } else {
             return false;
         }
     }
-    
-    private boolean isCsv(String s){
+
+    private boolean isCsv(String s) {
         return true;
     }
 
     private long getLength(String pathToFile) {
         return dfs.getDfsOps().getlength(pathToFile);
     }
-    
-    public void makeDatasetPublicAndImmutable(Dataset ds, String id){
-        
+
+    public void makeDatasetPublicAndImmutable(Dataset ds, String id) {
+
         ds.setPublicDs(true);
         ds.setPublicDsId(id);
         ds.setEditable(false);
@@ -539,12 +558,13 @@ public class DatasetController {
     }
 
     public ManifestJSON getManifestForThisDataset(String datasetPath) {
-        
+
         ManifestJSON manifestJSON;
-        
-        byte [] jsonBytes = readJsonFromHdfs(datasetPath + Settings.MANIFEST_NAME);
+
+        byte[] jsonBytes = readJsonFromHdfs(datasetPath + Settings.MANIFEST_NAME);
         manifestJSON = getManifestJSON(jsonBytes);
         return manifestJSON;
-        
+
     }
+
 }

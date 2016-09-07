@@ -73,10 +73,10 @@ public class GVoDController {
     private WebTarget webTarget = null;
     private Client rest_client = null;
 
-    public String uploadToGVod(String projectName, String sourceDatasetName, String username, String datasetPath) {
+    public String uploadToGVod(String projectName, String sourceDatasetName, String username, String datasetPath, String publicDsId) {
 
         HopsTorrentUpload hopsTorrentUpload = new HopsTorrentUpload(
-                new TorrentId(Settings.getPublicDatasetId(settings.getCLUSTER_ID(), projectName, sourceDatasetName)),
+                new TorrentId(publicDsId),
                 sourceDatasetName,
                 new HDFSResource(datasetPath, Settings.MANIFEST_NAME),
                 new HDFSEndpoint(settings.getHadoopConfDir() + File.separator + Settings.DEFAULT_HADOOP_CONFFILE_NAME, username)

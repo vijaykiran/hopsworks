@@ -790,7 +790,7 @@ public class Settings {
     }
 
     public static String getPublicDatasetId(String clusterId, String projectName, String datasetName) {
-        return clusterId + "_" + projectName + "_" + datasetName;
+        return clusterId + "_" + projectName + "_" + datasetName + Long.toString(System.currentTimeMillis() / 1000L);
     }
     
     

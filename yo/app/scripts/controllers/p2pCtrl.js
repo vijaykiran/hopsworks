@@ -2,10 +2,10 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
         var self = this;
 
         self.projectId = $routeParams.projectID;
-        
+
         self.preview = {};
         self.contents = [];
-        
+
 
         self.remove = function (torrentId) {
             var json = {};
@@ -14,7 +14,7 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                 getContents();
             });
         };
-        
+
         var getContents = function () {
 
             var json = {};
@@ -26,12 +26,12 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                 for (var j = 0; j < length; j++) {
                     if (self.contents[j].torrentStatus === "DOWNLOADING") {
                         var prevObj = self.preview[self.contents[j].torrentId.val];
-                        if(prevObj == null) {  
+                        if (prevObj == null) {
                             prevObj = {
-                                fileName : self.contents[j].fileName,
-                                torrentId : self.contents[j].torrentId.val,
-                                torrentStatus : self.contents[j].torrentStatus,
-                                speed : 0,
+                                fileName: self.contents[j].fileName,
+                                torrentId: self.contents[j].torrentId.val,
+                                torrentStatus: self.contents[j].torrentStatus,
+                                speed: 0,
                                 dynamic: 0
                             };
                             self.preview[self.contents[j].torrentId.val] = prevObj;
@@ -42,18 +42,14 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                             self.preview[success.data.torrentId.val].dynamic = Math.round(success.data.percentageCompleted);
                             self.preview[success.data.torrentId.val].speed = Math.round(success.data.downloadSpeed / 1024);
                         });
-                    }else{
-                        var prevObj = self.preview[self.contents[j].torrentId.val];
-                        if(prevObj == null) {
-                            prevObj = {
-                                fileName : self.contents[j].fileName,
-                                torrentId : self.contents[j].torrentId.val,
-                                torrentStatus : self.contents[j].torrentStatus
-                            };
-                            self.preview[self.contents[j].torrentId.val] = prevObj;
-                        }
+                    } else {
+                        prevObj = {
+                            fileName: self.contents[j].fileName,
+                            torrentId: self.contents[j].torrentId.val,
+                            torrentStatus: self.contents[j].torrentStatus
+                        };
+                        self.preview[self.contents[j].torrentId.val] = prevObj;
                     }
-
                 }
             });
 

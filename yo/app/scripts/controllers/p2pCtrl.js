@@ -26,7 +26,7 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                 for (var j = 0; j < length; j++) {
                     if (self.contents[j].torrentStatus === "DOWNLOADING") {
                         var prevObj = self.preview[self.contents[j].torrentId.val];
-                        if(!prevObj) {
+                        if(prevObj == null) {  
                             prevObj = {
                                 fileName : self.contents[j].fileName,
                                 torrentId : self.contents[j].torrentId.val,
@@ -39,12 +39,12 @@ angular.module('hopsWorksApp').controller('P2PCtrl', ['GVoDService', '$routePara
                         var ejson = {};
                         ejson.torrentId = self.contents[j].torrentId.val;
                         GVoDService.getExtendedDetails(ejson).then(function (success) {
-                            self.preview[ejson.torrentId].dynamic = Math.round(success.data.percentageCompleted);
-                            self.preview[ejson.torrentId].speed = Math.round(success.data.downloadSpeed / 1024);
+                            self.preview[success.data.torrentId.val].dynamic = Math.round(success.data.percentageCompleted);
+                            self.preview[success.data.torrentId.val].speed = Math.round(success.data.downloadSpeed / 1024);
                         });
                     }else{
                         var prevObj = self.preview[self.contents[j].torrentId.val];
-                        if(!prevObj) {
+                        if(prevObj == null) {
                             prevObj = {
                                 fileName : self.contents[j].fileName,
                                 torrentId : self.contents[j].torrentId.val,
